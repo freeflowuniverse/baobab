@@ -57,7 +57,7 @@ fn (mut p Processor) assign_job(guid string) ! {
 // handle_job places guid to correct queue with an error
 fn (mut p Processor) return_job(guid string) ! {
 	// check if job is valid
-	validate_job(guid) or { return_job(guid) }
+	validate_job(guid) or { handle_error(err) } // { return_job(guid) } // ? Potential for an infinite loop
 	job_encoded := r.hget('jobs.db', guid)!
 	job := jobs.json_load(job_encoded)
 
@@ -70,17 +70,16 @@ fn (mut p Processor) return_job(guid string) ! {
 fn (mut p Processor) validate_job(guid string) ! {
 
 	job_encoded := r.hget('jobs.db', guid) or { handle_error(err) }
-	if job_encoded == '' { return error('guid not found in db') }
-	actionjob := jobs.json_load() !
+	if job_encoded == '' { return error('guid not found in db') } // TODO should set job status to error: job not added to jobs.db
+	actionjob := jobs.json_load(job_encoded) or { handle_error(err) }
 
 	//todo: check process valid
 	//if 
 	// todo set job error
-	return error()
+	// return error()
 }
 
 // handle_error places guid to jobs.return queue with an error
-fn (mut p Processor) handle_error(error IError) {
+fn handle_error(error IError) {
 	println('Error: $err')
-	
 }
