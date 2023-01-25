@@ -18,7 +18,7 @@ pub struct ScheduleActionsArgs{
 
 //returns a collection of jobs
 pub fn (mut client Client) schedule_actions(args ScheduleActionsArgs) jobs.ActionJobs {
-	mut jobsfactory:=jobs.ActionJobs{}
+
 	for a in args.actions{
 		mut job := jobs.ActionJob {
 			guid:rand.uuid_v4()
@@ -35,7 +35,8 @@ pub fn (mut client Client) schedule_actions(args ScheduleActionsArgs) jobs.Actio
 			src_action:args.src_action
 			// dependencies
 		}
-		jobsfactory.jobs << job
+		//TODO: set as dependencie the previous one done
+		//TODO: call client to schedule the job
 	}
 	return jobsfactory
 }
