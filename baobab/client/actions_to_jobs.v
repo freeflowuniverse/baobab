@@ -35,8 +35,12 @@ pub fn (mut client Client) schedule_actions(args ScheduleActionsArgs) jobs.Actio
 			src_action:args.src_action
 			// dependencies
 		}
+
 		//TODO: set as dependencie the previous one done
-		//TODO: call client to schedule the job
+		
+		// call client to schedule the job
+		client.job_schedule(job) or {panic('Failed to schedule: $err')}
+
 	}
 	return jobsfactory
 }
