@@ -8,5 +8,7 @@ pub mut:
 }
 
 pub fn new(){
-
+	return BaoBab{
+		client: client.new()
+	}
 }
