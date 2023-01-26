@@ -7,8 +7,8 @@ pub mut:
 	client client.Client
 }
 
-pub fn new(){
-	return BaoBab{
-		client: client.new()
+pub fn new() !BaoBab {
+	return BaoBab {
+		client: client.new()!
 	}
 }

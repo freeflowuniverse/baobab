@@ -1,6 +1,6 @@
 module gitactor
 
-import freeflowuniverse.baobab.baobab.jobs { ActionJob }
+import freeflowuniverse.baobab.jobs { ActionJob }
 import freeflowuniverse.crystallib.gittools {GitStructure}
 
 fn execute(mut gt GitStructure, mut job ActionJob)! {

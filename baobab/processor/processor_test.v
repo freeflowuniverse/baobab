@@ -2,7 +2,7 @@ module processor
 
 import time
 
-import freeflowuniverse.baobab.baobab.jobs
+import freeflowuniverse.baobab.jobs
 import freeflowuniverse.crystallib.redisclient
 import freeflowuniverse.crystallib.params
 

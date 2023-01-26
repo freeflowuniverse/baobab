@@ -1,6 +1,6 @@
 module client
 
-// import freeflowuniverse.baobab.baobab.jobs { ActionJob, ActionJobState, JobNewArgs, new, json_load }
+// import freeflowuniverse.baobab.jobs { ActionJob, ActionJobState, JobNewArgs, new, json_load }
 import freeflowuniverse.crystallib.redisclient
 // import freeflowuniverse.crystallib.params { Params }
 // import rand
