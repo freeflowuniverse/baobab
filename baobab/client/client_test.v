@@ -2,7 +2,7 @@ module client
 
 import os
 import freeflowuniverse.crystallib.texttools
-import freeflowuniverse.baobab.baobab.actions
+import freeflowuniverse.baobab.actions
 
 const testpath = os.dir(@FILE) + '/../testdata'
 

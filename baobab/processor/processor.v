@@ -1,7 +1,7 @@
 module processor
 
-import freeflowuniverse.baobab.baobab.jobs
-import freeflowuniverse.baobab.baobab.client
+import freeflowuniverse.baobab.jobs
+import freeflowuniverse.baobab.client
 import freeflowuniverse.crystallib.redisclient
 
 const (
