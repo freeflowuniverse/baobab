@@ -25,15 +25,15 @@ fn (mut p Processor) run() ! {
 	for {
 
 		// get guid from processor.in queue and assign to actor
-		guid_in := q_in.get(0)!
+		guid_in := q_in.pop()!
 		if guid_in != '' { p.assign_job(guid_in)!}
 
 		// get guid from processor.error queue and move to return queue
-		guid_error := q_error.get(0)!
+		guid_error := q_error.pop()!
 		if guid_error != '' { p.return_job(guid_error)! }
 
 		// get guid from processor.result queue and move to return queue
-		guid_result := q_result.get(0)!
+		guid_result := q_result.pop()!
 		if guid_result != '' { p.return_job(guid_result)! }
 
 	}
