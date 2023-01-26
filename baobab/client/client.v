@@ -54,6 +54,11 @@ pub fn (mut client Client) job_delete(guid string) ! {
 	client.redis.hdel('jobs.db', '${guid}')!
 }
 
+// updates the status of a job in jobs.db
+pub fn (mut client Client) job_status_set (mut job ActionJob, state ActionJobState)!{
+	job.state = state
+	client.job_set(job)!
+}
 
 // check if the job is ready to be retrieved (can be error, or ok)
 //if return = true it means there is a job so we can retrieve it
