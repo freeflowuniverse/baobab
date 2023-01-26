@@ -18,9 +18,9 @@ mut:
 fn (mut p Processor) run() ! {
 
 	// queues that the processor listens to
-	mut q_in := p.client.redis.queue_get('processor.in')
-	mut q_error := p.client.redis.queue_get('processor.error')
-	mut q_result := p.client.redis.queue_get('processor.result')
+	mut q_in := p.client.redis.queue_get('jobs.processor.in')
+	mut q_error := p.client.redis.queue_get('jobs.processor.error')
+	mut q_result := p.client.redis.queue_get('jobs.processor.result')
 
 	for {
 
@@ -63,7 +63,7 @@ fn (mut p Processor) handle_error(error IError, guid string) ! {
 	println('Error: $error')
 	//? how to handle jobs that dont exist in db
 	mut job := p.client.job_get(guid) or { return }
-	job.error = error.msg
+	job.error = error.msg()
 	job.state = .error
 	p.client.job_set(job) or { return }
 	p.return_job(guid)!
