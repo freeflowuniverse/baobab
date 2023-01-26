@@ -16,7 +16,7 @@ pub mut:
 }
 
 // factory function for actionrunner
-fn new(client Client) !ActionRunner {
+pub fn new(client Client) !ActionRunner {
 	mut gs := gittools.get(root: '')!
 	mut ar := ActionRunner{
 		gs: &gs
@@ -32,7 +32,7 @@ pub fn (mut ar ActionRunner) run() {
 	// go over  jobs.actors in redis, see which jobs we have pass them onto the execute
 	for {
 		// get guid in queue, move on if nil
-		job_guid := q_git.pop() or {panic(err)}
+		job_guid := q_git.pop() or {''}
 		if job_guid == '' {
 			continue
 		}
@@ -46,6 +46,10 @@ pub fn (mut ar ActionRunner) run() {
 
 // execute calls execute_internal and handles error/result
 pub fn (mut ar ActionRunner) execute(mut job ActionJob) ! {
+	$if debug {
+		eprintln('Executing job: $job.guid')
+	}
+
 	ar.execute_internal(mut job) or {
 		// means there was error
 		ar.job_error(mut job, err.msg)!

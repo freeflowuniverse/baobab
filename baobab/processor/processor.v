@@ -4,18 +4,13 @@ import freeflowuniverse.baobab.jobs
 import freeflowuniverse.baobab.client
 import freeflowuniverse.crystallib.redisclient
 
-const (
-	// todo
-	redis_addr = ''
-)
-
-struct Processor {
+pub struct Processor {
 mut:
 	client client.Client = client.new()! //?ref?
 }
 
 //comment
-fn (mut p Processor) run() {
+pub fn (mut p Processor) run() {
 
 	// queues that the processor listens to
 	mut q_in := p.client.redis.queue_get('jobs.processor.in')

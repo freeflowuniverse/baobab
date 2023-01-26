@@ -1,34 +1,47 @@
 module main
 
 import freeflowuniverse.baobab
-import freeflowuniverse.baobab.actionparser
+import freeflowuniverse.baobab.actions
 import freeflowuniverse.baobab.actionrunner
 import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
-
+import freeflowuniverse.baobab.processor
+import os
 
 fn main() {
+	do() or {panic(err)}
+}
 
-	mut b := baobab.new()
+fn do() ! {
 
-	ar := actionrunner.new(b.client)
-	ar := actionrunner.new(b.client)
+	// create baobab, actionrunner and processor
+	mut b := baobab.new()!
+	b.client.redis.flushall()!
+	mut ar := actionrunner.new(b.client)!
+	mut processor := processor.Processor{}
 
-	spawn ar.run()
-	spawn processor.run()
-	spawn run_external()
+	// concurrently run actionrunner, processor, and external client
+	spawn (&ar).run()
+	spawn (&processor).run()
+	spawn run_external_client()
+
+
+	for {}
 
 }
 
-fn run_external() {
-
-	// single action example:
-	// client gets
-
+fn run_external_client() {
+	mut b := baobab.new() or {panic(err)}
 	// get actions manager from dir with action files
 	actions_path := os.dir(@FILE) + '/actionsdir'
-	mut actionsmgr := actions.dir_parse(actions_path)!
+	mut actionsmgr := actions.dir_parse(actions_path) or {panic(err)}
+
+	// call schedule actions to feed actions to processor
+	actionjobs := b.client.schedule_actions(actions:actionsmgr.actions)
 
 	// 
-	b.client.schedule_actions(actions:actionsmgr.actions)
+	for job in actionjobs.jobs {
+		job_complete := b.client.job_wait(job.guid, 60) or {panic(err)}
+		println('Retrieved job: $job_complete')
+	}
 }

@@ -4,7 +4,7 @@ import freeflowuniverse.baobab.jobs { ActionJob }
 import freeflowuniverse.crystallib.gittools {GitStructure}
 import freeflowuniverse.crystallib.sshagent
 
-fn execute(mut gt GitStructure, mut job ActionJob)! {
+pub fn execute(mut gt GitStructure, mut job ActionJob)! {
 	$if debug {
 		eprintln('active git..')
 		println(job)

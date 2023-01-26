@@ -26,6 +26,9 @@ pub fn (mut client Client) job_new_wait(args JobNewArgs) !ActionJob {
 
 // schedules the job to be executed
 pub fn (mut client Client) job_schedule(mut job ActionJob) ! {
+	$if debug {
+		eprintln('Scheduling job: $job.guid')
+	}
 	job.state = .tostart
 	client.job_set(job)!
 	client.redis.lpush('jobs.processor.in', '${job.guid}')!
