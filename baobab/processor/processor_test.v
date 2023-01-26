@@ -23,46 +23,46 @@ fn generate_jobs() ![]jobs.ActionJob {
 	return generated_jobs
 }
 
-// fn test_assign_job() {
-// 	mut redis := redisclient.core_get()
-// 	mut p := Processor{}
-// 	generated_jobs := generate_jobs()!
-// 	mut q_in := redis.queue_get('jobs.processor.in')
-// 	mut guids := []string
-// 	for job in generated_jobs {
-// 		json_job := job.json_dump()
-// 		redis.hset('jobs.db', job.guid, json_job)!
-// 		q_in.add(job.guid)!
-// 		p.assign_job(job.guid)!
-// 		guids << job.guid
-// 	}
+fn test_assign_job() {
+	mut redis := redisclient.core_get()
+	mut p := Processor{}
+	generated_jobs := generate_jobs()!
+	mut q_in := redis.queue_get('jobs.processor.in')
+	mut guids := []string
+	for job in generated_jobs {
+		json_job := job.json_dump()
+		redis.hset('jobs.db', job.guid, json_job)!
+		q_in.add(job.guid)!
+		p.assign_job(job.guid)!
+		guids << job.guid
+	}
 
-// 	assert redis.rpop('jobs.actors.crystallib.gitrunner')! in guids
-// 	assert redis.rpop('jobs.actors.crystallib.gitrunner')! in guids
-// 	assert redis.rpop('jobs.actors.crystallib.gitrunner')! in guids
-// 	assert redis.rpop('jobs.actors.crystallib.gitrunner')! in guids
+	assert redis.rpop('jobs.actors.crystallib.gitrunner')! in guids
+	assert redis.rpop('jobs.actors.crystallib.gitrunner')! in guids
+	assert redis.rpop('jobs.actors.crystallib.gitrunner')! in guids
+	assert redis.rpop('jobs.actors.crystallib.gitrunner')! in guids
 
-// // }
-
-// fn test_return_job() {
-// 	mut p := Processor{}
-// 	generated_jobs := generate_jobs()!
-// 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
-// 	mut guids := []string
-// 	for job in generated_jobs {
-// 		json_job := job.json_dump()
-// 		p.client.redis.hset('jobs.db', job.guid, json_job)!
-// 		q_result.add(job.guid)!
-// 		p.return_job(job.guid)!
-// 		guids << job.guid
-// 	}
-
-// 	for guid in guids {
-// 		popped_guid := p.client.redis.rpop('jobs.return.$guid')!
-// 		assert typeof(popped_guid).name == 'string'
-// 		assert popped_guid != ''
-// 	}
 // }
+
+fn test_return_job() {
+	mut p := Processor{}
+	generated_jobs := generate_jobs()!
+	mut q_result := p.client.redis.queue_get('jobs.processor.result')
+	mut guids := []string
+	for job in generated_jobs {
+		json_job := job.json_dump()
+		p.client.redis.hset('jobs.db', job.guid, json_job)!
+		q_result.add(job.guid)!
+		p.return_job(job.guid)!
+		guids << job.guid
+	}
+
+	for guid in guids {
+		popped_guid := p.client.redis.rpop('jobs.return.$guid')!
+		assert typeof(popped_guid).name == 'string'
+		assert popped_guid != ''
+	}
+}
 
 fn test_run() {
 	mut redis := redisclient.core_get()
