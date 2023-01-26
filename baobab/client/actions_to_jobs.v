@@ -1,8 +1,8 @@
 module client
 
 import os
-import freeflowuniverse.baobab.actions
-import freeflowuniverse.baobab.jobs
+import freeflowuniverse.baobab.baobab.actions
+import freeflowuniverse.baobab.baobab.jobs
 import time
 import rand
 

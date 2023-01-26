@@ -14,7 +14,6 @@ fn main() {
 	ar := actionrunner.new(b.client)
 	ar := actionrunner.new(b.client)
 
-
 	spawn ar.run()
 	spawn processor.run()
 	spawn run_external()
@@ -31,5 +30,5 @@ fn run_external() {
 	mut actionsmgr := actions.dir_parse(actions_path)!
 
 	// 
-	b.client.schedule_actions(schedule_actions(actions:actionsmgr.actions))
+	b.client.schedule_actions(actions:actionsmgr.actions)
 }
