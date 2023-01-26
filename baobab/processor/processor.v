@@ -15,7 +15,7 @@ mut:
 }
 
 //comment
-fn (mut p Processor) run() ! {
+fn (mut p Processor) run() {
 
 	// queues that the processor listens to
 	mut q_in := p.client.redis.queue_get('jobs.processor.in')
@@ -25,16 +25,16 @@ fn (mut p Processor) run() ! {
 	for {
 
 		// get guid from processor.in queue and assign to actor
-		guid_in := q_in.pop()!
-		if guid_in != '' { p.assign_job(guid_in)!}
+		guid_in := q_in.pop() or {''}
+		if guid_in != '' { p.assign_job(guid_in) or {panic(err)}}
 
 		// get guid from processor.error queue and move to return queue
-		guid_error := q_error.pop()!
-		if guid_error != '' { p.return_job(guid_error)! }
+		guid_error := q_error.pop() or {''}
+		if guid_error != '' { p.return_job(guid_error) or {panic(err)} }
 
 		// get guid from processor.result queue and move to return queue
-		guid_result := q_result.pop()!
-		if guid_result != '' { p.return_job(guid_result)! }
+		guid_result := q_result.pop() or {''}
+		if guid_result != '' { p.return_job(guid_result) or {panic(err)} }
 
 	}
 }
@@ -46,7 +46,7 @@ fn (mut p Processor) assign_job(guid string) ! {
 	// gets the queue to the actor which will handle job
 	// passes guid to actor queue
 	mut action_parts := job.action.split('.')
-	q_key := 'jobs.actors.${action_parts[..action_parts.len-1]}'
+	q_key := 'jobs.actors.${(action_parts[..action_parts.len-1]).join('.')}'
 	mut q_actor := p.client.redis.queue_get(q_key)
 	q_actor.add(guid)!
 }
