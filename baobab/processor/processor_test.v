@@ -2,14 +2,17 @@ module processor
 
 import freeflowuniverse.baobab.baobab.jobs
 import freeflowuniverse.crystallib.redisclient
+import freeflowuniverse.crystallib.params
 
 fn generate_jobs() []ActionJob {
-	mut jobs := []ActionJob{}
-	jobs << jobs.new(0, 'gitrunner.init')
-	jobs << jobs.new(0, 'gitrunner.get')
-	jobs << jobs.new(0, 'gitrunner.link')
-	jobs << jobs.new(0, 'gitrunner.commit')
-	return jobs
+	mut generated_jobs := []jobs.ActionJob{}
+	actions := ['gitrunner.init', 'gitrunner.get', 'gitrunner.link', 'gitrunner.commit']
+	for action in actions {
+		generated_jobs << jobs.new(
+			twinid: 0, 
+			action: 'gitrunner.init')!
+	}
+	return generated_jobs
 }
 
 // // // TODO
@@ -68,6 +71,6 @@ fn generate_jobs() []ActionJob {
 
 fn test_run() {
 	redis := redisclient.core_get()
-	p := Processor{}
-	p.run()
+	mut p := Processor{}
+	p.run()!
 }

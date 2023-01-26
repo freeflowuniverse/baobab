@@ -11,30 +11,30 @@ const (
 
 struct Processor {
 mut:
-	client client.Client = client.new() //?ref?
+	client client.Client = client.new()! //?ref?
 }
 
 //comment
 fn (mut p Processor) run() ! {
 
 	// queues that the processor listens to
-	q_in := p.client.redis.queue_get('processor.in')
-	q_error := p.client.redis.queue_get('processor.error')
-	q_result := p.client.redis.queue_get('processor.result')
+	mut q_in := p.client.redis.queue_get('processor.in')
+	mut q_error := p.client.redis.queue_get('processor.error')
+	mut q_result := p.client.redis.queue_get('processor.result')
 
 	for {
 
 		// get guid from processor.in queue and assign to actor
-		guid_in := q_in.redis.rpop(q_in.key)!
-		if guid_in != '' { p.assign_job(guid)!}
+		guid_in := q_in.get(0)!
+		if guid_in != '' { p.assign_job(guid_in)!}
 
 		// get guid from processor.error queue and move to return queue
-		guid_error := q_error.redis.rpop(q_error.key)!
-		if guid_error != '' { p.return_job(guid)! }
+		guid_error := q_error.get(0)!
+		if guid_error != '' { p.return_job(guid_error)! }
 
 		// get guid from processor.result queue and move to return queue
-		guid_result := q_result.redis.rpop(q_result.key)!
-		if guid_result != '' { p.return_job(guid)! }
+		guid_result := q_result.get(0)!
+		if guid_result != '' { p.return_job(guid_result)! }
 
 	}
 }
@@ -47,24 +47,24 @@ fn (mut p Processor) assign_job(guid string) ! {
 	// passes guid to actor queue
 	mut action_parts := job.action.split('.')
 	q_key := 'jobs.actors.${action_parts[..action_parts.len-1]}'
-	q_actor := p.redis.queue_get(q_key)
+	mut q_actor := p.client.redis.queue_get(q_key)
 	q_actor.add(guid)!
 }
 
 // handle_job places guid to correct queue with an error
 fn (mut p Processor) return_job(guid string) ! {
 	// gets the queue return queue for job and passes guid
-	q_return := p.redis.queue_get('jobs.return.$guid')
+	mut q_return := p.client.redis.queue_get('jobs.return.$guid')
 	q_return.add(guid)!
 }
 
 // handle_error places guid to jobs.return queue with an error
-fn (mut p Processor) handle_error(error IError, guid string) {
-	println('Error: $err')
+fn (mut p Processor) handle_error(error IError, guid string) ! {
+	println('Error: $error')
 	//? how to handle jobs that dont exist in db
-	job := p.client.job_get(guid) or { return }
+	mut job := p.client.job_get(guid) or { return }
 	job.error = error.msg
 	job.state = .error
 	p.client.job_set(job) or { return }
-	p.return_job()
+	p.return_job(guid)!
 }
