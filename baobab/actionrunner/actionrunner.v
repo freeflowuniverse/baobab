@@ -71,7 +71,7 @@ fn (mut ar ActionRunner) job_error(mut job ActionJob, errmsg string) ! {
 	ar.client.job_status_set(mut job, .error)!
 
 	// add job to processor.error queue
-	mut q_error := ar.client.redis.queue_get('processor.error')
+	mut q_error := ar.client.redis.queue_get('jobs.processor.error')
 	q_error.add(job.guid)!
 }
 
@@ -79,6 +79,6 @@ fn (mut ar ActionRunner) job_result(mut job ActionJob) ! {
 	ar.client.job_status_set(mut job, .done)!
 
 	// add job to processor.result queue
-	mut q_result := ar.client.redis.queue_get('processor.result')
+	mut q_result := ar.client.redis.queue_get('jobs.processor.result')
 	q_result.add(job.guid)!
 }

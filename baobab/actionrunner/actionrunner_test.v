@@ -9,11 +9,9 @@ import freeflowuniverse.crystallib.redisclient
 fn test_run() {
 	client := client.new() or {panic(err)}
 	mut ar := new(client) or {panic(err)}
-	mut q := &ar
-	spawn q.run()
-	mock_processor('crystallib.gitrunner.commit', true)!
+	spawn (&ar).run()
+	mock_processor('crystallib.git.commit', true)!
 }	
-
 
 fn mock_processor(action string, add_to_db bool) ! {	
 	mut redis := redisclient.core_get()
@@ -25,8 +23,7 @@ fn mock_processor(action string, add_to_db bool) ! {
 	}
 
 	// add the guid to the queue for the appropriate actor
-	mut action_parts := job.action.split('.')
-	q_key := 'jobs.actors.${(action_parts[..action_parts.len-1]).join('.')}'
+	q_key := 'jobs.actors.${job.action.all_before_last('.')}'
 	mut q_actor := redis.queue_get(q_key)
 	q_actor.add(job.guid)!
 
