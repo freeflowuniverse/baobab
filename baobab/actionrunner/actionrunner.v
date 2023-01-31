@@ -29,17 +29,17 @@ pub fn (mut ar ActionRunner) run() {
 	// job queue for git actor
 	mut q_git := ar.client.redis.queue_get('jobs.actors.crystallib.git')
 
-	// go over  jobs.actors in redis, see which jobs we have pass them onto the execute
+	// go over jobs.actors in redis, see which jobs we have pass them onto the execute
 	for {
 		// get guid in queue, move on if nil
-		job_guid := q_git.pop() or {''}
+		job_guid := ar.client.check_job_process('crystallib.git', 0) or {panic('here: $err')}
 		if job_guid == '' {
 			continue
 		}
 
 		// get job, set job active and execute
-		mut job := ar.client.job_get(job_guid) or {panic(err)}
-		ar.execute(mut job) or {panic(err)}
+		mut job := ar.client.job_get(job_guid) or { panic(err) }
+		ar.execute(mut job) or { panic(err) }
 		// todo: timeout check
 	}
 }
@@ -47,7 +47,7 @@ pub fn (mut ar ActionRunner) run() {
 // execute calls execute_internal and handles error/result
 pub fn (mut ar ActionRunner) execute(mut job ActionJob) ! {
 	$if debug {
-		eprintln('Executing job: $job.guid')
+		eprintln('Executing job: ${job.guid}')
 	}
 
 	ar.execute_internal(mut job) or {
