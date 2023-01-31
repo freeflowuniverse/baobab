@@ -1,15 +1,25 @@
 module actionrunner
 
 import time
+import freeflowuniverse.baobab.actor
 import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
 import freeflowuniverse.crystallib.redisclient
 
+struct TestActor {
+	name string = 'test.actor'
+}
+
+fn (actor TestActor) execute(mut job jobs.ActionJob) ! {
+	return 
+}
+
 fn test_run() {
 	client := client.new() or { panic(err) }
-	mut ar := new(client) or { panic(err) }
+	test_actor := TestActor{}
+	mut ar := new(client, [&actor.IActor(test_actor)]) or { panic(err) }
 	spawn (&ar).run()
-	mock_processor('crystallib.git.commit', true)!
+	mock_processor('test.actor.action', true)!
 }
 
 fn mock_processor(action string, add_to_db bool) ! {
