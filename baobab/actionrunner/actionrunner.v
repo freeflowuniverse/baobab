@@ -1,6 +1,7 @@
 module actionrunner
 
 import freeflowuniverse.crystallib.gittools { GitStructure }
+import freeflowuniverse.baobab.actor
 import freeflowuniverse.baobab.client { Client }
 import freeflowuniverse.baobab.jobs { ActionJob }
 import freeflowuniverse.baobab.gitactor
@@ -11,36 +12,36 @@ import freeflowuniverse.baobab.gitactor
 // then moves jobs into processor.error/result queues
 pub struct ActionRunner {
 pub mut:
-	gs     &GitStructure
-	client &Client
+       actors []&actor.IActor
+       client &Client
 }
 
 // factory function for actionrunner
-pub fn new(client Client) !ActionRunner {
-	mut gs := gittools.get(root: '')!
+pub fn new(client Client, actors []&actor.IActor) !ActionRunner {
 	mut ar := ActionRunner{
-		gs: &gs
+		actors: actors
 		client: &client
 	}
 	return ar
 }
 
 pub fn (mut ar ActionRunner) run() {
-	// job queue for git actor
-	mut q_git := ar.client.redis.queue_get('jobs.actors.crystallib.git')
 
 	// go over jobs.actors in redis, see which jobs we have pass them onto the execute
 	for {
-		// get guid in queue, move on if nil
-		job_guid := ar.client.check_job_process('crystallib.git', 0) or {panic('here: $err')}
-		if job_guid == '' {
-			continue
-		}
 
-		// get job, set job active and execute
-		mut job := ar.client.job_get(job_guid) or { panic(err) }
-		ar.execute(mut job) or { panic(err) }
-		// todo: timeout check
+		// do for each actor
+		for actor in ar.actors {
+			// get guid in queue, move on if nil
+			job_guid := ar.client.check_job_process(actor.name, 0) or {panic('here: $err')}
+			if job_guid == '' {
+				continue
+			}
+
+			// get job, set job active and execute
+			mut job := ar.client.job_get(job_guid) or { panic(err) }
+			ar.execute(mut job) or { panic(err) }
+		}
 	}
 }
 
@@ -59,10 +60,14 @@ pub fn (mut ar ActionRunner) execute(mut job ActionJob) ! {
 
 // execute_internal matches job with actor, and calls actor.execute to execute job
 fn (mut ar ActionRunner) execute_internal(mut job ActionJob) ! {
-	if job.action.starts_with('crystallib.git') {
+
+	// match actionjob with correct actor
+	mut actor := ar.actors.filter(job.action.starts_with(it.name))
+	if actor.len == 1 {	
 		ar.client.job_status_set(mut job, .active)!
-		gitactor.execute(mut ar.gs, mut job)!
-	}
+		actor[0].execute(mut job)!
+	} //todo: handle multiple actor case
+
 	return error('could not find actor to execute on the job')
 }
 
