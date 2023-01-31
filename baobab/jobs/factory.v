@@ -1,20 +1,21 @@
 module jobs
-import freeflowuniverse.crystallib.params {Params}
+
+import freeflowuniverse.crystallib.params { Params }
 import rand
 import time
 
 [params]
-pub struct JobNewArgs{
+pub struct JobNewArgs {
 pub mut:
-	twinid u32
-	action string
-	args Params
-	actionsource string	
+	twinid       u32
+	action       string
+	args         Params
+	actionsource string
 }
 
 // creates new actionjob
 pub fn new(args JobNewArgs) !ActionJob {
-	mut j:= jobs.ActionJob{
+	mut j := ActionJob{
 		guid: rand.uuid_v4()
 		twinid: args.twinid
 		action: args.action
