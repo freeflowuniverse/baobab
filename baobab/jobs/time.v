@@ -4,7 +4,7 @@ import freeflowuniverse.crystallib.params
 import time
 
 // return true if we didn't reach timeout yet
-pub fn (mut job ActionJob) check_timeout_ok() bool {
+pub fn (job &ActionJob) check_timeout_ok() bool {
 	if job.timeout == 0 {
 		return true
 	}
