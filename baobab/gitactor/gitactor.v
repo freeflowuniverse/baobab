@@ -1,10 +1,10 @@
 module gitactor
 
 import freeflowuniverse.baobab.jobs { ActionJob }
-import freeflowuniverse.crystallib.gittools {GitStructure}
+import freeflowuniverse.crystallib.gittools { GitStructure }
 import freeflowuniverse.crystallib.sshagent
 
-pub fn execute(mut gt GitStructure, mut job ActionJob)! {
+pub fn execute(mut gt GitStructure, mut job ActionJob) ! {
 	$if debug {
 		eprintln('active git..')
 		println(job)
@@ -12,22 +12,22 @@ pub fn execute(mut gt GitStructure, mut job ActionJob)! {
 	// used to initialize gitstructure by default
 	// if git init action isn't the first job
 
-	actionname := job.action.split(".").last()
+	actionname := job.action.split('.').last()
 	match actionname {
 		'init' {
 			run_init(mut gt, mut job)!
 		}
 		'params_multibranch' {
-			run_multibranch(mut gt, mut job) !
+			run_multibranch(mut gt, mut job)!
 		}
 		'get' {
-			run_get(mut gt, mut job) !
+			run_get(mut gt, mut job)!
 		}
 		'link' {
-			run_link(mut gt, mut job) !
+			run_link(mut gt, mut job)!
 		}
 		'commit' {
-			run_commit(mut gt, mut job) !
+			run_commit(mut gt, mut job)!
 		}
 		else {
 			error('could not find git action for job:\n${job}')
@@ -36,7 +36,7 @@ pub fn execute(mut gt GitStructure, mut job ActionJob)! {
 	}
 }
 
-fn  run_init(mut gt GitStructure, mut job ActionJob) ! {
+fn run_init(mut gt GitStructure, mut job ActionJob) ! {
 	path := job.args.get('path') or { '' }
 	multibranch := job.args.get('multibranch') or { '' }
 
@@ -45,7 +45,7 @@ fn  run_init(mut gt GitStructure, mut job ActionJob) ! {
 	}
 }
 
-fn  run_get(mut gt GitStructure, mut job ActionJob) ! {
+fn run_get(mut gt GitStructure, mut job ActionJob) ! {
 	// TODO: if local repo is at local branch that has no upstream produces following error
 	// ! 'Your configuration specifies to merge with the ref 'refs/heads/branch'from the remote, but no such ref was fetched.
 	if !sshagent.loaded() {
@@ -65,7 +65,7 @@ fn  run_get(mut gt GitStructure, mut job ActionJob) ! {
 	repo.pull() or { return error('Could not pull repo ${url}\n${err}') }
 }
 
-fn  run_link(mut gt GitStructure, mut job ActionJob) ! {
+fn run_link(mut gt GitStructure, mut job ActionJob) ! {
 	gitlinkargs := gittools.GitLinkArgs{
 		gitsource: job.args.get_default('gitsource', '') or { panic("Can't get param") }
 		gitdest: job.args.get_default('gitdest', '') or { panic("Can't get param") }
@@ -78,7 +78,7 @@ fn  run_link(mut gt GitStructure, mut job ActionJob) ! {
 	gt.link(gitlinkargs) or { return error('Could not link \n${gitlinkargs}\n${err}') }
 }
 
-fn  run_commit(mut gt GitStructure, mut job ActionJob) ! {
+fn run_commit(mut gt GitStructure, mut job ActionJob) ! {
 	url := job.args.get('url') or { '' }
 	name := job.args.get_default('name', '') or { '' }
 	msg := job.args.get('message') or { return error('message cannot be empty') }
@@ -104,7 +104,7 @@ fn  run_commit(mut gt GitStructure, mut job ActionJob) ! {
 	}
 }
 
-fn  run_multibranch(mut gt GitStructure, mut job ActionJob) ! {
+fn run_multibranch(mut gt GitStructure, mut job ActionJob) ! {
 	gt.config.multibranch = true
 	// log('${job.guid}:multibranch set')
 }

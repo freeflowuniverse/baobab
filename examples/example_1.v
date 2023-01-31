@@ -2,14 +2,12 @@ module main
 
 import freeflowuniverse.baobab.actionparser
 import freeflowuniverse.baobab.jobs
-
 import os
 
 const testpath = os.dir(@FILE) + '/actors'
 
 fn do() ? {
 	mut b := baobab.new()
-
 
 	mut text := "
 		id:a1 name6:aaaaa
@@ -24,7 +22,6 @@ fn do() ? {
 	// rmb.reset()!
 
 	// rmb.iam_register(src_rmbids:[u32(1),u32(2)])!
-
 
 	// //first one if the location of the one who will pick up the job, 0 is local
 	// mut ajob:=rmb.action_new(u32(0),"mydomain.myactor.myaction", param,"sourcedomain.sourceactor.soureaction")!
@@ -46,7 +43,6 @@ fn do() ? {
 
 	// // ajob2.run()!
 	// // data3:=ajob2.dumps()!
-
 }
 
 fn main() {

@@ -4,26 +4,24 @@ import freeflowuniverse.crystallib.params
 import json
 import time
 
-//actionjob as how its being send & received from outside if json used
+// actionjob as how its being send & received from outside if json used
 pub struct ActionJobPublic {
 pub mut:
-	guid         string 	//unique jobid (unique per actor which is unique per twin)
-	twinid		 u32    	//which twin needs to execute the action
-	action   	 string 	//actionname in long form includes domain & actor
-	args       	 params.Params
+	guid         string // unique jobid (unique per actor which is unique per twin)
+	twinid       u32    // which twin needs to execute the action
+	action       string // actionname in long form includes domain & actor
+	args         params.Params
 	result       params.Params
 	state        string
-	start        i64		//epoch
-	end          i64		//epoch
-	grace_period u32 		//wait till next run, in seconds
-	error        string		//string description of what went wrong
-	timeout      u32 		//time in seconds, 2h is maximum
-	src_twinid	 u32    	//which twin was sending the job, 0 if local
-	src_action   string		//unique actor path, runs on top of twin
-	dependencies []string	//list of guids we need to wait on
+	start        i64      // epoch
+	end          i64      // epoch
+	grace_period u32      // wait till next run, in seconds
+	error        string   // string description of what went wrong
+	timeout      u32      // time in seconds, 2h is maximum
+	src_twinid   u32      // which twin was sending the job, 0 if local
+	src_action   string   // unique actor path, runs on top of twin
+	dependencies []string // list of guids we need to wait on
 }
-
-
 
 pub fn (job ActionJob) pub_get() ActionJobPublic {
 	mut statestr := ''
@@ -56,7 +54,7 @@ pub fn (job ActionJob) pub_get() ActionJobPublic {
 }
 
 pub fn (job ActionJob) json_dump() string {
-	mut job2:=job.pub_get()
+	mut job2 := job.pub_get()
 	job2_data := json.encode(job2)
 	return job2_data
 }

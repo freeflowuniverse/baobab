@@ -37,14 +37,11 @@ fn test_file_parse() {
 }
 
 fn test_dir_load() {
-	
-	mut actionsmgr:=dir_parse(testpath)!
+	mut actionsmgr := dir_parse(actions.testpath)!
 	assert actionsmgr.actions.len == 11
 
-	mut a:=actionsmgr.actions.last()
-	assert a.name == "books.mdbook_develop"
-	mut b:=a.params.get('name') or {panic(err)}
-	assert b =='feasibility_study_internet'
-
+	mut a := actionsmgr.actions.last()
+	assert a.name == 'books.mdbook_develop'
+	mut b := a.params.get('name') or { panic(err) }
+	assert b == 'feasibility_study_internet'
 }
-

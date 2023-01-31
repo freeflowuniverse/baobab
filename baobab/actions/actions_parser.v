@@ -43,7 +43,6 @@ fn (mut actions ActionsManager) text_parse(content string) ! {
 	actions.parse_actions(blocks)
 }
 
-
 // TODO/ add recursive
 // fn file_includes(path string) !string {
 // 	path0 := pathtools.get(path)
@@ -67,7 +66,6 @@ fn (mut actions ActionsManager) text_parse(content string) ! {
 
 // DO NOT CHANGE THE WAY HOW THIS WORKS, THIS HAS BEEN DONE AS A STATEFUL actions BY DESIGN
 // THIS ALLOWS FOR EASY ADOPTIONS TO DIFFERENT RELIALITIES
-
 
 // decides if a line might contain parameter definitions
 // most ide's auto dedent indented markdown so is necessary

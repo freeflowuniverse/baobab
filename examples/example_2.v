@@ -9,11 +9,10 @@ import freeflowuniverse.baobab.processor
 import os
 
 fn main() {
-	do() or {panic(err)}
+	do() or { panic(err) }
 }
 
 fn do() ! {
-
 	// create baobab, actionrunner and processor
 	mut b := baobab.new()!
 	b.client.redis.flushall()!
@@ -25,23 +24,21 @@ fn do() ! {
 	spawn (&processor).run()
 	spawn run_external_client()
 
-
 	for {}
-
 }
 
 fn run_external_client() {
-	mut b := baobab.new() or {panic(err)}
+	mut b := baobab.new() or { panic(err) }
 	// get actions manager from dir with action files
 	actions_path := os.dir(@FILE) + '/actionsdir'
-	mut actionsmgr := actions.dir_parse(actions_path) or {panic(err)}
+	mut actionsmgr := actions.dir_parse(actions_path) or { panic(err) }
 
 	// call schedule actions to feed actions to processor
-	actionjobs := b.client.schedule_actions(actions:actionsmgr.actions)
+	actionjobs := b.client.schedule_actions(actions: actionsmgr.actions)
 
-	// 
+	//
 	for job in actionjobs.jobs {
-		job_complete := b.client.job_wait(job.guid, 60) or {panic(err)}
-		println('Retrieved job: $job_complete')
+		job_complete := b.client.job_wait(job.guid, 60) or { panic(err) }
+		println('Retrieved job: ${job_complete}')
 	}
 }

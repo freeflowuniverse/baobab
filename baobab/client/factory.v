@@ -21,5 +21,3 @@ pub fn new() !Client {
 	client.twinid = twinid.u32()
 	return client
 }
-
-

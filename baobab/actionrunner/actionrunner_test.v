@@ -1,19 +1,18 @@
 module actionrunner
 
 import time
-
 import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
 import freeflowuniverse.crystallib.redisclient
 
 fn test_run() {
-	client := client.new() or {panic(err)}
-	mut ar := new(client) or {panic(err)}
+	client := client.new() or { panic(err) }
+	mut ar := new(client) or { panic(err) }
 	spawn (&ar).run()
 	mock_processor('crystallib.git.commit', true)!
-}	
+}
 
-fn mock_processor(action string, add_to_db bool) ! {	
+fn mock_processor(action string, add_to_db bool) ! {
 	mut redis := redisclient.core_get()
 	job := jobs.new(twinid: 0, action: action)!
 
@@ -32,8 +31,8 @@ fn mock_processor(action string, add_to_db bool) ! {
 	// check error and result queues to see if any guids were returned
 	mut q_error := redis.queue_get('jobs.processor.error')
 	mut q_result := redis.queue_get('jobs.processor.result')
-	guid_error := q_error.pop() or {''}
-	guid_result := q_result.pop() or {''}
+	guid_error := q_error.pop() or { '' }
+	guid_result := q_result.pop() or { '' }
 
 	assert guid_error == job.guid || guid_result == job.guid
 }
