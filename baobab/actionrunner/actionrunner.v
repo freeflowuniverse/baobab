@@ -66,6 +66,7 @@ fn (mut ar ActionRunner) execute_internal(mut job ActionJob) ! {
 	if actor.len == 1 {	
 		ar.client.job_status_set(mut job, .active)!
 		actor[0].execute(mut job)!
+		return 
 	} //todo: handle multiple actor case
 
 	return error('could not find actor to execute on the job')
