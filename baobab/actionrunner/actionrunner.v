@@ -54,6 +54,7 @@ pub fn (mut ar ActionRunner) execute(mut job ActionJob) ! {
 	ar.execute_internal(mut job) or {
 		// means there was error
 		ar.job_error(mut job, err.msg)!
+		return
 	}
 	ar.job_result(mut job)! // job was succesful
 }
