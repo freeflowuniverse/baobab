@@ -17,7 +17,7 @@ pub mut:
 }
 
 // factory function for actionrunner
-pub fn new(client Client, actors []&actor.IActor) !ActionRunner {
+pub fn new(client Client, actors []&actor.IActor) ActionRunner {
 	mut ar := ActionRunner{
 		actors: actors
 		client: &client
