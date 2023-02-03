@@ -4,10 +4,10 @@ import freeflowuniverse.baobab.jobs { ActionJob }
 import freeflowuniverse.crystallib.gittools { GitStructure }
 import freeflowuniverse.crystallib.sshagent
 
-struct GitActor {
-	name string
+pub struct GitActor {
+	name string = 'crystallib.git'
 	mut:
-	gt GitStructure
+	gt GitStructure = gittools.get(gittools.GSConfig{}) or {panic(err)}
 }
 
 pub fn (mut actor GitActor) execute (mut job ActionJob) ! {
