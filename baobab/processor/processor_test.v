@@ -11,18 +11,13 @@ struct TestCase {
 	actor_queue  string // correct actor queue for job
 	return_queue string // correct return queue for job
 	error_msg    string // correct error message for job
+	msgbus_case  bool // wether or not the test case will be implemented over msgbus
+	rmb_msg		 RMBMessage // RMB message if the test case is tested over msgbus
 }
 
 // reset redis on test begin and run servers
 fn testsuite_begin() {
 	os.execute('redis-server --daemonize yes &')
-	mut redis := redisclient.core_get()
-	redis.flushall()!
-	redis.disconnect()
-}
-
-// reset redis on test end
-fn testsuite_end() {
 	mut redis := redisclient.core_get()
 	redis.flushall()!
 	redis.disconnect()
@@ -138,4 +133,5 @@ fn test_run() {
 		guid := redis.rpop(case.return_queue)!
 		assert guid == case.job.guid
 	}
+
 }
