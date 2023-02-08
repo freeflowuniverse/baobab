@@ -9,6 +9,8 @@ pub struct Processor {
 mut:
 	client client.Client = client.new()!
 	rmb_jobs map[string]RMBMessage // map of guids to rmb return queues
+pub mut:
+	running bool
 }
 
 // run listens to processor.in/.error/.result queues, assigns incoming jobs to actors,
@@ -20,7 +22,8 @@ pub fn (mut p Processor) run() {
 	mut q_error := p.client.redis.queue_get('jobs.processor.error')
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
 	
-	for {
+	p.running = true
+	for p.running {
 		// get guid from processor.in queue and assign job to actor
 		guid_in := q_in.pop() or { '' }
 		if guid_in != '' {
