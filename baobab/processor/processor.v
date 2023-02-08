@@ -1,14 +1,10 @@
 module processor
 
-import json
-import freeflowuniverse.baobab.jobs
 import freeflowuniverse.baobab.client
-import freeflowuniverse.crystallib.redisclient
 
 pub struct Processor {
 mut:
-	client client.Client = client.new()!
-	rmb_jobs map[string]RMBMessage // map of guids to rmb return queues
+	client   client.Client = client.new()!
 }
 
 // run listens to processor.in/.error/.result queues, assigns incoming jobs to actors,
@@ -16,10 +12,9 @@ mut:
 pub fn (mut p Processor) run() {
 	// queues that the processor listens to
 	mut q_in := p.client.redis.queue_get('jobs.processor.in')
-	mut q_rmb := p.client.redis.queue_get('msgbus.execute_job') // incoming jobs from rmb peer
 	mut q_error := p.client.redis.queue_get('jobs.processor.error')
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
-	
+
 	for {
 		// get guid from processor.in queue and assign job to actor
 		guid_in := q_in.pop() or { '' }
@@ -28,12 +23,8 @@ pub fn (mut p Processor) run() {
 		}
 
 		// get msg from rmb queue, parse job, assign to actor
-		encoded_msg := q_rmb.pop() or { '' }
-		if encoded_msg != '' {
-			msg := json.decode(RMBMessage, encoded_msg) or { panic(err) }
-			job := jobs.json_load(msg.data) or { panic(err) }
-			p.rmb_jobs[job.guid] = msg // save message
-			p.assign_job(job.guid) or { panic(err) }
+		if guid_rmb := p.get_rmb_job() {
+			p.assign_job(guid_rmb) or { panic(err) }
 		}
 
 		// get guid from processor.error queue and move to return queue
@@ -52,9 +43,7 @@ pub fn (mut p Processor) run() {
 
 // assign_job places guid to correct actor queue, and to the processor.active queue
 fn (mut p Processor) assign_job(guid string) ! {
-
 	mut job := p.client.job_get(guid)!
-
 	if !job.check_timeout_ok() {
 		return error('Job timeout reached')
 	}
@@ -71,18 +60,12 @@ fn (mut p Processor) assign_job(guid string) ! {
 
 // return_job returns a job by placing it to the correct redis return queue
 fn (mut p Processor) return_job(guid string) ! {
-
-	if guid in p.rmb_jobs.keys() {
-		job := p.client.job_get(guid)!
-		mut msg := p.rmb_jobs[guid]
-		msg.data = job.json_dump()
-		mut q_return := p.client.redis.queue_get('msgbus.system.reply')
-		q_return.add(json.encode(msg))!
+	if p.client.redis.hexists('rmb.db', guid)! {
+		p.return_job_rmb(guid)!
 	} else {
 		mut q_return := p.client.redis.queue_get('jobs.return.${guid}')
 		q_return.add(guid)!
 	}
-
 }
 
 // handle_error places guid to jobs.return queue with an error
