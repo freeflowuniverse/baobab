@@ -1,10 +1,15 @@
 module processor
 
 import freeflowuniverse.baobab.client
+import freeflowuniverse.baobab.jobs
+import os
+import freeflowuniverse.crystallib.redisclient
+import time
 
 pub struct Processor {
 mut:
-	client   client.Client = client.new()!
+	client client.Client = client.new()!
+	errors []IError
 }
 
 // run listens to processor.in/.error/.result queues, assigns incoming jobs to actors,
@@ -17,26 +22,23 @@ pub fn (mut p Processor) run() {
 
 	for {
 		// get guid from processor.in queue and assign job to actor
-		guid_in := q_in.pop() or { '' }
-		if guid_in != '' {
-			p.assign_job(guid_in) or { panic(err) }
+		if guid_in := q_in.get(1) {
+			p.assign_job(guid_in) or { p.handle_error(err) }
 		}
 
 		// get msg from rmb queue, parse job, assign to actor
 		if guid_rmb := p.get_rmb_job() {
-			p.assign_job(guid_rmb) or { panic(err) }
+			p.assign_job(guid_rmb) or { p.handle_error(err) }
 		}
 
 		// get guid from processor.error queue and move to return queue
-		guid_error := q_error.pop() or { '' }
-		if guid_error != '' {
-			p.return_job(guid_error) or { panic(err) }
+		if guid_error := q_error.get(1) {
+			p.return_job(guid_error) or { p.handle_error(err) }
 		}
 
 		// get guid from processor.result queue and move to return queue
-		guid_result := q_result.pop() or { '' }
-		if guid_result != '' {
-			p.return_job(guid_result) or { panic(err) }
+		if guid_result := q_result.get(1) {
+			p.return_job(guid_result) or { p.handle_error(err) }
 		}
 	}
 }
@@ -44,8 +46,12 @@ pub fn (mut p Processor) run() {
 // assign_job places guid to correct actor queue, and to the processor.active queue
 fn (mut p Processor) assign_job(guid string) ! {
 	mut job := p.client.job_get(guid)!
+
 	if !job.check_timeout_ok() {
-		return error('Job timeout reached')
+		return jobs.JobError{
+			msg: 'Job timeout reached'
+			job_guid: guid
+		}
 	}
 
 	// push guid to active queue
@@ -69,12 +75,27 @@ fn (mut p Processor) return_job(guid string) ! {
 }
 
 // handle_error places guid to jobs.return queue with an error
-fn (mut p Processor) handle_error(error IError, guid string) ! {
-	println('Error: ${error}')
-	//? how to handle jobs that dont exist in db
-	mut job := p.client.job_get(guid) or { return }
-	job.error = error.msg()
-	job.state = .error
-	p.client.job_set(job) or { return }
-	p.return_job(guid)!
+fn (mut p Processor) handle_error(error IError) {
+	if error is jobs.JobError {
+		mut job := p.client.job_get(error.job_guid) or { panic(err) }
+		p.client.job_error_set(mut job, error.msg) or { panic(err) }
+		p.return_job(error.job_guid) or { panic(err) }
+	} else {
+		panic(error)
+	}
 }
+
+fn (mut p Processor) reset() ! {
+	p.client.redis.flushall()!
+	p.client.redis.disconnect()
+	p.client.redis.socket_connect()!
+}
+
+// todo: fix if needed
+// fn (mut p Processor) restart()! {
+// 	p.client.redis.save()!
+// 	p.client.redis.shutdown()!
+// 	// os.execute('redis-server --daemonize yes &')
+// 	time.sleep(1000000)
+// 	p.client.redis.socket_connect() or { panic('here:$err') }
+// }
