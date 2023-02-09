@@ -1,18 +1,16 @@
 module processor
 
-import os
-import time
 import freeflowuniverse.baobab.jobs
+import json
+import os
 import freeflowuniverse.crystallib.redisclient
-import freeflowuniverse.crystallib.params
+import time
 
 struct TestCase {
 	job          jobs.ActionJob // job
 	actor_queue  string // correct actor queue for job
 	return_queue string // correct return queue for job
 	error_msg    string // correct error message for job
-	msgbus_case  bool // wether or not the test case will be implemented over msgbus
-	rmb_msg		 RMBMessage // RMB message if the test case is tested over msgbus
 }
 
 // reset redis on test begin and run servers
@@ -90,12 +88,23 @@ fn test_return_job() {
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
 	mut guids := []string{}
 
-	// assert returns job to expected jobs.return queue
+	// assert returns job to expected return queue
 	for case in test_cases {
 		q_result.add(case.job.guid)!
 		p.return_job(case.job.guid)!
 		assert redis.rpop(case.return_queue)! == case.job.guid
 	}
+}
+
+fn test_reset() ! {
+	// assert val exists before reset
+	mut p := Processor{}
+	p.client.redis.hset('reset_test', 'key', 'data')!
+	assert p.client.redis.hexists('reset_test', 'key')!
+
+	// assert val doesn't exist after reset
+	p.reset() or { panic('Failed to reset ${err}') }
+	assert !p.client.redis.hexists('reset_test', 'key')!
 }
 
 // tests if processor assigns jobs to actors and returns results/errors
@@ -133,5 +142,4 @@ fn test_run() {
 		guid := redis.rpop(case.return_queue)!
 		assert guid == case.job.guid
 	}
-
 }
