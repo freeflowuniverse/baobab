@@ -1,6 +1,5 @@
 module jobs
 
-import freeflowuniverse.crystallib.params
 import time
 
 // return true if we didn't reach timeout yet

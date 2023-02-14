@@ -1,10 +1,7 @@
 module client
 
 import freeflowuniverse.baobab.jobs { ActionJob, ActionJobState, JobNewArgs, json_load }
-import freeflowuniverse.crystallib.redisclient
-import freeflowuniverse.crystallib.params
-import rand
-import time
+
 
 pub fn (mut client Client) job_new(args JobNewArgs) !ActionJob {
 	mut j := jobs.new(args)!

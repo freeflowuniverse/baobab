@@ -3,7 +3,6 @@ module processor
 import json
 import freeflowuniverse.baobab.jobs
 import freeflowuniverse.baobab.client
-import freeflowuniverse.crystallib.redisclient
 
 pub struct Processor {
 mut:
