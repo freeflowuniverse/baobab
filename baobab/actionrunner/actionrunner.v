@@ -4,7 +4,6 @@ import freeflowuniverse.crystallib.gittools { GitStructure }
 import freeflowuniverse.baobab.actor
 import freeflowuniverse.baobab.client { Client }
 import freeflowuniverse.baobab.jobs { ActionJob }
-import freeflowuniverse.baobab.gitactor
 
 // Actionrunner listens to jobs in an actors queue
 // executes the jobs internally
@@ -14,6 +13,7 @@ pub struct ActionRunner {
 pub mut:
        actors []&actor.IActor
        client &Client
+	   running bool
 }
 
 // factory function for actionrunner
@@ -26,9 +26,9 @@ pub fn new(client Client, actors []&actor.IActor) ActionRunner {
 }
 
 pub fn (mut ar ActionRunner) run() {
-
+	ar.running = true
 	// go over jobs.actors in redis, see which jobs we have pass them onto the execute
-	for {
+	for ar.running {
 
 		// do for each actor
 		for actor in ar.actors {
@@ -53,7 +53,7 @@ pub fn (mut ar ActionRunner) execute(mut job ActionJob) ! {
 
 	ar.execute_internal(mut job) or {
 		// means there was error
-		ar.job_error(mut job, err.msg)!
+		ar.job_error(mut job, err.msg())!
 		return
 	}
 	ar.job_result(mut job)! // job was succesful

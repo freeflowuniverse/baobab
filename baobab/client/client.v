@@ -2,6 +2,7 @@ module client
 
 import freeflowuniverse.baobab.jobs { ActionJob, ActionJobState, JobNewArgs, json_load }
 
+
 pub fn (mut client Client) job_new(args JobNewArgs) !ActionJob {
 	mut j := jobs.new(args)!
 	j.src_twinid = client.twinid
@@ -54,6 +55,13 @@ pub fn (mut client Client) job_delete(guid string) ! {
 // updates the status of a job in jobs.db
 pub fn (mut client Client) job_status_set(mut job ActionJob, state ActionJobState) ! {
 	job.state = state
+	client.job_set(job)!
+}
+
+// updates the status of a job in jobs.db,
+pub fn (mut client Client) job_error_set(mut job ActionJob, error string) ! {
+	job.state = .error
+	job.error = error
 	client.job_set(job)!
 }
 

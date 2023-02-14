@@ -35,3 +35,14 @@ pub mut:
 	src_action   string // unique actor id, runs on top of twin
 	dependencies []string
 }
+
+pub struct JobError {
+	Error
+pub mut:
+	msg      string
+	job_guid string
+}
+
+pub fn (err JobError) msg() string {
+	return 'Job Error: Job ${err.job_guid} failed with error: ${err.msg}'
+}
