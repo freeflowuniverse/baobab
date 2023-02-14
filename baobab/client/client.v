@@ -58,6 +58,13 @@ pub fn (mut client Client) job_status_set(mut job ActionJob, state ActionJobStat
 	client.job_set(job)!
 }
 
+// updates the status of a job in jobs.db,
+pub fn (mut client Client) job_error_set(mut job ActionJob, error string) ! {
+	job.state = .error
+	job.error = error
+	client.job_set(job)!
+}
+
 // check if the job is ready to be retrieved (can be error, or ok)
 // if return = true it means there is a job so we can retrieve it
 pub fn (mut client Client) job_check_ready(guid string) !bool {

@@ -1,13 +1,14 @@
 module processor
 
-import json
-import freeflowuniverse.baobab.jobs
 import freeflowuniverse.baobab.client
+import freeflowuniverse.baobab.jobs
+import os
+import time
 
 pub struct Processor {
 mut:
 	client client.Client = client.new()!
-	rmb_jobs map[string]RMBMessage // map of guids to rmb return queues
+	errors []IError
 pub mut:
 	running bool
 }
@@ -17,48 +18,42 @@ pub mut:
 pub fn (mut p Processor) run() {
 	// queues that the processor listens to
 	mut q_in := p.client.redis.queue_get('jobs.processor.in')
-	mut q_rmb := p.client.redis.queue_get('msgbus.execute_job') // incoming jobs from rmb peer
 	mut q_error := p.client.redis.queue_get('jobs.processor.error')
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
 	
 	p.running = true
 	for p.running {
 		// get guid from processor.in queue and assign job to actor
-		guid_in := q_in.pop() or { '' }
-		if guid_in != '' {
-			p.assign_job(guid_in) or { panic(err) }
+		if guid_in := q_in.get(1) {
+			p.assign_job(guid_in) or { p.handle_error(err) }
 		}
 
 		// get msg from rmb queue, parse job, assign to actor
-		encoded_msg := q_rmb.pop() or { '' }
-		if encoded_msg != '' {
-			msg := json.decode(RMBMessage, encoded_msg) or { panic(err) }
-			job := jobs.json_load(msg.data) or { panic(err) }
-			p.rmb_jobs[job.guid] = msg // save message
-			p.assign_job(job.guid) or { panic(err) }
+		if guid_rmb := p.get_rmb_job() {
+			p.assign_job(guid_rmb) or { p.handle_error(err) }
 		}
 
 		// get guid from processor.error queue and move to return queue
-		guid_error := q_error.pop() or { '' }
-		if guid_error != '' {
-			p.return_job(guid_error) or { panic(err) }
+		if guid_error := q_error.get(1) {
+			p.return_job(guid_error) or { p.handle_error(err) }
 		}
 
 		// get guid from processor.result queue and move to return queue
-		guid_result := q_result.pop() or { '' }
-		if guid_result != '' {
-			p.return_job(guid_result) or { panic(err) }
+		if guid_result := q_result.get(1) {
+			p.return_job(guid_result) or { p.handle_error(err) }
 		}
 	}
 }
 
 // assign_job places guid to correct actor queue, and to the processor.active queue
 fn (mut p Processor) assign_job(guid string) ! {
-
 	mut job := p.client.job_get(guid)!
 
 	if !job.check_timeout_ok() {
-		return error('Job timeout reached')
+		return jobs.JobError{
+			msg: 'Job timeout reached'
+			job_guid: guid
+		}
 	}
 
 	// push guid to active queue
@@ -73,27 +68,36 @@ fn (mut p Processor) assign_job(guid string) ! {
 
 // return_job returns a job by placing it to the correct redis return queue
 fn (mut p Processor) return_job(guid string) ! {
-
-	if guid in p.rmb_jobs.keys() {
-		job := p.client.job_get(guid)!
-		mut msg := p.rmb_jobs[guid]
-		msg.data = job.json_dump()
-		mut q_return := p.client.redis.queue_get('msgbus.system.reply')
-		q_return.add(json.encode(msg))!
+	if p.client.redis.hexists('rmb.db', guid)! {
+		p.return_job_rmb(guid)!
 	} else {
 		mut q_return := p.client.redis.queue_get('jobs.return.${guid}')
 		q_return.add(guid)!
 	}
-
 }
 
 // handle_error places guid to jobs.return queue with an error
-fn (mut p Processor) handle_error(error IError, guid string) ! {
-	println('Error: ${error}')
-	//? how to handle jobs that dont exist in db
-	mut job := p.client.job_get(guid) or { return }
-	job.error = error.msg()
-	job.state = .error
-	p.client.job_set(job) or { return }
-	p.return_job(guid)!
+fn (mut p Processor) handle_error(error IError) {
+	if error is jobs.JobError {
+		mut job := p.client.job_get(error.job_guid) or { panic(err) }
+		p.client.job_error_set(mut job, error.msg) or { panic(err) }
+		p.return_job(error.job_guid) or { panic(err) }
+	} else {
+		panic(error)
+	}
 }
+
+fn (mut p Processor) reset() ! {
+	p.client.redis.flushall()!
+	p.client.redis.disconnect()
+	p.client.redis.socket_connect()!
+}
+
+// todo: fix if needed
+// fn (mut p Processor) restart()! {
+// 	p.client.redis.save()!
+// 	p.client.redis.shutdown()!
+// 	// os.execute('redis-server --daemonize yes &')
+// 	time.sleep(1000000)
+// 	p.client.redis.socket_connect() or { panic('here:$err') }
+// }
