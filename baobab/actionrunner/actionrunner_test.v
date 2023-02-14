@@ -17,7 +17,7 @@ fn (actor TestActor) execute(mut job jobs.ActionJob) ! {
 fn test_run() {
 	client := client.new() or { panic(err) }
 	test_actor := TestActor{}
-	mut ar := new(client, [&actor.IActor(test_actor)]) or { panic(err) }
+	mut ar := new(client, [&actor.IActor(test_actor)])
 	spawn (&ar).run()
 	mock_processor('test.actor.action', true)!
 }
