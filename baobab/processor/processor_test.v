@@ -1,9 +1,9 @@
 module processor
 
 import freeflowuniverse.baobab.jobs
-import json
-import os
 import freeflowuniverse.crystallib.redisclient
+
+import os
 import time
 
 struct TestCase {
