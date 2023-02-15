@@ -56,6 +56,9 @@ pub fn (mut ar ActionRunner) execute(mut job ActionJob) ! {
 		return
 	}
 	ar.job_result(mut job)! // job was succesful
+	$if debug {
+		eprintln('Execution finished: ${job.guid}')
+	}
 }
 
 // execute_internal matches job with actor, and calls actor.execute to execute job
