@@ -1,6 +1,5 @@
 module actionrunner
 
-import freeflowuniverse.crystallib.gittools { GitStructure }
 import freeflowuniverse.baobab.actor
 import freeflowuniverse.baobab.client { Client }
 import freeflowuniverse.baobab.jobs { ActionJob }
