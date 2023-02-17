@@ -4,19 +4,29 @@ import freeflowuniverse.baobab.jobs
 
 import encoding.base64
 import json
+import time
 
 struct RMBMessage {
-mut:
-	version    u64    [json: ver]
-	reference  string [json: ref]
-	source     string [json: src]
-	command    string [json: cmd]
-	expiration u64    [json: exp]
-	data       string [json: dat]
-	tags       string [json: tag]
-	reply_to   string [json: ret]
-	schema     string [json: shm]
-	timestamp  u64    [json: now]
+pub mut:
+	ver int = 1
+	cmd string
+	src string
+	ref string
+	exp u64
+	dat string
+	dst []u32
+    ret string
+	now u64
+	shm string
+}
+
+struct RMBResponse {
+pub mut:
+	ver int = 1
+	ref string
+	dat string
+	dst string
+	now u64
 }
 
 // listens to rmb queue for incoming execute job messages
@@ -28,7 +38,7 @@ fn (mut p Processor) get_rmb_job() ?string {
 
 	if encoded_msg != '' {
 		msg := json.decode(RMBMessage, encoded_msg) or { panic(err) }
-		job := jobs.json_load(base64.decode_str(msg.data)) or { panic(err) }
+		job := jobs.json_load(base64.decode_str(msg.dat)) or { panic(err) }
 		p.client.job_set(job) or { panic(err) } // save job
 		p.client.redis.hset('rmb.db', '${job.guid}', encoded_msg) or { panic(err) } // save message
 		return job.guid
@@ -43,8 +53,12 @@ fn (mut p Processor) return_job_rmb(guid string) ! {
 	// get message from rmb.db, set data to returned job
 	mut encoded_msg := p.client.redis.hget('rmb.db', guid)!
 	mut msg := json.decode(RMBMessage, encoded_msg)!
-	msg.data = job.json_dump()
-
-	mut q_return := p.client.redis.queue_get('msgbus.system.reply')
-	q_return.add(json.encode(msg))!
+	mut q_return := p.client.redis.queue_get(msg.ret)
+	response := RMBResponse {
+		dst: msg.src
+		dat: base64.encode_str(job.json_dump())
+		ref: msg.ref
+		now: u64(time.now().unix_time())
+	}
+	q_return.add(json.encode(response))!
 }
