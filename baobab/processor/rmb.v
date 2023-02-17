@@ -1,6 +1,8 @@
 module processor
 
 import freeflowuniverse.baobab.jobs
+
+import encoding.base64
 import json
 
 struct RMBMessage {
@@ -26,7 +28,7 @@ fn (mut p Processor) get_rmb_job() ?string {
 
 	if encoded_msg != '' {
 		msg := json.decode(RMBMessage, encoded_msg) or { panic(err) }
-		job := jobs.json_load(msg.data) or { panic(err) }
+		job := jobs.json_load(base64.decode_str(msg.data)) or { panic(err) }
 		p.client.job_set(job) or { panic(err) } // save job
 		p.client.redis.hset('rmb.db', '${job.guid}', encoded_msg) or { panic(err) } // save message
 		return job.guid
