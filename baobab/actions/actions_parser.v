@@ -135,11 +135,11 @@ fn (mut block Block) clean() {
 }
 
 fn (mut actions ActionsManager) parse_block(block Block) {
-	params := params.parse(block.content) or { panic(err) }
+	params_ := params.parse(block.content) or { panic(err) }
 
 	mut action := Action{
 		name: block.name
-		params: params
+		params: params_
 	}
 	actions.actions << action
 }

@@ -88,7 +88,7 @@ fn (mut p Processor) handle_error(error IError) {
 	}
 }
 
-fn (mut p Processor) reset() ! {
+pub fn (mut p Processor) reset() ! {
 	p.client.redis.flushall()!
 	p.client.redis.disconnect()
 	p.client.redis.socket_connect()!
