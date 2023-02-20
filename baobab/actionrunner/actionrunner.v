@@ -16,10 +16,10 @@ pub mut:
 }
 
 // factory function for actionrunner
-pub fn new(client Client, actors []&actor.IActor) ActionRunner {
+pub fn new(client_ Client, actors []&actor.IActor) ActionRunner {
 	mut ar := ActionRunner{
 		actors: actors
-		client: &client
+		client: &client_
 	}
 	return ar
 }
@@ -28,18 +28,32 @@ pub fn (mut ar ActionRunner) run() {
 	ar.running = true
 	// go over jobs.actors in redis, see which jobs we have pass them onto the execute
 	for ar.running {
-
+		println("Actionrunner - run")
 		// do for each actor
 		for actor in ar.actors {
+			println(ar.running)
 			// get guid in queue, move on if nil
-			job_guid := ar.client.check_job_process(actor.name, 0) or {panic('here: $err')}
+			job_guid := ar.client.check_job_process(actor.name, 0) or { 
+				eprintln("Actionrunner check_job_process: $err")
+				panic(err) 
+			}
+			println("post check_job_process: running $ar.running guid '$job_guid'")
 			if job_guid == '' {
 				continue
 			}
-
+			$if debug {
+				println("Actionrunner received job: $job_guid")
+			}
 			// get job, set job active and execute
-			mut job := ar.client.job_get(job_guid) or { panic(err) }
-			ar.execute(mut job) or { panic(err) }
+			mut job := ar.client.job_get(job_guid) or { 
+				println("Actionrunner job_gets: $err")
+				panic(err) 
+			}
+			ar.execute(mut job) or { 
+				println("Actionrunner execute: $err")
+				panic(err) 
+			}
+			
 		}
 	}
 }
@@ -65,10 +79,10 @@ pub fn (mut ar ActionRunner) execute(mut job ActionJob) ! {
 fn (mut ar ActionRunner) execute_internal(mut job ActionJob) ! {
 
 	// match actionjob with correct actor
-	mut actor := ar.actors.filter(job.action.starts_with(it.name))
-	if actor.len == 1 {	
+	mut actor_ := ar.actors.filter(job.action.starts_with(it.name))
+	if actor_.len == 1 {	
 		ar.client.job_status_set(mut job, .active)!
-		actor[0].execute(mut job)!
+		actor_[0].execute(mut job)!
 		return 
 	} //todo: handle multiple actor case
 

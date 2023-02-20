@@ -16,10 +16,13 @@ fn action_get_key(action_ string) !string {
 // use timeout if we need to wait (blocking), if timeout=0, then we won't wait
 pub fn (mut client Client) check_job_process(action string, timeout int) !string {
 	key := action_get_key(action)!
+	println("check_job_process key: $key")
 	if timeout > 0 {
 		return client.redis.brpop(key, timeout)!
 	} else {
-		return client.redis.rpop(key)!
+		guid := client.redis.rpop(key)!
+		println("Sucessful check_job_process: '$guid'")
+		return guid
 	}
 	return ''
 }

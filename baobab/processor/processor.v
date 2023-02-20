@@ -50,6 +50,10 @@ pub fn (mut p Processor) run() {
 fn (mut p Processor) assign_job(guid string) ! {
 	mut job := p.client.job_get(guid)!
 
+	$if debug {
+		println("Assigning job: $guid")
+	}
+
 	if !job.check_timeout_ok() {
 		return jobs.JobError{
 			msg: 'Job timeout reached'
@@ -79,6 +83,10 @@ fn (mut p Processor) return_job(guid string) ! {
 
 // handle_error places guid to jobs.return queue with an error
 fn (mut p Processor) handle_error(error IError) {
+	$if debug {
+		println("Handling error - $error")
+	}
+	
 	if error is jobs.JobError {
 		mut job := p.client.job_get(error.job_guid) or { panic(err) }
 		p.client.job_error_set(mut job, error.msg) or { panic(err) }
@@ -88,7 +96,7 @@ fn (mut p Processor) handle_error(error IError) {
 	}
 }
 
-fn (mut p Processor) reset() ! {
+pub fn (mut p Processor) reset() ! {
 	p.client.redis.flushall()!
 	p.client.redis.disconnect()
 	p.client.redis.socket_connect()!
