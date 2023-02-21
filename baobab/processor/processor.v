@@ -80,11 +80,20 @@ fn (mut p Processor) return_job(guid string) ! {
 // handle_error places guid to jobs.return queue with an error
 fn (mut p Processor) handle_error(error IError) {
 	if error is jobs.JobError {
-		mut job := p.client.job_get(error.job_guid) or { panic(err) }
-		p.client.job_error_set(mut job, error.msg) or { panic(err) }
-		p.return_job(error.job_guid) or { panic(err) }
+		mut job := p.client.job_get(error.job_guid) or {
+			eprintln("Failed getting the job with id ${error.job_guid}: $err")
+			return
+		}
+		p.client.job_error_set(mut job, error.msg) or {
+			eprintln("Failed modifying the status of the job ${error.job_guid} to error: $err")
+			return
+		}
+		p.return_job(error.job_guid) or {
+			eprintln("Failed returning the job ${error.job_guid}: $err")
+			return
+		}
 	} else {
-		panic(error)
+		eprintln("Not a JobError: $error")
 	}
 }
 
@@ -100,5 +109,5 @@ pub fn (mut p Processor) reset() ! {
 // 	p.client.redis.shutdown()!
 // 	// os.execute('redis-server --daemonize yes &')
 // 	time.sleep(1000000)
-// 	p.client.redis.socket_connect() or { panic('here:$err') }
+// 	p.client.redis.socket_connect()!
 // }

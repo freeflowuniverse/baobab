@@ -34,13 +34,15 @@ fn (mut actions ActionsManager) file_parse(path string) ! {
 	if !os.exists(path) {
 		return error("path: '${path}' does not exist, cannot parse.")
 	}
-	content := os.read_file(path) or { panic('Failed to load file ${path}') }
+	content := os.read_file(path) or { 
+		return error('Failed to load file ${path}: $err') 
+	}
 	actions.text_parse(content)!
 }
 
 fn (mut actions ActionsManager) text_parse(content string) ! {
 	blocks := parse_into_blocks(content)!
-	actions.parse_actions(blocks)
+	actions.parse_actions(blocks)!
 }
 
 // TODO/ add recursive
@@ -51,7 +53,7 @@ fn (mut actions ActionsManager) text_parse(content string) ! {
 // 	for line in content.split_into_lines(){
 // 		if line.starts_with("!!include"){
 // 			//now we can do the include
-// 			params := params.parse(line.all_after_first(" ")) or { panic(err) }
+// 			params := params.parse(line.all_after_first(" "))!
 // 			path_to_include := params.get_path("path")! //checks it exists
 // 			path_included := pathtools.get(path_to_include)!
 // 			content := path_included.read()!
@@ -134,8 +136,10 @@ fn (mut block Block) clean() {
 	block.content = texttools.dedent(block.content) // remove leading space
 }
 
-fn (mut actions ActionsManager) parse_block(block Block) {
-	params_ := params.parse(block.content) or { panic(err) }
+fn (mut actions ActionsManager) parse_block(block Block) ! {
+	params_ := params.parse(block.content) or { 
+		return error("Failed to parse block: $err")
+	}
 
 	mut action := Action{
 		name: block.name
@@ -144,8 +148,8 @@ fn (mut actions ActionsManager) parse_block(block Block) {
 	actions.actions << action
 }
 
-fn (mut actions ActionsManager) parse_actions(blocks Blocks) {
+fn (mut actions ActionsManager) parse_actions(blocks Blocks) ! {
 	for block in blocks.blocks {
-		actions.parse_block(block)
+		actions.parse_block(block)!
 	}
 }

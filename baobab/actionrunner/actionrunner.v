@@ -32,14 +32,22 @@ pub fn (mut ar ActionRunner) run() {
 		// do for each actor
 		for actor in ar.actors {
 			// get guid in queue, move on if nil
-			job_guid := ar.client.check_job_process(actor.name, 0) or {panic('here: $err')}
+			job_guid := ar.client.check_job_process(actor.name, 0) or {
+				eprintln("Failed checking job process: $err")
+				continue
+			}
 			if job_guid == '' {
 				continue
 			}
 
 			// get job, set job active and execute
-			mut job := ar.client.job_get(job_guid) or { panic(err) }
-			ar.execute(mut job) or { panic(err) }
+			mut job := ar.client.job_get(job_guid) or { 
+				eprintln("Failed getting job from db: $err")
+				continue
+			}
+			ar.execute(mut job) or { 
+				eprintln("Failed to execute the job: $err")
+			}
 		}
 	}
 }

@@ -37,10 +37,25 @@ fn (mut p Processor) get_rmb_job() ?string {
 	encoded_msg := q_rmb.pop() or { '' }
 
 	if encoded_msg != '' {
-		msg := json.decode(RMBMessage, encoded_msg) or { panic(err) }
-		job := jobs.json_load(base64.decode_str(msg.dat)) or { panic(err) }
-		p.client.job_set(job) or { panic(err) } // save job
-		p.client.redis.hset('rmb.db', '${job.guid}', encoded_msg) or { panic(err) } // save message
+		msg := json.decode(RMBMessage, encoded_msg) or {
+			eprintln("Failed decoding ${encoded_msg} to RMBMessage: $err")
+			return none
+		}
+		decoded_job := base64.decode_str(msg.dat)
+		job := jobs.json_load(decoded_job) or { 
+			eprintln("Failed decoding ${decoded_job} to Job: $err")
+			return none
+		}
+		// save job
+		p.client.job_set(job) or {
+			eprintln("Failed setting ${job}: $err")
+			return none
+		}
+		// save message
+		p.client.redis.hset('rmb.db', '${job.guid}', encoded_msg) or { 
+			eprintln("Failed setting ${job.guid} in hset rmb.db: $err")
+			return none
+		}
 		return job.guid
 	}
 	return none

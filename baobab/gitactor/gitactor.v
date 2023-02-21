@@ -47,7 +47,7 @@ fn (mut actor GitActor) run_init(mut job ActionJob) ! {
 	multibranch := job.args.get('multibranch') or { '' }
 
 	actor.gt = gittools.get(root: path, multibranch: multibranch == 'true') or {
-		panic("Can't get gittools: ${err}")
+		return error("Can't get gittools: ${err}")
 	}
 }
 
@@ -73,8 +73,8 @@ fn (mut actor GitActor) run_get(mut job ActionJob) ! {
 
 fn (mut actor GitActor) run_link(mut job ActionJob) ! {
 	gitlinkargs := gittools.GitLinkArgs{
-		gitsource: job.args.get_default('gitsource', '') or { panic("Can't get param") }
-		gitdest: job.args.get_default('gitdest', '') or { panic("Can't get param") }
+		gitsource: job.args.get_default('gitsource', '') or { return error("Can't get param") }
+		gitdest: job.args.get_default('gitdest', '') or { return error("Can't get param") }
 		source: job.args.get('source') or { '' }
 		dest: job.args.get('dest') or { '' }
 		pull: job.args.get_default_false('pull')
