@@ -26,6 +26,7 @@ pub mut:
 	ref string
 	dat string
 	dst string
+	shm string
 	now u64
 }
 
@@ -44,6 +45,10 @@ fn (mut p Processor) get_rmb_job() ?string {
 		decoded_job := base64.decode_str(msg.dat)
 		job := jobs.json_load(decoded_job) or { 
 			eprintln("Failed decoding ${decoded_job} to Job: $err")
+			return none
+		}
+		if job.src_twinid != msg.src || !(job.twinid in msg.dst) {
+			eprintln("Job is either not meant for us or the sender is not who they claim to be.")
 			return none
 		}
 		// save job
@@ -74,6 +79,7 @@ fn (mut p Processor) return_job_rmb(guid string) ! {
 		dat: base64.encode_str(job.json_dump())
 		ref: msg.ref
 		now: u64(time.now().unix_time())
+		shm: "application/json"
 	}
 	q_return.add(json.encode(response))!
 }
