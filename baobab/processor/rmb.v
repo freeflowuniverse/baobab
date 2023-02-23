@@ -47,7 +47,7 @@ fn (mut p Processor) get_rmb_job() ?string {
 			eprintln("Failed decoding ${decoded_job} to Job: $err")
 			return none
 		}
-		if job.src_twinid != msg.src || !(job.twinid in msg.dst) {
+		if job.src_twinid != msg.src.u32() || !(job.twinid in msg.dst) {
 			eprintln("Job is either not meant for us or the sender is not who they claim to be.")
 			return none
 		}

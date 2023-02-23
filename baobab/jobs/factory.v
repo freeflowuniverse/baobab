@@ -11,6 +11,7 @@ pub mut:
 	action       string
 	args         Params
 	actionsource string
+	src_twinid   u32
 }
 
 // creates new actionjob
@@ -22,7 +23,7 @@ pub fn new(args JobNewArgs) !ActionJob {
 		args: args.args
 		start: time.now()
 		src_action: args.actionsource
-		src_twinid: 0
+		src_twinid: args.src_twinid
 	}
 	return j
 }
