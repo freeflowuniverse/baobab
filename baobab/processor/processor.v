@@ -1,23 +1,32 @@
 module processor
 
+import log
 import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
-
 // import os
 // import time
 
+[noinit]
 pub struct Processor {
 mut:
 	client client.Client = client.new()!
 	errors []IError
+	logger &log.Logger
 pub mut:
 	running bool
 }
 
-// run listens to processor.in/.error/.result queues, assigns incoming jobs to actors,
-// returns error and result responses from actor to client
+pub fn new(logger &log.Logger) Processor {
+	return Processor {
+		logger: unsafe {logger}
+	}
+}
+
+// run listens redis queues for incoming jobs, assigns jobs to actors,
+// returns error and result responses from actor to caller of job
 pub fn (mut p Processor) run() {
-	// queues that the processor listens to
+	p.logger.info('Processor is running')
+
 	mut q_in := p.client.redis.queue_get('jobs.processor.in')
 	mut q_error := p.client.redis.queue_get('jobs.processor.error')
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
@@ -26,21 +35,25 @@ pub fn (mut p Processor) run() {
 	for p.running {
 		// get guid from processor.in queue and assign job to actor
 		if guid_in := q_in.get(1) {
+			p.logger.debug('Received job $guid_in')
 			p.assign_job(guid_in) or { p.handle_error(err) }
 		}
 
 		// get msg from rmb queue, parse job, assign to actor
 		if guid_rmb := p.get_rmb_job() {
+			p.logger.debug('Received job $guid_rmb from RMB')
 			p.assign_job(guid_rmb) or { p.handle_error(err) }
 		}
 
 		// get guid from processor.error queue and move to return queue
 		if guid_error := q_error.get(1) {
+			p.logger.debug('Received error response for job: $guid_error ')
 			p.return_job(guid_error) or { p.handle_error(err) }
 		}
 
 		// get guid from processor.result queue and move to return queue
 		if guid_result := q_result.get(1) {
+			p.logger.debug('Received result for job: $guid_result')
 			p.return_job(guid_result) or { p.handle_error(err) }
 		}
 	}
@@ -65,6 +78,9 @@ fn (mut p Processor) assign_job(guid string) ! {
 	q_key := 'jobs.actors.${job.action.all_before_last('.')}'
 	mut q_actor := p.client.redis.queue_get(q_key)
 	q_actor.add(guid)!
+
+	p.logger.debug('Assigned job $guid to $q_key:')
+	p.logger.debug('$job\n')
 }
 
 // return_job returns a job by placing it to the correct redis return queue
@@ -75,6 +91,7 @@ fn (mut p Processor) return_job(guid string) ! {
 		mut q_return := p.client.redis.queue_get('jobs.return.${guid}')
 		q_return.add(guid)!
 	}
+	p.logger.debug('Returned job $guid')
 }
 
 // handle_error places guid to jobs.return queue with an error

@@ -1,5 +1,6 @@
 module processor
 
+import log
 import freeflowuniverse.baobab.jobs
 import freeflowuniverse.crystallib.redisclient
 
@@ -68,8 +69,11 @@ fn generate_test_cases() ![]TestCase {
 
 // tests if the processor places jobs in correct jobs.domain.actor queue
 fn test_assign_job() {
+	logger := log.Log{
+		level: .debug
+	}
 	mut redis := redisclient.core_get()
-	mut p := Processor{}
+	mut p := new(&logger)
 	test_cases := generate_test_cases() or { panic('Failed to generate test cases: ${err}') }
 
 	// test assigns job to expected domain.actor queue & active queue
@@ -82,8 +86,11 @@ fn test_assign_job() {
 
 // tests if the processor places jobs in correct jobs.return queue
 fn test_return_job() {
+	logger := log.Log{
+		level: .debug
+	}
 	mut redis := redisclient.core_get()
-	mut p := Processor{}
+	mut p := new(&logger)
 	test_cases := generate_test_cases()!
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
 	mut guids := []string{}
@@ -97,8 +104,12 @@ fn test_return_job() {
 }
 
 fn test_reset() ! {
+	logger := log.Log{
+		level: .debug
+	}
+
 	// assert val exists before reset
-	mut p := Processor{}
+	mut p := new(&logger)
 	p.client.redis.hset('reset_test', 'key', 'data')!
 	assert p.client.redis.hexists('reset_test', 'key')!
 
@@ -109,8 +120,12 @@ fn test_reset() ! {
 
 // tests if processor assigns jobs to actors and returns results/errors
 fn test_run() {
+	logger := log.Log{
+		level: .debug
+	}
+
 	mut redis := redisclient.core_get()
-	mut p := Processor{}
+	mut p := new(&logger)
 	test_cases := generate_test_cases()!
 	spawn (&p).run() // run processor concurrently
 
