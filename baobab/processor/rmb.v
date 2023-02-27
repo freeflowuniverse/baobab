@@ -14,7 +14,6 @@ pub mut:
 	ref string
 	exp u64
 	dat string
-	dst []u32
     ret string
 	now u64
 	shm string
@@ -47,8 +46,8 @@ fn (mut p Processor) get_rmb_job() ?string {
 			eprintln("Failed decoding ${decoded_job} to Job: $err")
 			return none
 		}
-		if job.src_twinid != msg.src.u32() || !(job.twinid in msg.dst) {
-			eprintln("Job is either not meant for us or the sender is not who they claim to be.")
+		if job.src_twinid != msg.src.u32() {
+			eprintln("Job is either not meant for us or the sender is not who they claim to be: $encoded_msg")
 			return none
 		}
 		// save job
