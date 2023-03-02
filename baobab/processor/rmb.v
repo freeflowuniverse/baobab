@@ -52,7 +52,7 @@ fn (mut p Processor) get_rmb_job() ?string {
 			// TODO return RMB error
 			return none
 		}
-		if p.client.twinid != job.src || job.src_twinid != msg.src.u32() {
+		if p.client.twinid != job.twinid || job.src_twinid != msg.src.u32() {
 			eprintln("Job is either not meant for us or the sender is not who they claim to be: $encoded_msg")
 			// TODO return RMB error
 			return none
