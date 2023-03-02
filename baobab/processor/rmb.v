@@ -28,6 +28,11 @@ pub mut:
 	shm string
 	now u64
 }
+struct RMBError {
+pub mut:
+	code int
+	message string
+}
 
 // listens to rmb queue for incoming execute job messages
 // parses message into job saves job and message, returns optional guid
@@ -44,20 +49,24 @@ fn (mut p Processor) get_rmb_job() ?string {
 		decoded_job := base64.decode_str(msg.dat)
 		job := jobs.json_load(decoded_job) or { 
 			eprintln("Failed decoding ${decoded_job} to Job: $err")
+			// TODO return RMB error
 			return none
 		}
-		if job.src_twinid != msg.src.u32() {
+		if p.client.twinid != job.src || job.src_twinid != msg.src.u32() {
 			eprintln("Job is either not meant for us or the sender is not who they claim to be: $encoded_msg")
+			// TODO return RMB error
 			return none
 		}
 		// save job
 		p.client.job_set(job) or {
 			eprintln("Failed setting ${job}: $err")
+			// TODO return job error
 			return none
 		}
 		// save message
 		p.client.redis.hset('rmb.db', '${job.guid}', encoded_msg) or { 
 			eprintln("Failed setting ${job.guid} in hset rmb.db: $err")
+			// TODO return job error
 			return none
 		}
 		return job.guid
