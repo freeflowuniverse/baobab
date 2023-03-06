@@ -9,15 +9,16 @@ import freeflowuniverse.baobab.jobs
 [noinit]
 pub struct Processor {
 mut:
-	client client.Client = client.new()!
+	client client.Client
 	errors []IError
 	logger &log.Logger
 pub mut:
 	running bool
 }
 
-pub fn new(logger &log.Logger) Processor {
+pub fn new(redis_address string, logger &log.Logger) !Processor {
 	return Processor {
+		client: client.new(redis_address)!
 		logger: unsafe {logger}
 	}
 }

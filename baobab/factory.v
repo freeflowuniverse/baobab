@@ -7,8 +7,8 @@ pub mut:
 	client client.Client
 }
 
-pub fn new() !BaoBab {
+pub fn new(redis_address string) !BaoBab {
 	return BaoBab{
-		client: client.new()!
+		client: client.new(redis_address)!
 	}
 }

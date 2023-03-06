@@ -12,9 +12,9 @@ pub mut:
 	twinid u32
 }
 
-pub fn new() !Client {
-	mut redis := redisclient.core_get()
-	mut client := Client{
+pub fn new(redis_address string) !Client {
+	mut redis := redisclient.get(redis_address)!
+	mut client := Client {
 		redis: redis
 	}
 	twinid := client.redis.get('client.mytwin.id') or { '0' }
