@@ -1,11 +1,13 @@
 module processor
 
 import freeflowuniverse.baobab.jobs
+import freeflowuniverse.crystallib.redisclient
+
+import encoding.base64
 import json
 import log
 import os
-import freeflowuniverse.crystallib.redisclient
-import time
+import rand
 
 struct RMBTestCase {
 	job          jobs.ActionJob // job
@@ -29,13 +31,14 @@ fn generate_test_cases() ![]RMBTestCase {
 
 	// RMBMessage with job payload
 	job := jobs.new(action: 'crystallib.git.init')!
-	mut msg := RMBMessage{
-		dat: job.json_dump()
+	mut msg := RMBMessage {
+		dat: base64.encode_str(job.json_dump())
+		ret: rand.uuid_v4()
 	}
-	test_cases << RMBTestCase{
+	test_cases << RMBTestCase {
 		job: job
 		actor_queue: 'jobs.actors.crystallib.git'
-		return_queue: 'msgbus.system.reply'
+		return_queue: msg.ret
 		rmb_msg: msg
 	}
 
@@ -46,7 +49,7 @@ fn test_get_rmb_job() ! {
 	logger := log.Log{
 		level: .debug
 	}
-	mut p := new(&logger)
+	mut p := new("localhost:6379", &logger)!
 	cases := generate_test_cases() or { panic('Failed to generate test cases: $err') }
 	mut q_rmb := p.client.redis.queue_get('msgbus.execute_job')
 	for case in cases {
@@ -62,7 +65,7 @@ fn test_return_job_rmb() {
 	logger := log.Log{
 		level: .debug
 	}
-	mut p := new(&logger)
+	mut p := new("localhost:6379", &logger)!
 	mut redis := redisclient.core_get()
 	test_cases := generate_test_cases() or { panic('Failed to add to queue $err') }
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
@@ -74,6 +77,8 @@ fn test_return_job_rmb() {
 		q_result.add(case.job.guid) or { panic('Failed to add to queue $err') }
 		p.return_job_rmb(case.job.guid) or { panic('Failed to add to queue $err') }
 		returned_msg := redis.rpop(case.return_queue) or { panic('Failed to add to queue $err') }
-		assert returned_msg.contains(case.job.guid) 
+		rmb_response := json.decode(RMBResponse, returned_msg)!
+		job := json.decode(jobs.ActionJob, base64.decode_str(rmb_response.dat))!
+		assert job.guid == case.job.guid
 	}
 }
