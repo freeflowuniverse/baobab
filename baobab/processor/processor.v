@@ -17,9 +17,9 @@ pub mut:
 }
 
 pub fn new(redis_address string, logger &log.Logger) !Processor {
-	return Processor {
+	return Processor{
 		client: client.new(redis_address)!
-		logger: unsafe {logger}
+		logger: unsafe { logger }
 	}
 }
 
@@ -31,30 +31,30 @@ pub fn (mut p Processor) run() {
 	mut q_in := p.client.redis.queue_get('jobs.processor.in')
 	mut q_error := p.client.redis.queue_get('jobs.processor.error')
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
-	
+
 	p.running = true
 	for p.running {
 		// get guid from processor.in queue and assign job to actor
 		if guid_in := q_in.get(1) {
-			p.logger.debug('Received job $guid_in')
+			p.logger.debug('Received job ${guid_in}')
 			p.assign_job(guid_in) or { p.handle_error(err) }
 		}
 
 		// get msg from rmb queue, parse job, assign to actor
 		if guid_rmb := p.get_rmb_job() {
-			p.logger.debug('Received job $guid_rmb from RMB')
+			p.logger.debug('Received job ${guid_rmb} from RMB')
 			p.assign_job(guid_rmb) or { p.handle_error(err) }
 		}
 
 		// get guid from processor.error queue and move to return queue
 		if guid_error := q_error.get(1) {
-			p.logger.debug('Received error response for job: $guid_error ')
+			p.logger.debug('Received error response for job: ${guid_error} ')
 			p.return_job(guid_error) or { p.handle_error(err) }
 		}
 
 		// get guid from processor.result queue and move to return queue
 		if guid_result := q_result.get(1) {
-			p.logger.debug('Received result for job: $guid_result')
+			p.logger.debug('Received result for job: ${guid_result}')
 			p.return_job(guid_result) or { p.handle_error(err) }
 		}
 	}
@@ -80,8 +80,8 @@ fn (mut p Processor) assign_job(guid string) ! {
 	mut q_actor := p.client.redis.queue_get(q_key)
 	q_actor.add(guid)!
 
-	p.logger.debug('Assigned job $guid to $q_key:')
-	p.logger.debug('$job\n')
+	p.logger.debug('Assigned job ${guid} to ${q_key}:')
+	p.logger.debug('${job}\n')
 }
 
 // return_job returns a job by placing it to the correct redis return queue
@@ -92,26 +92,26 @@ fn (mut p Processor) return_job(guid string) ! {
 		mut q_return := p.client.redis.queue_get('jobs.return.${guid}')
 		q_return.add(guid)!
 	}
-	p.logger.debug('Returned job $guid')
+	p.logger.debug('Returned job ${guid}')
 }
 
 // handle_error places guid to jobs.return queue with an error
 fn (mut p Processor) handle_error(error IError) {
 	if error is jobs.JobError {
 		mut job := p.client.job_get(error.job_guid) or {
-			eprintln("Failed getting the job with id ${error.job_guid}: $err")
+			eprintln('Failed getting the job with id ${error.job_guid}: ${err}')
 			return
 		}
 		p.client.job_error_set(mut job, error.msg) or {
-			eprintln("Failed modifying the status of the job ${error.job_guid} to error: $err")
+			eprintln('Failed modifying the status of the job ${error.job_guid} to error: ${err}')
 			return
 		}
 		p.return_job(error.job_guid) or {
-			eprintln("Failed returning the job ${error.job_guid}: $err")
+			eprintln('Failed returning the job ${error.job_guid}: ${err}')
 			return
 		}
 	} else {
-		eprintln("Not a JobError: $error")
+		eprintln('Not a JobError: ${error}')
 	}
 }
 

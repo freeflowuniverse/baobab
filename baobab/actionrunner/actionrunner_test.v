@@ -11,7 +11,7 @@ struct TestActor {
 }
 
 fn (actor TestActor) execute(mut job jobs.ActionJob) ! {
-	return 
+	return
 }
 
 fn test_run() {

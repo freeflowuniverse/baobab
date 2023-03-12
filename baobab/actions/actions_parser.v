@@ -34,9 +34,7 @@ fn (mut actions ActionsManager) file_parse(path string) ! {
 	if !os.exists(path) {
 		return error("path: '${path}' does not exist, cannot parse.")
 	}
-	content := os.read_file(path) or { 
-		return error('Failed to load file ${path}: $err') 
-	}
+	content := os.read_file(path) or { return error('Failed to load file ${path}: ${err}') }
 	actions.text_parse(content)!
 }
 
@@ -137,9 +135,7 @@ fn (mut block Block) clean() {
 }
 
 fn (mut actions ActionsManager) parse_block(block Block) ! {
-	params_ := params.parse(block.content) or { 
-		return error("Failed to parse block: $err")
-	}
+	params_ := params.parse(block.content) or { return error('Failed to parse block: ${err}') }
 
 	mut action := Action{
 		name: block.name

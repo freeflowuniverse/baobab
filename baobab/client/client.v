@@ -2,7 +2,6 @@ module client
 
 import freeflowuniverse.baobab.jobs { ActionJob, ActionJobState, JobNewArgs, json_load }
 
-
 pub fn (mut client Client) job_new(args JobNewArgs) !ActionJob {
 	mut j := jobs.new(args)!
 	j.src_twinid = client.twinid

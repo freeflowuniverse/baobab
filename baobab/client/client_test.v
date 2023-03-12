@@ -26,7 +26,7 @@ fn testsuite_end() {
 fn test_get_jobs() {
 	mut cl := new() or { panic("can't get client") }
 
-	mut actionsmgr := actions.dir_parse(samples_dir)!
+	mut actionsmgr := actions.dir_parse(client.samples_dir)!
 	assert actionsmgr.actions.len == 11
 
 	mut j := cl.schedule_actions(actions: actionsmgr.actions)

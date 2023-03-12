@@ -3,7 +3,6 @@ module processor
 import log
 import freeflowuniverse.baobab.jobs
 import freeflowuniverse.crystallib.redisclient
-
 import os
 import time
 

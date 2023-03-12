@@ -6,11 +6,11 @@ import freeflowuniverse.crystallib.sshagent
 
 pub struct GitActor {
 	name string = 'crystallib.git'
-	mut:
-	gt GitStructure = gittools.get(gittools.GSConfig{}) or {panic(err)}
+mut:
+	gt GitStructure = gittools.get(gittools.GSConfig{}) or { panic(err) }
 }
 
-pub fn (mut actor GitActor) execute (mut job ActionJob) ! {
+pub fn (mut actor GitActor) execute(mut job ActionJob) ! {
 	$if debug {
 		eprintln('active git..')
 		println(job)

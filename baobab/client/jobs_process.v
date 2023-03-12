@@ -25,5 +25,5 @@ pub fn (mut client Client) check_job_process(action string, timeout int) !string
 }
 
 pub fn (mut client Client) check_remaining_jobs(actor string) !int {
-	 return client.redis.llen("jobs.actors.$actor")!
+	return client.redis.llen('jobs.actors.${actor}')!
 }

@@ -10,9 +10,9 @@ import freeflowuniverse.baobab.jobs { ActionJob }
 // then moves jobs into processor.error/result queues
 pub struct ActionRunner {
 pub mut:
-       actors []&actor.IActor
-       client &Client
-	   running bool
+	actors  []&actor.IActor
+	client  &Client
+	running bool
 }
 
 // factory function for actionrunner
@@ -28,12 +28,11 @@ pub fn (mut ar ActionRunner) run() {
 	ar.running = true
 	// go over jobs.actors in redis, see which jobs we have pass them onto the execute
 	for ar.running {
-
 		// do for each actor
 		for actor in ar.actors {
 			// get guid in queue, move on if nil
 			job_guid := ar.client.check_job_process(actor.name, 0) or {
-				eprintln("Failed checking job process: $err")
+				eprintln('Failed checking job process: ${err}')
 				continue
 			}
 			if job_guid == '' {
@@ -41,13 +40,11 @@ pub fn (mut ar ActionRunner) run() {
 			}
 
 			// get job, set job active and execute
-			mut job := ar.client.job_get(job_guid) or { 
-				eprintln("Failed getting job from db: $err")
+			mut job := ar.client.job_get(job_guid) or {
+				eprintln('Failed getting job from db: ${err}')
 				continue
 			}
-			ar.execute(mut job) or { 
-				eprintln("Failed to execute the job: $err")
-			}
+			ar.execute(mut job) or { eprintln('Failed to execute the job: ${err}') }
 		}
 	}
 }
@@ -71,14 +68,14 @@ pub fn (mut ar ActionRunner) execute(mut job ActionJob) ! {
 
 // execute_internal matches job with actor, and calls actor.execute to execute job
 fn (mut ar ActionRunner) execute_internal(mut job ActionJob) ! {
-
 	// match actionjob with correct actor
 	mut actor_ := ar.actors.filter(job.action.starts_with(it.name))
-	if actor_.len == 1 {	
+	if actor_.len == 1 {
 		ar.client.job_status_set(mut job, .active)!
 		actor_[0].execute(mut job)!
-		return 
-	} //todo: handle multiple actor case
+		return
+	}
+	// todo: handle multiple actor case
 
 	return error('could not find actor to execute on the job')
 }

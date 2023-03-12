@@ -2,7 +2,6 @@ module processor
 
 import freeflowuniverse.baobab.jobs
 import freeflowuniverse.crystallib.redisclient
-
 import encoding.base64
 import json
 import log
@@ -31,11 +30,11 @@ fn generate_test_cases() ![]RMBTestCase {
 
 	// RMBMessage with job payload
 	job := jobs.new(action: 'crystallib.git.init')!
-	mut msg := RMBMessage {
+	mut msg := RMBMessage{
 		dat: base64.encode_str(job.json_dump())
 		ret: rand.uuid_v4()
 	}
-	test_cases << RMBTestCase {
+	test_cases << RMBTestCase{
 		job: job
 		actor_queue: 'jobs.actors.crystallib.git'
 		return_queue: msg.ret
@@ -49,15 +48,17 @@ fn test_get_rmb_job() ! {
 	logger := log.Log{
 		level: .debug
 	}
-	mut p := new("localhost:6379", &logger)!
-	cases := generate_test_cases() or { panic('Failed to generate test cases: $err') }
+	mut p := new('localhost:6379', &logger)!
+	cases := generate_test_cases() or { panic('Failed to generate test cases: ${err}') }
 	mut q_rmb := p.client.redis.queue_get('msgbus.execute_job')
 	for case in cases {
 		encoded := json.encode(case.rmb_msg)
-		q_rmb.add(encoded) or { panic('Failed to add: $err') }
+		q_rmb.add(encoded) or { panic('Failed to add: ${err}') }
 		job_guid := p.get_rmb_job() or { '' }
 		assert job_guid == case.job.guid
-		assert p.client.redis.hexists('jobs.db', job_guid) or { panic('Failed to run hexists $err') }
+		assert p.client.redis.hexists('jobs.db', job_guid) or {
+			panic('Failed to run hexists ${err}')
+		}
 	}
 }
 
@@ -65,18 +66,22 @@ fn test_return_job_rmb() {
 	logger := log.Log{
 		level: .debug
 	}
-	mut p := new("localhost:6379", &logger)!
+	mut p := new('localhost:6379', &logger)!
 	mut redis := redisclient.core_get()
-	test_cases := generate_test_cases() or { panic('Failed to add to queue $err') }
+	test_cases := generate_test_cases() or { panic('Failed to add to queue ${err}') }
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
 
 	// assert returns job to expected return queue
 	for case in test_cases {
-		p.client.redis.hset('jobs.db', case.job.guid, case.job.json_dump()) or { panic('Failed to run hset $err') }
-		p.client.redis.hset('rmb.db', case.job.guid, json.encode(case.rmb_msg)) or { panic('Failed to run hset $err') }
-		q_result.add(case.job.guid) or { panic('Failed to add to queue $err') }
-		p.return_job_rmb(case.job.guid) or { panic('Failed to add to queue $err') }
-		returned_msg := redis.rpop(case.return_queue) or { panic('Failed to add to queue $err') }
+		p.client.redis.hset('jobs.db', case.job.guid, case.job.json_dump()) or {
+			panic('Failed to run hset ${err}')
+		}
+		p.client.redis.hset('rmb.db', case.job.guid, json.encode(case.rmb_msg)) or {
+			panic('Failed to run hset ${err}')
+		}
+		q_result.add(case.job.guid) or { panic('Failed to add to queue ${err}') }
+		p.return_job_rmb(case.job.guid) or { panic('Failed to add to queue ${err}') }
+		returned_msg := redis.rpop(case.return_queue) or { panic('Failed to add to queue ${err}') }
 		rmb_response := json.decode(RMBResponse, returned_msg)!
 		job := json.decode(jobs.ActionJob, base64.decode_str(rmb_response.dat))!
 		assert job.guid == case.job.guid
