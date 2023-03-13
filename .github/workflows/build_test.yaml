@@ -38,9 +38,9 @@ jobs:
         run: |
           bash install.sh
 
-      - name: Check formatting
+      - name: Check formatting and generate docs
         run: |
-          v fmt -w .
+          bash doc.sh
       
       - name: Run tests
         env:
