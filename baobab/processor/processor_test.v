@@ -1,8 +1,8 @@
 module processor
 
-import log
 import freeflowuniverse.baobab.jobs
 import freeflowuniverse.crystallib.redisclient
+import log
 import os
 import time
 
@@ -15,10 +15,18 @@ struct TestCase {
 
 // reset redis on test begin and run servers
 fn testsuite_begin() {
-	os.execute('redis-server --daemonize yes &')
 	mut redis := redisclient.core_get()
 	redis.flushall()!
 	redis.disconnect()
+}
+
+fn get_logger(output_file string) &log.Log {
+	os.mkdir_all("/tmp/baobab", os.MkdirParams{}) or {
+		eprintln("Failed to create dir /tmp/baobab")
+	}
+	mut l := &log.Log{ level: log.Level.debug }
+	l.set_full_logpath("/tmp/baobab/${output_file}.log")
+	return l
 }
 
 // creates mock test jobs with hardcoded expected outcomes
@@ -68,11 +76,8 @@ fn generate_test_cases() ![]TestCase {
 
 // tests if the processor places jobs in correct jobs.domain.actor queue
 fn test_assign_job() {
-	logger := log.Log{
-		level: .debug
-	}
 	mut redis := redisclient.core_get()
-	mut p := new(&logger)
+	mut p := new("localhost:6379", get_logger("test_assign_job"))!
 	test_cases := generate_test_cases() or { panic('Failed to generate test cases: ${err}') }
 
 	// test assigns job to expected domain.actor queue & active queue
@@ -85,11 +90,8 @@ fn test_assign_job() {
 
 // tests if the processor places jobs in correct jobs.return queue
 fn test_return_job() {
-	logger := log.Log{
-		level: .debug
-	}
 	mut redis := redisclient.core_get()
-	mut p := new(&logger)
+	mut p := new("localhost:6379", get_logger("test_return_job"))!
 	test_cases := generate_test_cases()!
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
 	mut guids := []string{}
@@ -103,12 +105,8 @@ fn test_return_job() {
 }
 
 fn test_reset() ! {
-	logger := log.Log{
-		level: .debug
-	}
-
 	// assert val exists before reset
-	mut p := new(&logger)
+	mut p := new("localhost:6379", get_logger("test_reset"))!
 	p.client.redis.hset('reset_test', 'key', 'data')!
 	assert p.client.redis.hexists('reset_test', 'key')!
 
@@ -119,12 +117,8 @@ fn test_reset() ! {
 
 // tests if processor assigns jobs to actors and returns results/errors
 fn test_run() {
-	logger := log.Log{
-		level: .debug
-	}
-
 	mut redis := redisclient.core_get()
-	mut p := new(&logger)
+	mut p := new("localhost:6379", get_logger("test_run"))!
 	test_cases := generate_test_cases()!
 	spawn (&p).run() // run processor concurrently
 

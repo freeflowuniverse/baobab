@@ -1,7 +1,6 @@
 module actions
 
 import os
-import freeflowuniverse.crystallib.texttools
 
 const testpath = os.dir(@FILE) + '/testdata'
 
