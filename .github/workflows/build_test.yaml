@@ -27,7 +27,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          v install --git  https://github.com/freeflowuniverse/crystallib.git
+          cd ../ && git clone -b development https://github.com/freeflowuniverse/crystallib.git
+          cd crystallib && bash install.sh
+          cd ../
 
       - name: Check out repository code
         uses: actions/checkout@v3
