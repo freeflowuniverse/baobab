@@ -25,10 +25,14 @@ jobs:
         with:
           check-latest: true
 
+      - name: Install dependencies
+        run: |
+          v install --git  https://github.com/freeflowuniverse/crystallib.git
+
       - name: Check out repository code
         uses: actions/checkout@v3
 
-      - name: Install crystallib
+      - name: Install baobab
         run: |
           bash install.sh
 
