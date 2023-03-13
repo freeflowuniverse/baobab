@@ -1,0 +1,49 @@
+name: build_test
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    steps:
+      - name: Install dependencies
+        run: sudo apt install -y libgc-dev tmux mc git rsync curl
+
+      - name: Setup Vlang
+        uses: vlang/setup-v@v1.3
+        with:
+          check-latest: true
+
+      - name: Install dependencies
+        run: |
+          cd ../ && git clone -b development https://github.com/freeflowuniverse/crystallib.git
+          cd crystallib && bash install.sh
+          cd ../
+
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Install baobab
+        run: |
+          bash install.sh
+
+      - name: Check formatting and generate docs
+        run: |
+          bash doc.sh
+      
+      - name: Run tests
+        env:
+          VJOBS: 1
+        run: |
+          v -stats test .
