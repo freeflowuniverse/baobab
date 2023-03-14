@@ -49,7 +49,7 @@ fn run_external_client() ! {
 	mut actionsmgr := actions.dir_parse(actions_path) or { panic(err) }
 
 	// call schedule actions to feed actions to processor
-	actionjobs := client_.schedule_actions(actions: actionsmgr.actions)
+	actionjobs := client_.schedule_actions(actions: actionsmgr.actions)!
 
 	for job in actionjobs.jobs {
 		job_complete := client_.job_wait(job.guid, 60) or { panic(err) }
