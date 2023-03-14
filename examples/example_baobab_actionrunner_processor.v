@@ -13,10 +13,12 @@ import os
 
 // Should implement IActor 
 pub struct MyActor {
-	name string = "mydomain.myactor"
+	name string = "threefold.books"
 }
 fn (mut ma MyActor) execute(mut job jobs.ActionJob)! {
+	// Check if the job is meant for us and parse arguments
 	// Do some work based on the job
+	println("Executing job ${job.action} with params ${job.args}")
 }
 
 

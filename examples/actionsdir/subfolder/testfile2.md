@@ -1,5 +1,5 @@
 ## another one
 
-!!books.add name:absolute
+!!threefold.books.add name:absolute
 
 
