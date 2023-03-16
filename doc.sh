@@ -6,4 +6,4 @@ v doc -m -f html . -readme -comments -no-timestamp
 popd
 mkdir docs
 mv baobab/_docs/* docs/
-open docs/index.html
+#open docs/index.html
