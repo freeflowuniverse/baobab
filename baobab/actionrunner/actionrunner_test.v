@@ -6,18 +6,24 @@ import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
 import freeflowuniverse.crystallib.redisclient
 
+fn testsuite_begin() {
+	mut redis := redisclient.core_get()
+	redis.flushall()!
+	redis.disconnect()
+}
+
 struct TestActor {
 	name string = 'test.actor'
 }
 
-fn (actor TestActor) execute(mut job jobs.ActionJob) ! {
+fn (a TestActor) execute(mut job jobs.ActionJob) ! {
 	return
 }
 
 fn test_run() {
-	client := client.new() or { panic(err) }
+	client_ := client.new("localhost:6379") or { panic(err) }
 	test_actor := TestActor{}
-	mut ar := new(client, [&actor.IActor(test_actor)])
+	mut ar := new(client_, [&actor.IActor(test_actor)])
 	spawn (&ar).run()
 	mock_processor('test.actor.action', true)!
 }
@@ -44,5 +50,6 @@ fn mock_processor(action string, add_to_db bool) ! {
 	guid_error := q_error.pop() or { '' }
 	guid_result := q_result.pop() or { '' }
 
-	assert guid_error == job.guid || guid_result == job.guid
+	assert guid_error == ""
+	assert guid_result == job.guid
 }
