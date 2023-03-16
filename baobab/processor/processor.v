@@ -1,10 +1,9 @@
 module processor
 
-import log
 import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
-// import os
-// import time
+
+import log
 
 [noinit]
 pub struct Processor {
@@ -17,7 +16,7 @@ pub mut:
 }
 
 pub fn new(redis_address string, logger &log.Logger) !Processor {
-	return Processor{
+	return Processor {
 		client: client.new(redis_address)!
 		logger: unsafe { logger }
 	}
@@ -65,7 +64,7 @@ fn (mut p Processor) assign_job(guid string) ! {
 	mut job := p.client.job_get(guid)!
 
 	if !job.check_timeout_ok() {
-		return jobs.JobError{
+		return jobs.JobError {
 			msg: 'Job timeout reached'
 			job_guid: guid
 		}

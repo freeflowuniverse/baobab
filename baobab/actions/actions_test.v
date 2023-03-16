@@ -9,7 +9,7 @@ fn test_parse_into_blocks() {
 source:'https://github.com/ourworld-tsc/ourworld_books/tree/development/content/feasibility_study/Capabilities'
 dest:'https://github.com/threefoldfoundation/books/tree/main/books/feasibility_study_internet/src/capabilities'"
 
-	mut blocks := parse_into_blocks(text) or { panic('cant parse') }
+	mut blocks := parse_into_blocks(text)!
 	assert blocks.blocks.len == 1
 	assert blocks.blocks[0].name == 'git.link'
 	mut content_lines := blocks.blocks[0].content.split('\n')
@@ -21,7 +21,7 @@ dest:'https://github.com/threefoldfoundation/books/tree/main/books/feasibility_s
 	url:'https://github.com/threefoldfoundation/books'
 	message:'link'"
 
-	blocks = parse_into_blocks(text1) or { panic('cant parse') }
+	blocks = parse_into_blocks(text1)!
 	assert blocks.blocks.len == 1
 	assert blocks.blocks[0].name == 'git.commit'
 	content_lines = blocks.blocks[0].content.split('\n')
@@ -31,7 +31,7 @@ dest:'https://github.com/threefoldfoundation/books/tree/main/books/feasibility_s
 
 fn test_file_parse() {
 	mut actionsmgr := get()
-	actionsmgr.file_parse('${actions.testpath}/testfile.md') or { panic(err) }
+	actionsmgr.file_parse('${actions.testpath}/testfile.md')!
 	assert actionsmgr.actions.len == 10
 }
 
@@ -41,6 +41,6 @@ fn test_dir_load() {
 
 	mut a := actionsmgr.actions.last()
 	assert a.name == 'books.mdbook_develop'
-	mut b := a.params.get('name') or { panic(err) }
+	mut b := a.params.get('name')!
 	assert b == 'feasibility_study_internet'
 }

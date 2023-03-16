@@ -104,7 +104,7 @@ fn (mut p Processor) get_rmb_job() ?string {
 
 fn (mut p Processor) send_rmb_error_message(code RMBErrorCode, msg &RMBMessage) {
 	mut q_return := p.client.redis.queue_get(msg.ret)
-	response := RMBError{
+	response := RMBError {
 		dst: msg.src
 		ref: msg.ref
 		now: u64(time.now().unix_time())
@@ -127,7 +127,7 @@ fn (mut p Processor) return_job_rmb(guid string) ! {
 	mut encoded_msg := p.client.redis.hget('rmb.db', guid)!
 	mut msg := json.decode(RMBMessage, encoded_msg)!
 	mut q_return := p.client.redis.queue_get(msg.ret)
-	response := RMBResponse{
+	response := RMBResponse {
 		dst: msg.src
 		dat: base64.encode_str(job.json_dump())
 		ref: msg.ref

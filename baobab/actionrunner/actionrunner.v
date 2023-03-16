@@ -17,7 +17,7 @@ pub mut:
 
 // factory function for actionrunner
 pub fn new(client_ Client, actors []&actor.IActor) ActionRunner {
-	mut ar := ActionRunner{
+	mut ar := ActionRunner {
 		actors: actors
 		client: &client_
 	}

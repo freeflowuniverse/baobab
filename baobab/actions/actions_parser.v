@@ -89,7 +89,6 @@ fn parse_into_blocks(text string) !Blocks {
 		if line2.contains('#') {
 			line2 = line2.all_before('#')
 		}
-		// println("line: '$line2'")
 		if state == ParseBlockStatus.action {
 			if (line2.starts_with(' ') || line2 == '' || contains_params(line2))
 				&& !line2.contains('!!') {
@@ -125,7 +124,6 @@ fn parse_into_blocks(text string) !Blocks {
 		block.clean()
 		blocks.blocks << block
 	}
-	// println(blocks.blocks[13].content)
 	return blocks
 }
 
@@ -136,8 +134,7 @@ fn (mut block Block) clean() {
 
 fn (mut actions ActionsManager) parse_block(block Block) ! {
 	params_ := params.parse(block.content) or { return error('Failed to parse block: ${err}') }
-
-	mut action := Action{
+	mut action := Action {
 		name: block.name
 		params: params_
 	}

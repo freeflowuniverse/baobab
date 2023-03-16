@@ -27,8 +27,6 @@ pub fn (mut client Client) job_schedule(mut job ActionJob) ! {
 	job.state = .tostart
 	client.job_set(job)!
 	client.redis.lpush('jobs.processor.in', '${job.guid}')!
-	// now := time.now().unix_time()
-	// client.redis.hset('jobs.processor.out', '${job.guid}', '${now}')!
 }
 
 // get the job back from redis
@@ -96,16 +94,8 @@ pub fn (mut client Client) job_schedule_wait(mut job ActionJob, timeout int) !Ac
 
 pub fn (mut client Client) reset() ! {
 	client.redis.del('jobs.db')!
-	// client.redis.del('jobs.out')!
-	// client.redis.del('jobs.in')!
 	client.redis.del('client.iam')!
-	// client.redis.del('client.twins.max_twin_id')!
-	// client.redis.del('jobs.queue.out')!
-	// client.redis.del('jobs.queue.in')!
 
 	// need to save the info we still have in mem to redis
 	client.redis.set('client.mytwin.id', client.twinid.str())!
-	// for k, v in client.actor_coordinates {
-	// 	client.redis.hset('client.actorcoordinates', k, v)!
-	// }
 }
