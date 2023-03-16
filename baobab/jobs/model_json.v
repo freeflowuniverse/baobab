@@ -34,7 +34,7 @@ pub fn (job ActionJob) pub_get() ActionJobPublic {
 		.done { statestr = 'done' }
 		.error { statestr = 'error' }
 	}
-	mut job2 := ActionJobPublic{
+	mut job2 := ActionJobPublic {
 		twinid: job.twinid
 		action: job.action
 		args: job.args
@@ -64,7 +64,6 @@ pub fn json_load(data string) !ActionJob {
 	job := json.decode(ActionJobPublic, data) or {
 		return error('Could not json decode: ${data} .\nError:${err}')
 	}
-	// params:=json.decode(Params,job.params) or {return error("Could not json decode for params: $job.params \nError:$err")}
 	mut statecat := ActionJobState.init
 	match job.state {
 		'init' { statecat = .init }
@@ -76,7 +75,7 @@ pub fn json_load(data string) !ActionJob {
 		'error' { statecat = .error }
 		else { return error('Could not find job state, needs to be init, tostart, recurring, scheduled, active, done, error') }
 	}
-	mut jobout := ActionJob{
+	mut jobout := ActionJob {
 		twinid: job.twinid
 		action: job.action
 		args: job.args

@@ -37,7 +37,7 @@ fn generate_test_cases() ![]TestCase {
 	// job for git actor in crystallib
 	mut job := jobs.new(action: 'crystallib.git.init')!
 	redis.hset('jobs.db', job.guid, job.json_dump())!
-	test_cases << TestCase{
+	test_cases << TestCase {
 		job: job
 		actor_queue: 'jobs.actors.crystallib.git'
 		return_queue: 'jobs.return.${job.guid}'
@@ -46,7 +46,7 @@ fn generate_test_cases() ![]TestCase {
 	// job for another function in git actor in crystallib
 	job = jobs.new(action: 'crystallib.git.get')!
 	redis.hset('jobs.db', job.guid, job.json_dump())!
-	test_cases << TestCase{
+	test_cases << TestCase {
 		job: job
 		actor_queue: 'jobs.actors.crystallib.git'
 		return_queue: 'jobs.return.${job.guid}'
@@ -55,7 +55,7 @@ fn generate_test_cases() ![]TestCase {
 	// job for books actor in crystallib
 	job = jobs.new(action: 'crystallib.books.init')!
 	redis.hset('jobs.db', job.guid, job.json_dump())!
-	test_cases << TestCase{
+	test_cases << TestCase {
 		job: job
 		actor_queue: 'jobs.actors.crystallib.books'
 		return_queue: 'jobs.return.${job.guid}'
@@ -65,7 +65,7 @@ fn generate_test_cases() ![]TestCase {
 	// job for unexisting domain
 	job = jobs.new(action: 'somedomain.actor.action')!
 	redis.hset('jobs.db', job.guid, job.json_dump())!
-	test_cases << TestCase{
+	test_cases << TestCase {
 		job: job
 		actor_queue: 'jobs.actors.somedomain.actor'
 		return_queue: 'jobs.return.${job.guid}'
@@ -78,7 +78,7 @@ fn generate_test_cases() ![]TestCase {
 fn test_assign_job() {
 	mut redis := redisclient.core_get()
 	mut p := new("localhost:6379", get_logger("test_assign_job"))!
-	test_cases := generate_test_cases() or { panic('Failed to generate test cases: ${err}') }
+	test_cases := generate_test_cases()!
 
 	// test assigns job to expected domain.actor queue & active queue
 	for case in test_cases {

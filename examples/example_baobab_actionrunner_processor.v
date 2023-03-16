@@ -23,7 +23,10 @@ fn (mut ma MyActor) execute(mut job jobs.ActionJob)! {
 
 
 fn main() {
-	do() or { panic(err) }
+	do() or { 
+		eprintln(err)
+		exit(1)
+	}
 }
 
 fn do() ! {
@@ -31,7 +34,7 @@ fn do() ! {
 	mut client_ := client.new(redis_address)!
 	mut myactor := MyActor {}
 	mut ar := actionrunner.new(client_, [&myactor])
-	logger := log.Log{
+	logger := log.Log {
 		level: .debug
 	}
 	mut processor_ := processor.new(redis_address, &logger)!
@@ -48,13 +51,13 @@ fn run_external_client() ! {
 	mut client_ := client.new("localhost:6379")!
 	// get actions manager from dir with action files
 	actions_path := os.dir(@FILE) + '/actionsdir'
-	mut actionsmgr := actions.dir_parse(actions_path) or { panic(err) }
+	mut actionsmgr := actions.dir_parse(actions_path)!
 
 	// call schedule actions to feed actions to processor
 	actionjobs := client_.schedule_actions(actions: actionsmgr.actions)!
 
 	for job in actionjobs.jobs {
-		job_complete := client_.job_wait(job.guid, 60) or { panic(err) }
+		job_complete := client_.job_wait(job.guid, 60)!
 		println('Retrieved job: ${job_complete}')
 	}
 }
