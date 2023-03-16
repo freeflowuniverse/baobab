@@ -28,5 +28,5 @@ fn test_get_jobs() {
 	assert actionsmgr.actions.len == 11
 
 	mut j := cl.schedule_actions(actions: actionsmgr.actions)!
-	assert j.jobs.last().action == 'books.mdbook_develop'
+	assert j.jobs.last().action == 'threefold.books.mdbook_develop'
 }
