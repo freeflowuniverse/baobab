@@ -28,6 +28,7 @@ pub fn new(redis_address string, logger &log.Logger) !Processor {
 pub fn (mut p Processor) run() {
 	p.logger.info('Processor is running')
 
+	mut q_rmb := p.client.redis.queue_get('msgbus.execute_job')
 	mut q_in := p.client.redis.queue_get('jobs.processor.in')
 	mut q_error := p.client.redis.queue_get('jobs.processor.error')
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
@@ -41,7 +42,7 @@ pub fn (mut p Processor) run() {
 		}
 
 		// get msg from rmb queue, parse job, assign to actor
-		if guid_rmb := p.get_rmb_job() {
+		if guid_rmb := p.get_rmb_job(mut q_rmb) {
 			p.logger.debug('Received job ${guid_rmb} from RMB')
 			p.assign_job(guid_rmb) or { p.handle_error(err) }
 		}
@@ -57,7 +58,7 @@ pub fn (mut p Processor) run() {
 			p.logger.debug('Received result for job: ${guid_result}')
 			p.return_job(guid_result) or { p.handle_error(err) }
 		}
-		time.sleep(time.second)
+		//time.sleep(time.second)
 	}
 }
 

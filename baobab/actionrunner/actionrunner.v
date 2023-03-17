@@ -48,7 +48,7 @@ pub fn (mut ar ActionRunner) run() {
 			}
 			ar.execute(mut job) or { eprintln('Failed to execute the job: ${err}') }
 		}
-		time.sleep(time.second)
+		//time.sleep(time.second)
 	}
 }
 
