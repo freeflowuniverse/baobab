@@ -4,6 +4,8 @@ import freeflowuniverse.baobab.actor
 import freeflowuniverse.baobab.client { Client }
 import freeflowuniverse.baobab.jobs { ActionJob }
 
+import time
+
 // Actionrunner listens to jobs in an actors queue
 // executes the jobs internally
 // sets the status of the job in jobs.db in the process
@@ -46,6 +48,7 @@ pub fn (mut ar ActionRunner) run() {
 			}
 			ar.execute(mut job) or { eprintln('Failed to execute the job: ${err}') }
 		}
+		time.sleep(time.second)
 	}
 }
 

@@ -4,6 +4,7 @@ import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
 
 import log
+import time
 
 [noinit]
 pub struct Processor {
@@ -56,6 +57,7 @@ pub fn (mut p Processor) run() {
 			p.logger.debug('Received result for job: ${guid_result}')
 			p.return_job(guid_result) or { p.handle_error(err) }
 		}
+		time.sleep(time.second)
 	}
 }
 
