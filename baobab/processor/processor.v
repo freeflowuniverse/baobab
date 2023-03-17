@@ -36,7 +36,8 @@ pub fn (mut p Processor) run() {
 	p.running = true
 	for p.running {
 		// get guid from processor.in queue and assign job to actor
-		if guid_in := q_in.pop() {
+		guid_in := q_in.pop() or { '' }
+		if guid_in != '' {
 			p.logger.debug('Received job ${guid_in}')
 			p.assign_job(guid_in) or { p.handle_error(err) }
 		}
@@ -48,13 +49,15 @@ pub fn (mut p Processor) run() {
 		}
 
 		// get guid from processor.error queue and move to return queue
-		if guid_error := q_error.pop() {
+		guid_error := q_error.pop() or { '' }
+		if guid_error != '' {
 			p.logger.debug('Received error response for job: ${guid_error} ')
 			p.return_job(guid_error) or { p.handle_error(err) }
 		}
 
 		// get guid from processor.result queue and move to return queue
-		if guid_result := q_result.pop() {
+		guid_result := q_result.pop() or { '' }
+		if guid_result != '' {
 			p.logger.debug('Received result for job: ${guid_result}')
 			p.return_job(guid_result) or { p.handle_error(err) }
 		}
