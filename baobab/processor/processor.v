@@ -61,7 +61,7 @@ pub fn (mut p Processor) run() {
 			p.logger.debug('Received result for job: ${guid_result}')
 			p.return_job(guid_result) or { p.handle_error(err) }
 		}
-		//time.sleep(time.second)
+		time.sleep(100 * time.millisecond)
 	}
 }
 
