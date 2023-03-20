@@ -1,5 +1,6 @@
 module processor
 
+import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
 import freeflowuniverse.crystallib.redisclient
 import encoding.base64
@@ -65,9 +66,9 @@ pub mut:
 
 // listens to rmb queue for incoming execute job messages
 // parses message into job saves job and message, returns optional guid
-fn (mut p Processor) get_rmb_job(mut q_rmb redisclient.RedisQueue) ?string {
+fn (mut p Processor) get_rmb_job(mut client_ client.Client) ?string {
 	// incoming jobs from rmb peer
-	encoded_msg := q_rmb.pop() or { '' }
+	encoded_msg := client_.redis.brpop('msgbus.execute_job', 1) or { '' }
 
 	if encoded_msg != '' {
 		msg := json.decode(RMBMessage, encoded_msg) or {
@@ -77,24 +78,24 @@ fn (mut p Processor) get_rmb_job(mut q_rmb redisclient.RedisQueue) ?string {
 		decoded_job := base64.decode_str(msg.dat)
 		job := jobs.json_load(decoded_job) or {
 			p.logger.error('Failed decoding ${decoded_job} to Job: ${err}')
-			p.send_rmb_error_message(.failed_decoding_payload_to_job, msg)
+			p.send_rmb_error_message(mut client_, .failed_decoding_payload_to_job, msg)
 			return none
 		}
 		if job.src_twinid != msg.src.u32() {
 			p.logger.error('Job is either not meant for us or the sender is not who they claim to be: ${encoded_msg}')
-			p.send_rmb_error_message(.unauthorized, msg)
+			p.send_rmb_error_message(mut client_, .unauthorized, msg)
 			return none
 		}
 		// save job
-		p.client.job_set(job) or {
+		client_.job_set(job) or {
 			p.logger.error('Failed setting ${job}: ${err}')
-			p.send_rmb_error_message(.internal_error, msg)
+			p.send_rmb_error_message(mut client_, .internal_error, msg)
 			return none
 		}
 		// save message
-		p.client.redis.hset('rmb.db', '${job.guid}', encoded_msg) or {
+		client_.redis.hset('rmb.db', '${job.guid}', encoded_msg) or {
 			p.logger.error('Failed setting ${job.guid} in hset rmb.db: ${err}')
-			p.send_rmb_error_message(.internal_error, msg)
+			p.send_rmb_error_message(mut client_, .internal_error, msg)
 			return none
 		}
 		return job.guid
@@ -102,8 +103,8 @@ fn (mut p Processor) get_rmb_job(mut q_rmb redisclient.RedisQueue) ?string {
 	return none
 }
 
-fn (mut p Processor) send_rmb_error_message(code RMBErrorCode, msg &RMBMessage) {
-	mut q_return := p.client.redis.queue_get(msg.ret)
+fn (mut p Processor) send_rmb_error_message(mut client_ client.Client, code RMBErrorCode, msg &RMBMessage) {
+	mut q_return := client_.redis.queue_get(msg.ret)
 	response := RMBError{
 		dst: msg.src
 		ref: msg.ref
@@ -120,13 +121,13 @@ fn (mut p Processor) send_rmb_error_message(code RMBErrorCode, msg &RMBMessage) 
 }
 
 // return_job returns a job by placing it to the correct redis return queue
-fn (mut p Processor) return_job_rmb(guid string) ! {
-	job := p.client.job_get(guid)!
+fn (mut p Processor) return_job_rmb(mut client_ client.Client, guid string) ! {
+	job := client_.job_get(guid)!
 
 	// get message from rmb.db, set data to returned job
-	mut encoded_msg := p.client.redis.hget('rmb.db', guid)!
+	mut encoded_msg := client_.redis.hget('rmb.db', guid)!
 	mut msg := json.decode(RMBMessage, encoded_msg)!
-	mut q_return := p.client.redis.queue_get(msg.ret)
+	mut q_return := client_.redis.queue_get(msg.ret)
 	response := RMBResponse{
 		dst: msg.src
 		dat: base64.encode_str(job.json_dump())
