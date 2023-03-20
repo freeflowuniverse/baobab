@@ -38,12 +38,12 @@ pub fn (job ActionJob) export() !string {
 		out << 'src_action:${deps2}'
 	}
 	if !j2.args.empty() {
-		mut a1 := j2.args.export()!
+		mut a1 := j2.args.export()
 		a1 = texttools.indent(a1, '    ')
 		out << 'args:\n${a1}\n'
 	}
 	if !j2.result.empty() {
-		mut a2 := j2.result.export()!
+		mut a2 := j2.result.export()
 		a2 = texttools.indent(a2, '    ')
 		out << 'result:\n${a2}\n'
 	}
