@@ -13,22 +13,24 @@ this is what needs to be re-developed for other languages, we kept it as easy as
 
 ```json
 ActionJobPublic {
-	guid         string 	//unique jobid (unique per actor which is unique per twin)
-	twinid		 u32        //which twin needs to execute the action
-	action   	 string 	//actionname in long form includes domain & actor
-	args       	 Params     //see params below
-	result       Params
-	state        string     //see state below
-	start        i64		//epoch
-	end          i64		//epoch
-	grace_period u32 		//wait till next run, in seconds
-	error        string		//string description of what went wrong
-	timeout      u32 		//time in seconds, 2h is maximum
-	src_twinid	 u32    	//which twin was sending the job
-	src_action   string		//unique actor id, runs on top of twin
-	dependencies []string	//list of guids we need to wait on
+	guid         string // unique jobid (unique per actor which is unique per twin)
+	twinid       u32    // which twin needs to execute the action
+	action       string // actionname in long form includes domain & actor
+	args         params.Params
+	result       params.Params
+	state        string
+	start        i64      // epoch
+	end          i64      // epoch
+	grace_period u32      // wait till next run, in seconds
+	error        string   // string description of what went wrong
+	timeout      u32      // time in seconds, 2h is maximum
+	src_twinid   u32      // which twin was sending the job, 0 if local
+	src_action   string   // unique actor path, runs on top of twin
+	dependencies []string // list of guids we need to wait on
 }
 ```
+
+> for params see github/freeflowuniverse/crystallib/params/readme.md
 
 the state:
 
@@ -51,16 +53,16 @@ the following format can have spaces, be indented, the order is not important ei
 see crystallib.params for more information
 
 ```
-description:something\\nyes
-id:a1
-name:\'need to do something 1\'
-name10:\'this is with space\'
-name11:aaa11
-name2:test
-name3:hi
-name4:aaa
-name5:aab
-name6:aaaaa
+    description:something
+    id:a1
+    name:'need to do something 1'
+    name10:'this is with space'
+    name11:aaa11
+    name2:test
+    name3:hi
+    name4:aaa
+    name5:aab
+    name6:aaaaa
 ```
 
 if used inside action then it needs to be indented

@@ -1,7 +1,9 @@
 # baobab
+
 It's always a good practice to make your software do one thing only and do it well. It usually results in less complex code that is easier to maintain. So instead of having one application that is able to do 5 totally different things it is better to develop 5 different applications. If an application needs the help of another it can always ask. This introduction is a basic decription of the [actor model principles](https://www.oreilly.com/library/view/scala-reactive-programming/9781787288645/8253d31d-ed61-46c3-8c69-9d49d8d8ab07.xhtml). The baobab repository was created to facilitate applying the actor model principles to your codebase. 
 
 ## Actor
+
 An actor can be seen as an entity that is able to do some work and that can asynchronously communicate with other actors. It can ask any other actor for some information which it needs to do some other work. This is very much how we work together as human beings. We ask a colleague to do some work that we need in order to do our work. But we don't wait for the result until we actually need it.
 
 The baobab repository contains an interface for an Actor that defines one function: execute. Upon exection this function basically tells the actor to execute a specific job (description of jobs will be given further down the document).
@@ -11,6 +13,7 @@ Baobab also provides you the means to execute jobs from another actor without ha
 If you wish to implement an actor in another language you should recreate the Actor interface and implement the actors and implement the behavior of the ActionRunner also.
 
 ## Jobs
+
 The word job has been mentioned a few times already in this document. One can describe a job as the information needed by an actor to do a specific thing (compute something, produce a specific result on a system, bring an actor in a specific state, etc). In baobab a job contains the attributes:
 - guid: a unique job id
 - twinid: the twinid of the system that contains the actor that can execute this job

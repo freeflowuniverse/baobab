@@ -6,7 +6,7 @@
 
 The processor uses the following queues to allow messaging of ActionJob's between external clients and internal actors.
 
-```
+```golang
 jobs.actors.$domain_name.$actorname //is queue which tells actor there is something for you to do, returns guid
 //processor uses, client polls the return to know RPC is done
 jobs.return.${guid} //a queue per job, to wait for return (if we were asking for an action to be executed)
