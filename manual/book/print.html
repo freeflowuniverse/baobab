@@ -1,0 +1,320 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title></title>
+        <meta name="robots" content="noindex" />
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">protocol.me</a></li><li class="chapter-item expanded "><a href="intro/why.html"><strong aria-hidden="true">1.</strong> Why</a></li><li class="chapter-item expanded "><a href="concepts/concepts.html"><strong aria-hidden="true">2.</strong> Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="concepts/actors.html"><strong aria-hidden="true">2.1.</strong> Actors</a></li><li class="chapter-item expanded "><a href="concepts/id.html"><strong aria-hidden="true">2.2.</strong> Id</a></li><li class="chapter-item expanded "><a href="concepts/book.html"><strong aria-hidden="true">2.3.</strong> Book</a></li></ol></li><li class="chapter-item expanded "><a href="actions/actions.html"><strong aria-hidden="true">3.</strong> Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="actions/action_files.html"><strong aria-hidden="true">3.1.</strong> Action Files</a></li><li class="chapter-item expanded "><a href="actions/format.html"><strong aria-hidden="true">3.2.</strong> Format</a></li><li class="chapter-item expanded "><a href="actions/special_actions.html"><strong aria-hidden="true">3.3.</strong> Special Actions</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="protocolme-manual"><a class="header" href="#protocolme-manual">protocol.me manual</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><h1 id="concepts"><a class="header" href="#concepts">Concepts</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="actors"><a class="header" href="#actors">Actors</a></h1>
+<blockquote>
+<p>TODO</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div><p>each id is a...z0..9, 3 to max 6 digits corresponds to 1.5 billion combinations</p>
+<ul>
+<li>RID = regional internet id </li>
+<li>BID = book id, part of regional internet (points to book)</li>
+<li>PID = phoenix id, id of our digital representation working on our behalf</li>
+<li>CID = content id, each element inside a book</li>
+</ul>
+<p>global format is</p>
+<ul>
+<li>$RID.$BID.$CID </li>
+<li>$BID.$CID </li>
+<li>$CID </li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="book"><a class="header" href="#book">Book</a></h1>
+<p>A book is the collection of </p>
+<ul>
+<li>wiki</li>
+<li>database records</li>
+<li>images</li>
+<li>files</li>
+</ul>
+<p>A book can be owned by one person or more than 1 person.</p>
+<p>A circle is part of a book.</p>
+<p>The id's as used in a book are the cid's</p>
+<h2 id="the-personal-book"><a class="header" href="#the-personal-book">The personal book</a></h2>
+<p>Is my book with my information, my circles, ... linked around me as a person.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="actions"><a class="header" href="#actions">Actions</a></h1>
+<blockquote>
+<p>TODO: explain why we use this and where</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="action_files"><a class="header" href="#action_files">action_files</a></h1>
+<p>is a file which has actions defined example</p>
+<pre><code class="language-js">//select the book, can come from context as has been set before
+//now every person added will be added in this book
+!!book.select name:e6
+
+//delete everything as found in current book
+!!people.person_delete cid:1g
+
+!!people.person_define
+  //is optional will be filled in automatically, but maybe we want to update
+  cid: '1g' 
+  //name as selected in this group, can be used to find someone back
+  name: fatayera 
+	firstname: 'Adnan'
+	lastname: 'Fatayerji'
+	description: 'Head of Business Development'
+  email: 'adnan@threefold.io,fatayera@threefold.io'
+
+!!people.circle_link
+  //can define as cid or as name
+  circle:tftech         
+  role:'stakeholder'
+	description:''
+    //is the name as given to the link
+	name:'vpsales'        
+
+!!people.circle_comment cid:'1g' 
+    comment:
+      this is a comment
+      can be multiline 
+
+!!people.digital_payment_add
+    person:fatayera
+	name: 'TF Wallet'
+	blockchain: 'stellar'
+	account: ''
+	description: 'TF Wallet for TFT' 
+	preferred: false
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="format"><a class="header" href="#format">format</a></h2>
+<h3 id="action-name-format-after-"><a class="header" href="#action-name-format-after-">action name format (after !!)</a></h3>
+<ul>
+<li><code>$domain.$actorname.$methodname ...</code></li>
+<li>if $domain is not specified then is protocolme which is the default</li>
+<li>if $actorname is e.g. person it actually means personmanager, so we can just define the subject</li>
+<li>method is subject_action form</li>
+</ul>
+<h3 id="parameters-in-actions"><a class="header" href="#parameters-in-actions">parameters in actions</a></h3>
+<blockquote>
+<p>TODO: explain how easy it is, role of '', multiline possible, ... </p>
+</blockquote>
+<h3 id="comments"><a class="header" href="#comments">comments</a></h3>
+<p>comments can be used but not at end of line, at start of line starting with # or //</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="special-actions"><a class="header" href="#special-actions">special actions</a></h2>
+<h3 id="book-select"><a class="header" href="#book-select">book select</a></h3>
+<p>select the book to operate in, is not always needed, can be that a textfile has been given already for a specific book</p>
+<pre><code class="language-js">
+!!book.select aaa
+//also ok
+!!book.select name:aaa
+//also ok
+!!book.select name:'aaa'
+</code></pre>
+<p>is all the same, this will force all actions coming after this one to be applied for that specific book.</p>
+<h3 id="actor-select"><a class="header" href="#actor-select">actor select</a></h3>
+<p>to make a shortcut to select a specific actor</p>
+<pre><code class="language-js">
+!!actor.select people
+
+//or with book
+!!actor.select aaa.people
+
+//also ok
+!!actor.select name:aaa.people
+
+</code></pre>
+<ul>
+<li>the aaa is the id of the book and is pre-pended to argument</li>
+<li>note we use argument here not a named value</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://0.0.0.0:8881/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </body>
+</html>
