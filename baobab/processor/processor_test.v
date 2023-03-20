@@ -130,7 +130,7 @@ fn test_run() {
 		q_in.add(case.job.guid)!
 	}
 
-	time.sleep(50000000) // wait processor work
+	time.sleep(500000000) // wait processor work
 
 	// feed processor.error/result queue with test jobs, mocking actor
 	mut q_error := redis.queue_get('jobs.processor.error')
@@ -140,7 +140,7 @@ fn test_run() {
 		q_result.add(guid)!
 	}
 
-	time.sleep(50000000) // wait processor work
+	time.sleep(500000000) // wait processor work
 
 	// assert all jobs.processor queues are empty
 	assert redis.llen('jobs.processor.in')! == 0
