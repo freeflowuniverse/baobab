@@ -42,7 +42,7 @@ fn mock_processor(action string, add_to_db bool) ! {
 	mut q_actor := redis.queue_get(q_key)
 	q_actor.add(job.guid)!
 
-	time.sleep(5000000)
+	time.sleep(500000000)
 
 	// check error and result queues to see if any guids were returned
 	mut q_error := redis.queue_get('jobs.processor.error')
