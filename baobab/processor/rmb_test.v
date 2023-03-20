@@ -24,6 +24,17 @@ fn testsuite_begin() {
 	redis.disconnect()
 }
 
+fn get_logger(output_file string) &log.Log {
+	os.mkdir_all('/tmp/baobab', os.MkdirParams{}) or {
+		eprintln('Failed to create dir /tmp/baobab')
+	}
+	mut l := &log.Log{
+		level: log.Level.debug
+	}
+	l.set_full_logpath('/tmp/baobab/${output_file}.log')
+	return l
+}
+
 // creates mock test rmb messages with hardcoded expected outcomes
 fn generate_test_cases() ![]RMBTestCase {
 	mut test_cases := []RMBTestCase{}
@@ -45,43 +56,31 @@ fn generate_test_cases() ![]RMBTestCase {
 }
 
 fn test_get_rmb_job() ! {
-	logger := log.Log{
-		level: .debug
-	}
-	mut p := new('localhost:6379', &logger)!
-	cases := generate_test_cases() or { panic('Failed to generate test cases: ${err}') }
+	mut p := new('localhost:6379', get_logger('test_get_rmb_job'))!
+	cases := generate_test_cases()!
 	mut q_rmb := p.client.redis.queue_get('msgbus.execute_job')
 	for case in cases {
 		encoded := json.encode(case.rmb_msg)
-		q_rmb.add(encoded) or { panic('Failed to add: ${err}') }
+		q_rmb.add(encoded)!
 		job_guid := p.get_rmb_job() or { '' }
 		assert job_guid == case.job.guid
-		assert p.client.redis.hexists('jobs.db', job_guid) or {
-			panic('Failed to run hexists ${err}')
-		}
+		assert p.client.redis.hexists('jobs.db', job_guid)!
 	}
 }
 
 fn test_return_job_rmb() {
-	logger := log.Log{
-		level: .debug
-	}
-	mut p := new('localhost:6379', &logger)!
+	mut p := new('localhost:6379', get_logger('test_return_job_rmb'))!
 	mut redis := redisclient.core_get()
-	test_cases := generate_test_cases() or { panic('Failed to add to queue ${err}') }
+	test_cases := generate_test_cases()!
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
 
 	// assert returns job to expected return queue
 	for case in test_cases {
-		p.client.redis.hset('jobs.db', case.job.guid, case.job.json_dump()) or {
-			panic('Failed to run hset ${err}')
-		}
-		p.client.redis.hset('rmb.db', case.job.guid, json.encode(case.rmb_msg)) or {
-			panic('Failed to run hset ${err}')
-		}
-		q_result.add(case.job.guid) or { panic('Failed to add to queue ${err}') }
-		p.return_job_rmb(case.job.guid) or { panic('Failed to add to queue ${err}') }
-		returned_msg := redis.rpop(case.return_queue) or { panic('Failed to add to queue ${err}') }
+		p.client.redis.hset('jobs.db', case.job.guid, case.job.json_dump())!
+		p.client.redis.hset('rmb.db', case.job.guid, json.encode(case.rmb_msg))!
+		q_result.add(case.job.guid)!
+		p.return_job_rmb(case.job.guid)!
+		returned_msg := redis.rpop(case.return_queue)!
 		rmb_response := json.decode(RMBResponse, returned_msg)!
 		job := json.decode(jobs.ActionJob, base64.decode_str(rmb_response.dat))!
 		assert job.guid == case.job.guid

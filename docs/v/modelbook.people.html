@@ -46,7 +46,7 @@
       <nav class="search hidden"></nav>
       <nav class="content hidden">
         <ul>
-          <li class="open"><div class="menu-row"><a href="./index.html">README</a></div></li><li class="open"><div class="menu-row"><a href="./.html"></a></div></li><li class="open"><div class="menu-row"><a href="./rmbprocessor.html">rmbprocessor</a></div></li><li class="open"><div class="menu-row"><a href="./actionrunner.html">actionrunner</a></div></li><li class="open"><div class="menu-row"><a href="./actor.html">actor</a></div></li><li class="open"><div class="menu-row"><a href="./client.html">client</a></div></li><li class="open"><div class="menu-row"><a href="./gitactor.html">gitactor</a></div></li><li class="open"><div class="menu-row"><a href="./jobs.html">jobs</a></div></li><li class="open"><div class="menu-row"><svg xmlns="http://www.w3.org/2000/svg" class="dropdown-arrow" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg><a href="./modelbook.html">modelbook</a></div><ul><li><a href="./modelbook.budget.html">budget</a></li><li><a href="./modelbook.company.html">company</a></li><li><a href="./modelbook.finance.html">finance</a></li><li class="active"><a href="./modelbook.people.html">people</a></li></ul></li><li class="open"><div class="menu-row"><svg xmlns="http://www.w3.org/2000/svg" class="dropdown-arrow" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg><a href="./modelglobal.html">modelglobal</a></div><ul><li><a href="./modelglobal.country.html">country</a></li></ul></li><li class="open"><div class="menu-row"><a href="./organization.html">organization</a></div></li><li class="open"><div class="menu-row"><svg xmlns="http://www.w3.org/2000/svg" class="dropdown-arrow" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg><a href="./modelglobal.country.html">modelglobal</a></div><ul><li><a href="./modelglobal.country.html">country</a></li></ul></li><li class="open"><div class="menu-row"><a href="./processor.html">processor</a></div></li>
+          <li class="open"><div class="menu-row"><a href="./index.html">README</a></div></li><li class="open"><div class="menu-row"><a href="./.html"></a></div></li><li class="open"><div class="menu-row"><a href="./rmbprocessor.html">rmbprocessor</a></div></li><li class="open"><div class="menu-row"><a href="./actionrunner.html">actionrunner</a></div></li><li class="open"><div class="menu-row"><a href="./actions.html">actions</a></div></li><li class="open"><div class="menu-row"><a href="./actor.html">actor</a></div></li><li class="open"><div class="menu-row"><a href="./client.html">client</a></div></li><li class="open"><div class="menu-row"><a href="./gitactor.html">gitactor</a></div></li><li class="open"><div class="menu-row"><a href="./jobs.html">jobs</a></div></li><li class="open"><div class="menu-row"><svg xmlns="http://www.w3.org/2000/svg" class="dropdown-arrow" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg><a href="./modelbook.html">modelbook</a></div><ul><li><a href="./modelbook.budget.html">budget</a></li><li><a href="./modelbook.company.html">company</a></li><li><a href="./modelbook.finance.html">finance</a></li><li class="active"><a href="./modelbook.people.html">people</a></li></ul></li><li class="open"><div class="menu-row"><svg xmlns="http://www.w3.org/2000/svg" class="dropdown-arrow" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg><a href="./modelglobal.html">modelglobal</a></div><ul><li><a href="./modelglobal.country.html">country</a></li></ul></li><li class="open"><div class="menu-row"><a href="./organization.html">organization</a></div></li><li class="open"><div class="menu-row"><svg xmlns="http://www.w3.org/2000/svg" class="dropdown-arrow" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg><a href="./modelglobal.country.html">modelglobal</a></div><ul><li><a href="./modelglobal.country.html">country</a></li></ul></li><li class="open"><div class="menu-row"><a href="./processor.html">processor</a></div></li>
         </ul>
       </nav>
     </header>
@@ -113,11 +113,6 @@
 
 
 </section>
-						<section id="person_new" class="doc-node">
-							<div class="title"><h2>fn person_new <a href="#person_new">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token function">person_new</span><span class="token punctuation">(</span><span class="token keyword">mut</span> db DB<span class="token punctuation">,</span> text <span class="token builtin">string</span><span class="token punctuation">)</span></code></pre>
-
-
-</section>
 						<section id="db" class="doc-node">
 							<div class="title"><h2>fn db <a href="#db">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token function">db</span><span class="token punctuation">(</span>bid <span class="token builtin">string</span><span class="token punctuation">)</span> DB</code></pre>
 <p>creates a new book data structure</p>
@@ -149,6 +144,23 @@
 	follower
 	viewer
 <span class="token punctuation">}</span></code></pre>
+
+
+</section>
+						<section id="DB" class="doc-node">
+							<div class="title"><h2>struct DB <a href="#DB">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">DB</span> <span class="token punctuation">{</span>
+<span class="token keyword">pub</span><span class="token punctuation">:</span>
+	bid <span class="token builtin">string</span> <span class="token comment">// id of the book</span>
+<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
+	people  <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>people<span class="token punctuation">.</span>Person
+	contact <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>people<span class="token punctuation">.</span>Contact
+	circles <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>people<span class="token punctuation">.</span>Circle
+<span class="token punctuation">}</span></code></pre>
+<p>Data Struct, DB in memory, over time will be cut in pieces and prob moved to more actor paradigm but ok for now</p>
+
+</section>
+						<section id="DB.process" class="doc-node">
+							<div class="title"><h2>fn (DB) process <a href="#DB.process">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token keyword">mut</span> db DB<span class="token punctuation">)</span> <span class="token function">process</span><span class="token punctuation">(</span>text <span class="token builtin">string</span><span class="token punctuation">)</span></code></pre>
 
 
 </section>
@@ -267,18 +279,6 @@
 
 
 </section>
-						<section id="DB" class="doc-node">
-							<div class="title"><h2>struct DB <a href="#DB">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">DB</span> <span class="token punctuation">{</span>
-<span class="token keyword">pub</span><span class="token punctuation">:</span>
-	bid <span class="token builtin">string</span> <span class="token comment">// id of the book</span>
-<span class="token keyword">pub</span> <span class="token keyword">mut</span><span class="token punctuation">:</span>
-	people  <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>people<span class="token punctuation">.</span>Person
-	contact <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>people<span class="token punctuation">.</span>Contact
-	circles <span class="token builtin">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">&</span>people<span class="token punctuation">.</span>Circle
-<span class="token punctuation">}</span></code></pre>
-<p>Data Struct, DB in memory, over time will be cut in pieces and prob moved to more actor paradigm but ok for now</p>
-
-</section>
 
           <div class="footer">
             Powered by vdoc.
@@ -286,9 +286,6 @@
         </div>
         <div class="doc-toc"><ul><li class="open"><a href="#readme_modelbook.people">README</a></li>
 <li class="open"><a href="#person_delete">fn person_delete</a>        <ul>
-</ul>
-</li>
-<li class="open"><a href="#person_new">fn person_new</a>        <ul>
 </ul>
 </li>
 <li class="open"><a href="#db">fn db</a>        <ul>
@@ -301,6 +298,10 @@
 </ul>
 </li>
 <li class="open"><a href="#Role">enum Role</a>        <ul>
+</ul>
+</li>
+<li class="open"><a href="#DB">struct DB</a>        <ul>
+<li><a href="#DB.process">fn process</a></li>
 </ul>
 </li>
 <li class="open"><a href="#Email">struct Email</a>        <ul>
@@ -328,9 +329,6 @@
 </ul>
 </li>
 <li class="open"><a href="#ContactNewArgs">struct ContactNewArgs</a>        <ul>
-</ul>
-</li>
-<li class="open"><a href="#DB">struct DB</a>        <ul>
 </ul>
 </li>
 </ul></div>

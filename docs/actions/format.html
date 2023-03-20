@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Special Actions</title>
+        <title>Format</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">protocol.me</a></li><li class="chapter-item expanded "><a href="../intro/why.html"><strong aria-hidden="true">1.</strong> Why</a></li><li class="chapter-item expanded "><a href="../concepts/concepts.html"><strong aria-hidden="true">2.</strong> Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../concepts/actors.html"><strong aria-hidden="true">2.1.</strong> Actors</a></li></ol></li><li class="chapter-item expanded "><a href="../actions/actions.html"><strong aria-hidden="true">3.</strong> Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../actions/action_files.html"><strong aria-hidden="true">3.1.</strong> Action Files</a></li><li class="chapter-item expanded "><a href="../actions/format.html"><strong aria-hidden="true">3.2.</strong> Format</a></li><li class="chapter-item expanded "><a href="../actions/special_actions.html" class="active"><strong aria-hidden="true">3.3.</strong> Special Actions</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">protocol.me</a></li><li class="chapter-item expanded "><a href="../intro/why.html"><strong aria-hidden="true">1.</strong> Why</a></li><li class="chapter-item expanded "><a href="../concepts/concepts.html"><strong aria-hidden="true">2.</strong> Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../concepts/actors.html"><strong aria-hidden="true">2.1.</strong> Actors</a></li></ol></li><li class="chapter-item expanded "><a href="../actions/actions.html"><strong aria-hidden="true">3.</strong> Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../actions/action_files.html"><strong aria-hidden="true">3.1.</strong> Action Files</a></li><li class="chapter-item expanded "><a href="../actions/format.html" class="active"><strong aria-hidden="true">3.2.</strong> Format</a></li><li class="chapter-item expanded "><a href="../actions/special_actions.html"><strong aria-hidden="true">3.3.</strong> Special Actions</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -142,42 +142,32 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="special-actions"><a class="header" href="#special-actions">special actions</a></h2>
-<h3 id="book-select"><a class="header" href="#book-select">book select</a></h3>
-<p>select the book to operate in, is not always needed, can be that a textfile has been given already for a specific book</p>
-<pre><code class="language-js">
-!!book.select aaa
-//also ok
-!!book.select name:aaa
-//also ok
-!!book.select name:'aaa'
-</code></pre>
-<p>is all the same, this will force all actions coming after this one to be applied for that specific book.</p>
-<h3 id="actor-select"><a class="header" href="#actor-select">actor select</a></h3>
-<p>to make a shortcut to select a specific actor</p>
-<pre><code class="language-js">
-!!actor.select people
-
-//or with book
-!!actor.select aaa.people
-
-//also ok
-!!actor.select name:aaa.people
-
-</code></pre>
+                        <h2 id="format"><a class="header" href="#format">format</a></h2>
+<h3 id="action-name-format-after-"><a class="header" href="#action-name-format-after-">action name format (after !!)</a></h3>
 <ul>
-<li>the aaa is the id of the book and is pre-pended to argument</li>
-<li>note we use argument here not a named value</li>
+<li><code>$domain.$actorname.$methodname ...</code></li>
+<li>if $domain is not specified then is protocolme which is the default</li>
+<li>if $actorname is e.g. person it actually means personmanager, so we can just define the subject</li>
+<li>method is subject_action form</li>
 </ul>
+<h3 id="parameters-in-actions"><a class="header" href="#parameters-in-actions">parameters in actions</a></h3>
+<blockquote>
+<p>TODO: explain how easy it is, role of '', multiline possible, ... </p>
+</blockquote>
+<h3 id="comments"><a class="header" href="#comments">comments</a></h3>
+<p>comments can be used but not at end of line, at start of line starting with # or //</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../actions/format.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../actions/action_files.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
+                            <a rel="next" href="../actions/special_actions.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -185,28 +175,17 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../actions/format.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../actions/action_files.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
+                    <a rel="next" href="../actions/special_actions.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
             </nav>
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://0.0.0.0:8881/__livereload");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

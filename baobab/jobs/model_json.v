@@ -64,7 +64,6 @@ pub fn json_load(data string) !ActionJob {
 	job := json.decode(ActionJobPublic, data) or {
 		return error('Could not json decode: ${data} .\nError:${err}')
 	}
-	// params:=json.decode(Params,job.params) or {return error("Could not json decode for params: $job.params \nError:$err")}
 	mut statecat := ActionJobState.init
 	match job.state {
 		'init' { statecat = .init }

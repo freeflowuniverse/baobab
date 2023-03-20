@@ -38,4 +38,33 @@ The Processor is also in charge of initiating the executing of jobs that it rece
 
 To execute the job from another system you should send an RMB message with the [json stringyfied job](jobs/model_json.v) as payload to the twinid of the system that can execute the job. The command of the RMB message should be *execute_job*. The job will be returned with the results if everything went well.
 
+## Dependencies
+Baobab has the following dependencies:
+- redis
+- [crystallib](https://github.com/freeflowuniverse/crystallib)
+
+## How to install baobab
+As previously mentioned baobab has a dependency towards crystallib. You should therefore pull the repository and install it:
+> git clone -b development https://github.com/freeflowuniverse/crystallib.git \
+> cd crystallib \
+> bash install.sh
+
+Next you'll have to install baobab:
+> bash install.sh
+
+## How to run the tests
+Now that you installed the V dependencies you can start running tests. The tests will use the redis running on port 6379 so make sure it is running before running the tests:
+> sudo systemctl start redis-server
+
+Now run the tests with this command (we cannot run tests in parallel so make sure to pass the environment variable VJOBS=1):
+> VJOBS=1 v -stats test .
+
+## Rules
+When working on this repository please follow these rules:
+1) Create a branch if you need to modify things on the repository
+2) Always add tests when implementing a new feature
+3) Create a PR for merging your branch
+4) Assign reviewer(s) to your PRs
+5) Only merge if reviewers have approved and CI is green
+6) Create the necessary documentation or modify existing documentation
 

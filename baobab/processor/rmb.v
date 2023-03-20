@@ -1,6 +1,7 @@
 module processor
 
 import freeflowuniverse.baobab.jobs
+import freeflowuniverse.crystallib.redisclient
 import encoding.base64
 import json
 import time
@@ -64,9 +65,8 @@ pub mut:
 
 // listens to rmb queue for incoming execute job messages
 // parses message into job saves job and message, returns optional guid
-fn (mut p Processor) get_rmb_job() ?string {
+fn (mut p Processor) get_rmb_job(mut q_rmb redisclient.RedisQueue) ?string {
 	// incoming jobs from rmb peer
-	mut q_rmb := p.client.redis.queue_get('msgbus.execute_job')
 	encoded_msg := q_rmb.pop() or { '' }
 
 	if encoded_msg != '' {

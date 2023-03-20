@@ -112,5 +112,4 @@ fn (mut actor GitActor) run_commit(mut job ActionJob) ! {
 
 fn (mut actor GitActor) run_multibranch(mut job ActionJob) ! {
 	actor.gt.config.multibranch = true
-	// log('${job.guid}:multibranch set')
 }

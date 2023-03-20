@@ -1,55 +1,50 @@
 module people
 
-import freeflowuniverse.crystallib.actionsparser 
+import freeflowuniverse.crystallib.actionsparser
 import freeflowuniverse.baobab.modelbase
 import time
 
 pub enum PersonType {
-	employee 
+	employee
 	consultant
 	investor
 }
 
 [heap]
 pub struct Person {
-	modelbase.Base		
+	modelbase.Base
 pub mut:
-	guid            string
-	description     string
-	start_date      time.Time
-	end_date        time.Time
-	contact         &Contact
+	guid        string
+	description string
+	start_date  time.Time
+	end_date    time.Time
+	contact     &Contact
 	// paymentmethods 	[]finance.PaymentMethod	
-	person_type     PersonType
+	person_type PersonType
 }
 
-
 //
-pub fn (mut db DB) process(text string){
-
-	actions:=actionsparser.new(text:text,filter:
-		["circle_delete",
-		"person_delete",
-		"circle_define",
-		"person_define",
-		"circle_link",
-		"circle_comment",
-		"digital_payment_add"
-		],actor:'people',book:'aaa')!
-	for action in actions.ok{
-		if action.name=="circle_delete"{
+pub fn (mut db DB) process(text string) {
+	actions := actionsparser.new(
+		text: text
+		filter: ['circle_delete', 'person_delete', 'circle_define', 'person_define', 'circle_link',
+			'circle_comment', 'digital_payment_add']
+		actor: 'people'
+		book: 'aaa'
+	)!
+	for action in actions.ok {
+		if action.name == 'circle_delete' {
 			println(action.params)
 		}
 		// println(action)
 	}
 	println(actions_result)
-	if true{
-		panic("sssssdsdsd")
+	if true {
+		panic('sssssdsdsd')
 	}
 }
 
-pub fn person_delete(text string){
-
+pub fn person_delete(text string) {
 }
 
 // ## Add Contact Information

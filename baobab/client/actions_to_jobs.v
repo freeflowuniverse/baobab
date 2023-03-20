@@ -34,7 +34,7 @@ pub fn (mut client Client) schedule_actions(args ScheduleActionsArgs) !jobs.Acti
 			// dependencies
 		}
 
-		// TODO: set as dependencie the previous one done
+		// TODO: set as dependency the previous one done
 
 		// call client to schedule the job
 		client.job_schedule(mut job) or { return error('Failed to schedule: ${err}') }

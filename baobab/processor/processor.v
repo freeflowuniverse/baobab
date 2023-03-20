@@ -1,10 +1,9 @@
 module processor
 
-import log
 import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
-// import os
-// import time
+import log
+import time
 
 [noinit]
 pub struct Processor {
@@ -28,6 +27,7 @@ pub fn new(redis_address string, logger &log.Logger) !Processor {
 pub fn (mut p Processor) run() {
 	p.logger.info('Processor is running')
 
+	mut q_rmb := p.client.redis.queue_get('msgbus.execute_job')
 	mut q_in := p.client.redis.queue_get('jobs.processor.in')
 	mut q_error := p.client.redis.queue_get('jobs.processor.error')
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
@@ -35,28 +35,32 @@ pub fn (mut p Processor) run() {
 	p.running = true
 	for p.running {
 		// get guid from processor.in queue and assign job to actor
-		if guid_in := q_in.get(1) {
+		guid_in := q_in.pop() or { '' }
+		if guid_in != '' {
 			p.logger.debug('Received job ${guid_in}')
 			p.assign_job(guid_in) or { p.handle_error(err) }
 		}
 
 		// get msg from rmb queue, parse job, assign to actor
-		if guid_rmb := p.get_rmb_job() {
+		if guid_rmb := p.get_rmb_job(mut q_rmb) {
 			p.logger.debug('Received job ${guid_rmb} from RMB')
 			p.assign_job(guid_rmb) or { p.handle_error(err) }
 		}
 
 		// get guid from processor.error queue and move to return queue
-		if guid_error := q_error.get(1) {
+		guid_error := q_error.pop() or { '' }
+		if guid_error != '' {
 			p.logger.debug('Received error response for job: ${guid_error} ')
 			p.return_job(guid_error) or { p.handle_error(err) }
 		}
 
 		// get guid from processor.result queue and move to return queue
-		if guid_result := q_result.get(1) {
+		guid_result := q_result.pop() or { '' }
+		if guid_result != '' {
 			p.logger.debug('Received result for job: ${guid_result}')
 			p.return_job(guid_result) or { p.handle_error(err) }
 		}
+		time.sleep(100 * time.millisecond)
 	}
 }
 

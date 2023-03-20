@@ -1,10 +1,6 @@
 module client
 
-// import freeflowuniverse.baobab.jobs { ActionJob, ActionJobState, JobNewArgs, new, json_load }
 import freeflowuniverse.crystallib.redisclient
-// import freeflowuniverse.crystallib.params { Params }
-// import rand
-// import time
 
 pub struct Client {
 pub mut:
