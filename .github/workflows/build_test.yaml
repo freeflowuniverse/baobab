@@ -40,7 +40,8 @@ jobs:
 
       - name: Check formatting and generate docs
         run: |
-          bash doc.sh
+          v fmt -w baobab
+          v doc -m -f html . -readme -comments -no-timestamp 
       
       - name: Run tests
         env:
