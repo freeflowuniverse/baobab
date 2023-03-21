@@ -24,14 +24,14 @@ pub fn (mut db PeopleDB) process(args ProcessArgs) {
 	)!
 
 	for action in actions.ok {
-		if action.name == 'data.book.select' {
+		if action.name == 'book.select' {
 			println(action.params)
 			// TODO: nothing to do needs to be on higher level
 		}
-		if action.name == 'data.book.delete' {
+		if action.name == '....delete' {
 			// db.person_delete(actions.params...)
 		}
-		if action.name == 'data.book.new' {
+		if action.name == '...new' {
 			mut o := db.person_new()
 			// o.name=action.params...
 		}

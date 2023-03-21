@@ -4,7 +4,7 @@ import freeflowuniverse.baobab.modelglobal.country
 import freeflowuniverse.baobab.modelbase
 
 [heap]
-pub struct Contact {
+pub struct ContactInfo {
 	modelbase.Base
 pub mut:
 	firstname   string

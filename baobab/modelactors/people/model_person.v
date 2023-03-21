@@ -10,7 +10,7 @@ pub mut:
 	description string    // description of the link to the person as contact
 	start_date  time.Time // if we make link to person into our own book, we can have start/end date
 	end_date    time.Time
-	contact     &Contact // this has the effective information to the person = contact
+	contactinfo  &ContactInfo // this has the effective information to the person = contact
 	// paymentmethods 	[]finance.PaymentMethod	
 	// person_type PersonType
 }
