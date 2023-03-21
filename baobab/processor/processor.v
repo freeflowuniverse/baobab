@@ -40,9 +40,12 @@ pub fn (mut p Processor) run() {
 		if res.len == 0 {
 			// no guids to handle
 			continue
-		}		
+		}
 		if res.len != 2 {
 			p.logger.error('Expected 2 items in result of brpop!')
+			continue
+		}
+		if res[1] == "" {
 			continue
 		}
 		match res[0] {

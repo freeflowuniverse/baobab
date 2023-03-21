@@ -48,6 +48,9 @@ pub fn (mut ar ActionRunner) run() {
 			eprintln('Expected 2 items in result of brpop!')
 			continue
 		}
+		if res[1] == "" {
+			continue
+		}
 		mut job := ar.client.job_get(res[1]) or {
 			eprintln('Failed getting job from db: ${err}')
 			continue
