@@ -45,7 +45,7 @@ pub mut:
 // ARGS:
 // - Email
 pub fn (mut contact Contact) email_add(email Email) {
-	contact.emails << email 
+	contact.emails << email
 	// TODO any possible checks)
 }
 

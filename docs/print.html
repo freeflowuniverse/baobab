@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">protocol.me</a></li><li class="chapter-item expanded "><a href="intro/why.html"><strong aria-hidden="true">1.</strong> Why</a></li><li class="chapter-item expanded "><a href="concepts/concepts.html"><strong aria-hidden="true">2.</strong> Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="concepts/actors.html"><strong aria-hidden="true">2.1.</strong> Actors</a></li></ol></li><li class="chapter-item expanded "><a href="actions/actions.html"><strong aria-hidden="true">3.</strong> Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="actions/action_files.html"><strong aria-hidden="true">3.1.</strong> Action Files</a></li><li class="chapter-item expanded "><a href="actions/format.html"><strong aria-hidden="true">3.2.</strong> Format</a></li><li class="chapter-item expanded "><a href="actions/special_actions.html"><strong aria-hidden="true">3.3.</strong> Special Actions</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">protocol.me</a></li><li class="chapter-item expanded "><a href="intro/why.html"><strong aria-hidden="true">1.</strong> Why</a></li><li class="chapter-item expanded "><a href="concepts/concepts.html"><strong aria-hidden="true">2.</strong> Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="concepts/actors.html"><strong aria-hidden="true">2.1.</strong> Actors</a></li><li class="chapter-item expanded "><a href="concepts/id.html"><strong aria-hidden="true">2.2.</strong> Id</a></li><li class="chapter-item expanded "><a href="concepts/book.html"><strong aria-hidden="true">2.3.</strong> Book</a></li></ol></li><li class="chapter-item expanded "><a href="actions/actions.html"><strong aria-hidden="true">3.</strong> Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="actions/action_files.html"><strong aria-hidden="true">3.1.</strong> Action Files</a></li><li class="chapter-item expanded "><a href="actions/format.html"><strong aria-hidden="true">3.2.</strong> Format</a></li><li class="chapter-item expanded "><a href="actions/special_actions.html"><strong aria-hidden="true">3.3.</strong> Special Actions</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -149,6 +149,32 @@
 <blockquote>
 <p>TODO</p>
 </blockquote>
+<div style="break-before: page; page-break-before: always;"></div><p>each id is a...z0..9, 3 to max 6 digits corresponds to 1.5 billion combinations</p>
+<ul>
+<li>RID = regional internet id </li>
+<li>BID = book id, part of regional internet (points to book)</li>
+<li>PID = phoenix id, id of our digital representation working on our behalf</li>
+<li>CID = content id, each element inside a book</li>
+</ul>
+<p>global format is</p>
+<ul>
+<li>$RID.$BID.$CID </li>
+<li>$BID.$CID </li>
+<li>$CID </li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="book"><a class="header" href="#book">Book</a></h1>
+<p>A book is the collection of </p>
+<ul>
+<li>wiki</li>
+<li>database records</li>
+<li>images</li>
+<li>files</li>
+</ul>
+<p>A book can be owned by one person or more than 1 person.</p>
+<p>A circle is part of a book.</p>
+<p>The id's as used in a book are the cid's</p>
+<h2 id="the-personal-book"><a class="header" href="#the-personal-book">The personal book</a></h2>
+<p>Is my book with my information, my circles, ... linked around me as a person.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="actions"><a class="header" href="#actions">Actions</a></h1>
 <blockquote>
 <p>TODO: explain why we use this and where</p>

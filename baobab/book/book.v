@@ -22,4 +22,3 @@ pub mut:
 	description string
 	bid         string // unique on regional internet level (3-6 letters, 5 letters give 50m, 6 letters give 1.8 billion)
 }
-
