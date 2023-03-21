@@ -45,10 +45,10 @@ fn mock_processor(action string, add_to_db bool) ! {
 	time.sleep(500000)
 
 	// check error and result queues to see if any guids were returned
-	mut q_error := redis.queue_get('jobs.processor.error')
-	mut q_result := redis.queue_get('jobs.processor.result')
-	guid_error := q_error.pop() or { '' }
-	guid_result := q_result.pop() or { '' }
+	res := redis.brpop(['jobs.processor.result'], 60)!
+	assert res.len == 2
+	guid_result := res[1]
+	guid_error := redis.rpop('jobs.processor.error') or { '' }
 
 	assert guid_error == ''
 	assert guid_result == job.guid
