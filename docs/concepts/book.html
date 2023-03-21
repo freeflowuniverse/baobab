@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Actions</title>
+        <title>Book</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">protocol.me</a></li><li class="chapter-item expanded "><a href="../intro/why.html"><strong aria-hidden="true">1.</strong> Why</a></li><li class="chapter-item expanded "><a href="../concepts/concepts.html"><strong aria-hidden="true">2.</strong> Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../concepts/actors.html"><strong aria-hidden="true">2.1.</strong> Actors</a></li><li class="chapter-item expanded "><a href="../concepts/id.html"><strong aria-hidden="true">2.2.</strong> Id</a></li><li class="chapter-item expanded "><a href="../concepts/book.html"><strong aria-hidden="true">2.3.</strong> Book</a></li></ol></li><li class="chapter-item expanded "><a href="../actions/actions.html" class="active"><strong aria-hidden="true">3.</strong> Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../actions/action_files.html"><strong aria-hidden="true">3.1.</strong> Action Files</a></li><li class="chapter-item expanded "><a href="../actions/format.html"><strong aria-hidden="true">3.2.</strong> Format</a></li><li class="chapter-item expanded "><a href="../actions/special_actions.html"><strong aria-hidden="true">3.3.</strong> Special Actions</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">protocol.me</a></li><li class="chapter-item expanded "><a href="../intro/why.html"><strong aria-hidden="true">1.</strong> Why</a></li><li class="chapter-item expanded "><a href="../concepts/concepts.html"><strong aria-hidden="true">2.</strong> Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../concepts/actors.html"><strong aria-hidden="true">2.1.</strong> Actors</a></li><li class="chapter-item expanded "><a href="../concepts/id.html"><strong aria-hidden="true">2.2.</strong> Id</a></li><li class="chapter-item expanded "><a href="../concepts/book.html" class="active"><strong aria-hidden="true">2.3.</strong> Book</a></li></ol></li><li class="chapter-item expanded "><a href="../actions/actions.html"><strong aria-hidden="true">3.</strong> Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../actions/action_files.html"><strong aria-hidden="true">3.1.</strong> Action Files</a></li><li class="chapter-item expanded "><a href="../actions/format.html"><strong aria-hidden="true">3.2.</strong> Format</a></li><li class="chapter-item expanded "><a href="../actions/special_actions.html"><strong aria-hidden="true">3.3.</strong> Special Actions</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -142,20 +142,29 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="actions"><a class="header" href="#actions">Actions</a></h1>
-<blockquote>
-<p>TODO: explain why we use this and where</p>
-</blockquote>
+                        <h1 id="book"><a class="header" href="#book">Book</a></h1>
+<p>A book is the collection of </p>
+<ul>
+<li>wiki</li>
+<li>database records</li>
+<li>images</li>
+<li>files</li>
+</ul>
+<p>A book can be owned by one person or more than 1 person.</p>
+<p>A circle is part of a book.</p>
+<p>The id's as used in a book are the cid's</p>
+<h2 id="the-personal-book"><a class="header" href="#the-personal-book">The personal book</a></h2>
+<p>Is my book with my information, my circles, ... linked around me as a person.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../concepts/book.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../concepts/id.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../actions/action_files.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../actions/actions.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -165,31 +174,17 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../concepts/book.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../concepts/id.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../actions/action_files.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../actions/actions.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://0.0.0.0:8881/__livereload");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 
