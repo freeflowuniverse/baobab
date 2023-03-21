@@ -39,7 +39,7 @@ pub fn (mut p Processor) run() {
 			}
 			continue
 		}
-		if res[1] == "" {
+		if res.len != 2 || res[1] == "" {
 			continue
 		}
 		match res[0] {

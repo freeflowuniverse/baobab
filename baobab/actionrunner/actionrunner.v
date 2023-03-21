@@ -42,7 +42,7 @@ pub fn (mut ar ActionRunner) run() {
 			}
 			continue
 		}
-		if res[1] == "" {
+		if res.len != 2 || res[1] == "" {
 			continue
 		}
 		mut job := ar.client.job_get(res[1]) or {
