@@ -17,7 +17,8 @@ fn action_get_key(action_ string) !string {
 pub fn (mut client Client) check_job_process(action string, timeout int) !string {
 	key := action_get_key(action)!
 	if timeout > 0 {
-		return client.redis.brpop(key, timeout)!
+		res := client.redis.brpop([key], timeout)!
+		return res[1]
 	} else {
 		return client.redis.rpop(key)!
 	}

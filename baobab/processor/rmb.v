@@ -1,7 +1,7 @@
 module processor
 
 import freeflowuniverse.baobab.jobs
-import freeflowuniverse.crystallib.redisclient
+
 import encoding.base64
 import json
 import time
@@ -65,41 +65,35 @@ pub mut:
 
 // listens to rmb queue for incoming execute job messages
 // parses message into job saves job and message, returns optional guid
-fn (mut p Processor) get_rmb_job(mut q_rmb redisclient.RedisQueue) ?string {
-	// incoming jobs from rmb peer
-	encoded_msg := q_rmb.pop() or { '' }
-
-	if encoded_msg != '' {
-		msg := json.decode(RMBMessage, encoded_msg) or {
-			p.logger.error('Failed decoding ${encoded_msg} to RMBMessage: ${err}')
-			return none
-		}
-		decoded_job := base64.decode_str(msg.dat)
-		job := jobs.json_load(decoded_job) or {
-			p.logger.error('Failed decoding ${decoded_job} to Job: ${err}')
-			p.send_rmb_error_message(.failed_decoding_payload_to_job, msg)
-			return none
-		}
-		if job.src_twinid != msg.src.u32() {
-			p.logger.error('Job is either not meant for us or the sender is not who they claim to be: ${encoded_msg}')
-			p.send_rmb_error_message(.unauthorized, msg)
-			return none
-		}
-		// save job
-		p.client.job_set(job) or {
-			p.logger.error('Failed setting ${job}: ${err}')
-			p.send_rmb_error_message(.internal_error, msg)
-			return none
-		}
-		// save message
-		p.client.redis.hset('rmb.db', '${job.guid}', encoded_msg) or {
-			p.logger.error('Failed setting ${job.guid} in hset rmb.db: ${err}')
-			p.send_rmb_error_message(.internal_error, msg)
-			return none
-		}
-		return job.guid
+fn (mut p Processor) get_rmb_job(encoded_msg string) ?string {
+	msg := json.decode(RMBMessage, encoded_msg) or {
+		p.logger.error('Failed decoding ${encoded_msg} to RMBMessage: ${err}')
+		return none
 	}
-	return none
+	decoded_job := base64.decode_str(msg.dat)
+	job := jobs.json_load(decoded_job) or {
+		p.logger.error('Failed decoding ${decoded_job} to Job: ${err}')
+		p.send_rmb_error_message(.failed_decoding_payload_to_job, msg)
+		return none
+	}
+	if job.src_twinid != msg.src.u32() {
+		p.logger.error('Job is either not meant for us or the sender is not who they claim to be: ${encoded_msg}')
+		p.send_rmb_error_message(.unauthorized, msg)
+		return none
+	}
+	// save job
+	p.client.job_set(job) or {
+		p.logger.error('Failed setting ${job}: ${err}')
+		p.send_rmb_error_message(.internal_error, msg)
+		return none
+	}
+	// save message
+	p.client.redis.hset('rmb.db', '${job.guid}', encoded_msg) or {
+		p.logger.error('Failed setting ${job.guid} in hset rmb.db: ${err}')
+		p.send_rmb_error_message(.internal_error, msg)
+		return none
+	}
+	return job.guid
 }
 
 fn (mut p Processor) send_rmb_error_message(code RMBErrorCode, msg &RMBMessage) {

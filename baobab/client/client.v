@@ -82,7 +82,7 @@ pub fn (mut client Client) job_wait(guid string, timeout_ int) !ActionJob {
 		timeout = 3600
 	}
 	key := 'jobs.return.${guid}'
-	client.redis.brpop(key, timeout)! // will block and wait
+	client.redis.brpop([key], timeout)! // will block and wait
 	return client.job_get(guid)!
 }
 

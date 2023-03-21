@@ -58,11 +58,9 @@ fn generate_test_cases() ![]RMBTestCase {
 fn test_get_rmb_job() ! {
 	mut p := new('localhost:6379', get_logger('test_get_rmb_job'))!
 	cases := generate_test_cases()!
-	mut q_rmb := p.client.redis.queue_get('msgbus.execute_job')
 	for case in cases {
 		encoded := json.encode(case.rmb_msg)
-		q_rmb.add(encoded)!
-		job_guid := p.get_rmb_job(mut q_rmb) or { '' }
+		job_guid := p.get_rmb_job(encoded) or { '' }
 		assert job_guid == case.job.guid
 		assert p.client.redis.hexists('jobs.db', job_guid)!
 	}
