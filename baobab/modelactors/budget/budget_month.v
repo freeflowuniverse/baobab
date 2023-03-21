@@ -1,6 +1,6 @@
 module budget
 
-import freeflowuniverse.baobab.modelbook.finance
+import freeflowuniverse.baobab.modelactors.finance
 
 // budget_month
 // This file deals with all definitions and functions for creating

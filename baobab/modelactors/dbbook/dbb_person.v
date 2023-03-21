@@ -1,6 +1,6 @@
 module dbbook
 
-// import freeflowuniverse.baobab.modelbook.people
+// import freeflowuniverse.baobab.modelactors.people
 // import freeflowuniverse.crystallib.texttools
 // import time
 

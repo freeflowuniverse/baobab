@@ -1,6 +1,6 @@
 module budget
 
-import freeflowuniverse.baobab.modelbook.people
+import freeflowuniverse.baobab.modelactors.people
 
 // budget
 // This file deals with the main budget item

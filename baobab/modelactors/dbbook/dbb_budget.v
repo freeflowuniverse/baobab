@@ -1,7 +1,7 @@
 module dbbook
 
-// import freeflowuniverse.baobab.modelbook.organization
-// import freeflowuniverse.baobab.modelbook.finance
+// import freeflowuniverse.baobab.modelactors.organization
+// import freeflowuniverse.baobab.modelactors.finance
 // import freeflowuniverse.crystallib.timetools
 // import time
 // import math

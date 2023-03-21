@@ -1,6 +1,6 @@
 module company
 
-// import freeflowuniverse.baobab.modelbook.budget
+// import freeflowuniverse.baobab.modelactors.budget
 // import freeflowuniverse.baobab.modelglobal.country
 
 // company structure

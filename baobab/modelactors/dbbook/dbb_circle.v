@@ -1,6 +1,6 @@
 module dbbook
 
-// import freeflowuniverse.baobab.modelbook.organization
+// import freeflowuniverse.baobab.modelactors.organization
 // import freeflowuniverse.crystallib.texttools
 
 // TODO circle_add

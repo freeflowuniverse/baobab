@@ -1,8 +1,8 @@
 module organization
 
-import freeflowuniverse.baobab.modelbook.budget
+import freeflowuniverse.baobab.modelactors.budget
 import freeflowuniverse.baobab.modelglobal.country
-import freeflowuniverse.baobab.modelbook
+import freeflowuniverse.baobab.modelactors
 import freeflowuniverse.baobab.modelbase
 
 // Book structure
@@ -23,8 +23,3 @@ pub mut:
 	bid         string // unique on regional internet level (3-6 letters, 5 letters give 50m, 6 letters give 1.8 billion)
 }
 
-pub fn (mut Book Book) budget_new() &budget.Budget {
-	budget := budget.Budget{}
-	Book.budget = &budget
-	return &budget
-}

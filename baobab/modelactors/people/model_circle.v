@@ -27,7 +27,7 @@ pub enum Role {
 
 pub struct CircleMember {
 pub mut:
-	// person 			 &people.Person
+	person 		Person   //TODO: por contact?
 	state       PersonState
 	description string
 	role        Role

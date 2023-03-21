@@ -1,7 +1,7 @@
 module budget
 
-import freeflowuniverse.baobab.modelbook.people
-import freeflowuniverse.baobab.modelbook.finance
+import freeflowuniverse.baobab.modelactors.people
+import freeflowuniverse.baobab.modelactors.finance
 import freeflowuniverse.baobab.modelglobal.country
 import freeflowuniverse.crystallib.timetools { time_from_string }
 

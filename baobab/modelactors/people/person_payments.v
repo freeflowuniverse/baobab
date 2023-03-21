@@ -4,6 +4,10 @@ import freeflowuniverse.crystallib.currency
 import freeflowuniverse.baobab.modelbase
 import time
 
+
+//TODO: need to check what to do here
+
+
 // pub fn (mut person Person) digital_payment_add (new_method finance.PaymentDigitalNewArgs) !finance.PaymentMethod {
 // 	mut preferred := false
 // 	// If this is the first payment method, set preferred to true

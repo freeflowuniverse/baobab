@@ -10,9 +10,9 @@ pub mut:
 	firstname   string
 	lastname    string
 	description string
-	emails      []&Email
-	tel         []&Tel
-	addresses   []&Address
+	emails      []Email
+	tel         []Tel
+	addresses   []Address
 }
 
 pub struct ContactNewArgs {
@@ -45,7 +45,7 @@ pub mut:
 // ARGS:
 // - Email
 pub fn (mut contact Contact) email_add(email Email) {
-	contact.emails << &email //? Why is this symlink
+	contact.emails << email 
 	// TODO any possible checks)
 }
 
@@ -53,7 +53,7 @@ pub fn (mut contact Contact) email_add(email Email) {
 // ARGS:
 // - Tel
 pub fn (mut contact Contact) tel_add(tel Tel) {
-	contact.tel << &tel
+	contact.tel << tel
 	// TODO any possible checks
 }
 
@@ -61,6 +61,6 @@ pub fn (mut contact Contact) tel_add(tel Tel) {
 // ARGS:
 // - Address
 pub fn (mut contact Contact) address_add(addr Address) {
-	contact.addresses << &addr
+	contact.addresses << addr
 	// TODO any possible checks
 }

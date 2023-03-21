@@ -1,7 +1,7 @@
 module dbbook
 
-// import freeflowuniverse.baobab.modelbook.people
-// import freeflowuniverse.baobab.modelbook.organization
+// import freeflowuniverse.baobab.modelactors.people
+// import freeflowuniverse.baobab.modelactors.organization
 // import freeflowuniverse.crystallib.texttools
 
 // // TODO company_add
