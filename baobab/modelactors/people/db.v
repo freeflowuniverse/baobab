@@ -24,3 +24,5 @@ pub fn db(bid string) PeopleDB {
 	}
 	return d
 }
+
+
