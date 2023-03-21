@@ -34,15 +34,9 @@ pub fn (mut p Processor) run() {
 			p.logger.error("Failed to shuffle queues")
 		}
 		res := p.client.redis.brpop(queues, 1) or {
-			p.logger.error('Failed to brpop queues')
-			continue
-		}
-		if res.len == 0 {
-			// no guids to handle
-			continue
-		}
-		if res.len != 2 {
-			p.logger.error('Expected 2 items in result of brpop!')
+			if "$err" != "timeout on brpop" {
+				p.logger.error('Failed to brpop queues')
+			}
 			continue
 		}
 		if res[1] == "" {

@@ -37,15 +37,9 @@ pub fn (mut ar ActionRunner) run() {
 		}
 		// pull jobs for our actors: first one in the queues of our actors will be executed continue after 
 		res := ar.client.redis.brpop(queues_actors, 1) or {
-			eprintln('Failed checking job process: ${err}')
-			continue
-		}
-		if res.len == 0 {
-			// no jobs in queues
-			continue
-		}
-		if res.len != 2 {
-			eprintln('Expected 2 items in result of brpop!')
+			if "$err" != "timeout on brpop" {
+				eprintln("Unexpected error: $err")
+			}
 			continue
 		}
 		if res[1] == "" {
