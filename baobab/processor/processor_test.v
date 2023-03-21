@@ -142,9 +142,8 @@ fn test_run() {
 	// timeout on 1 minute
 	now := time.now()
 	for time.since(now) < time.minute {
-		if redis.llen('jobs.processor.in')! == 0 && 
-			redis.llen('jobs.processor.error')! == 0 && 
-			redis.llen('jobs.processor.result')! == 0 {
+		if redis.llen('jobs.processor.in')! == 0 && redis.llen('jobs.processor.error')! == 0
+			&& redis.llen('jobs.processor.result')! == 0 {
 			break
 		}
 	}

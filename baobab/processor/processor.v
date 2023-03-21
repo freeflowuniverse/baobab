@@ -2,7 +2,6 @@ module processor
 
 import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
-
 import log
 import rand
 
@@ -28,18 +27,17 @@ pub fn new(redis_address string, logger &log.Logger) !Processor {
 pub fn (mut p Processor) run() {
 	p.logger.info('Processor is running')
 	p.running = true
-	mut queues := ['msgbus.execute_job', 'jobs.processor.in', 'jobs.processor.error', 'jobs.processor.result']
+	mut queues := ['msgbus.execute_job', 'jobs.processor.in', 'jobs.processor.error',
+		'jobs.processor.result']
 	for p.running {
-		rand.shuffle[string](mut queues) or {
-			p.logger.error("Failed to shuffle queues")
-		}
+		rand.shuffle[string](mut queues) or { p.logger.error('Failed to shuffle queues') }
 		res := p.client.redis.brpop(queues, 1) or {
-			if "$err" != "timeout on brpop" {
+			if '${err}' != 'timeout on brpop' {
 				p.logger.error('Failed to brpop queues')
 			}
 			continue
 		}
-		if res.len != 2 || res[1] == "" {
+		if res.len != 2 || res[1] == '' {
 			continue
 		}
 		match res[0] {
@@ -54,7 +52,7 @@ pub fn (mut p Processor) run() {
 				// get guid from processor.in queue and assign job to actor
 				p.logger.debug('Received job with guid ${res[1]}')
 				p.assign_job(res[1]) or { p.handle_error(err) }
-			} 
+			}
 			'jobs.processor.error' {
 				// get guid from processor.error queue and move to return queue
 				p.logger.debug('Received error response for job with guid ${res[1]} ')
@@ -66,7 +64,7 @@ pub fn (mut p Processor) run() {
 				p.return_job(res[1]) or { p.handle_error(err) }
 			}
 			else {
-				p.logger.error("Unknown queue ${res[0]}")
+				p.logger.error('Unknown queue ${res[0]}')
 			}
 		}
 	}

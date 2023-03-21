@@ -1,7 +1,6 @@
 module processor
 
 import freeflowuniverse.baobab.jobs
-
 import encoding.base64
 import json
 import time

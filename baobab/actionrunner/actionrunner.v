@@ -3,7 +3,6 @@ module actionrunner
 import freeflowuniverse.baobab.actor
 import freeflowuniverse.baobab.client { Client }
 import freeflowuniverse.baobab.jobs { ActionJob }
-
 import rand
 
 // Actionrunner listens to jobs in an actors queue
@@ -20,7 +19,7 @@ pub mut:
 
 // factory function for actionrunner
 pub fn new(client_ Client, actors []&actor.IActor) ActionRunner {
-	mut ar := ActionRunner {
+	mut ar := ActionRunner{
 		actors: actors
 		client: &client_
 	}
@@ -32,17 +31,15 @@ pub fn (mut ar ActionRunner) run() {
 	mut queues_actors := ar.actors.map('jobs.actors.${it.name}')
 	// go over jobs.actors in redis, see which jobs we have pass them onto the execute
 	for ar.running {
-		rand.shuffle[string](mut queues_actors) or {
-			eprintln("Failed to shuffle actor queues")
-		}
-		// pull jobs for our actors: first one in the queues of our actors will be executed continue after 
+		rand.shuffle[string](mut queues_actors) or { eprintln('Failed to shuffle actor queues') }
+		// pull jobs for our actors: first one in the queues of our actors will be executed continue after
 		res := ar.client.redis.brpop(queues_actors, 1) or {
-			if "$err" != "timeout on brpop" {
-				eprintln("Unexpected error: $err")
+			if '${err}' != 'timeout on brpop' {
+				eprintln('Unexpected error: ${err}')
 			}
 			continue
 		}
-		if res.len != 2 || res[1] == "" {
+		if res.len != 2 || res[1] == '' {
 			continue
 		}
 		mut job := ar.client.job_get(res[1]) or {
