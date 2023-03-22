@@ -3,12 +3,13 @@ module actionrunner
 import freeflowuniverse.baobab.actor
 import freeflowuniverse.baobab.client { Client }
 import freeflowuniverse.baobab.jobs { ActionJob }
-import time
+import rand
 
 // Actionrunner listens to jobs in an actors queue
 // executes the jobs internally
 // sets the status of the job in jobs.db in the process
 // then moves jobs into processor.error/result queues
+[heap]
 pub struct ActionRunner {
 pub mut:
 	actors  []&actor.IActor
@@ -27,27 +28,25 @@ pub fn new(client_ Client, actors []&actor.IActor) ActionRunner {
 
 pub fn (mut ar ActionRunner) run() {
 	ar.running = true
+	mut queues_actors := ar.actors.map('jobs.actors.${it.name}')
 	// go over jobs.actors in redis, see which jobs we have pass them onto the execute
 	for ar.running {
-		// do for each actor
-		for actor in ar.actors {
-			// get guid in queue, move on if nil
-			job_guid := ar.client.check_job_process(actor.name, 0) or {
-				eprintln('Failed checking job process: ${err}')
-				continue
+		rand.shuffle[string](mut queues_actors) or { eprintln('Failed to shuffle actor queues') }
+		// pull jobs for our actors: first one in the queues of our actors will be executed continue after
+		res := ar.client.redis.brpop(queues_actors, 1) or {
+			if '${err}' != 'timeout on brpop' {
+				eprintln('Unexpected error: ${err}')
 			}
-			if job_guid == '' {
-				continue
-			}
-
-			// get job, set job active and execute
-			mut job := ar.client.job_get(job_guid) or {
-				eprintln('Failed getting job from db: ${err}')
-				continue
-			}
-			ar.execute(mut job) or { eprintln('Failed to execute the job: ${err}') }
+			continue
 		}
-		time.sleep(100 * time.millisecond)
+		if res.len != 2 || res[1] == '' {
+			continue
+		}
+		mut job := ar.client.job_get(res[1]) or {
+			eprintln('Failed getting job from db: ${err}')
+			continue
+		}
+		ar.execute(mut job) or { eprintln('Failed to execute the job: ${err}') }
 	}
 }
 

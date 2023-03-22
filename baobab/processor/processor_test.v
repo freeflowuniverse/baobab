@@ -130,17 +130,23 @@ fn test_run() {
 		q_in.add(case.job.guid)!
 	}
 
-	time.sleep(500000000) // wait processor work
-
 	// feed processor.error/result queue with test jobs, mocking actor
-	mut q_error := redis.queue_get('jobs.processor.error')
 	mut q_result := redis.queue_get('jobs.processor.result')
 	for case in test_cases {
-		guid := redis.rpop(case.actor_queue)!
-		q_result.add(guid)!
+		// processor should put the job in the actor queue, fail if timeout exceeds
+		res := redis.brpop([case.actor_queue], 60)!
+		assert res.len == 2
+		q_result.add(res[1])!
 	}
 
-	time.sleep(500000000) // wait processor work
+	// timeout on 1 minute
+	now := time.now()
+	for time.since(now) < time.minute {
+		if redis.llen('jobs.processor.in')! == 0 && redis.llen('jobs.processor.error')! == 0
+			&& redis.llen('jobs.processor.result')! == 0 {
+			break
+		}
+	}
 
 	// assert all jobs.processor queues are empty
 	assert redis.llen('jobs.processor.in')! == 0

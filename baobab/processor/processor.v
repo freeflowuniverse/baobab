@@ -3,7 +3,7 @@ module processor
 import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
 import log
-import time
+import rand
 
 [noinit]
 pub struct Processor {
@@ -26,41 +26,47 @@ pub fn new(redis_address string, logger &log.Logger) !Processor {
 // returns error and result responses from actor to caller of job
 pub fn (mut p Processor) run() {
 	p.logger.info('Processor is running')
-
-	mut q_rmb := p.client.redis.queue_get('msgbus.execute_job')
-	mut q_in := p.client.redis.queue_get('jobs.processor.in')
-	mut q_error := p.client.redis.queue_get('jobs.processor.error')
-	mut q_result := p.client.redis.queue_get('jobs.processor.result')
-
 	p.running = true
+	mut queues := ['msgbus.execute_job', 'jobs.processor.in', 'jobs.processor.error',
+		'jobs.processor.result']
 	for p.running {
-		// get guid from processor.in queue and assign job to actor
-		guid_in := q_in.pop() or { '' }
-		if guid_in != '' {
-			p.logger.debug('Received job ${guid_in}')
-			p.assign_job(guid_in) or { p.handle_error(err) }
+		rand.shuffle[string](mut queues) or { p.logger.error('Failed to shuffle queues') }
+		res := p.client.redis.brpop(queues, 1) or {
+			if '${err}' != 'timeout on brpop' {
+				p.logger.error('Failed to brpop queues')
+			}
+			continue
 		}
-
-		// get msg from rmb queue, parse job, assign to actor
-		if guid_rmb := p.get_rmb_job(mut q_rmb) {
-			p.logger.debug('Received job ${guid_rmb} from RMB')
-			p.assign_job(guid_rmb) or { p.handle_error(err) }
+		if res.len != 2 || res[1] == '' {
+			continue
 		}
-
-		// get guid from processor.error queue and move to return queue
-		guid_error := q_error.pop() or { '' }
-		if guid_error != '' {
-			p.logger.debug('Received error response for job: ${guid_error} ')
-			p.return_job(guid_error) or { p.handle_error(err) }
+		match res[0] {
+			'msgbus.execute_job' {
+				if guid_rmb := p.get_rmb_job(res[1]) {
+					// get msg from rmb queue, parse job, assign to actor
+					p.logger.debug('Received job with guid ${guid_rmb} from RMB')
+					p.assign_job(guid_rmb) or { p.handle_error(err) }
+				}
+			}
+			'jobs.processor.in' {
+				// get guid from processor.in queue and assign job to actor
+				p.logger.debug('Received job with guid ${res[1]}')
+				p.assign_job(res[1]) or { p.handle_error(err) }
+			}
+			'jobs.processor.error' {
+				// get guid from processor.error queue and move to return queue
+				p.logger.debug('Received error response for job with guid ${res[1]} ')
+				p.return_job(res[1]) or { p.handle_error(err) }
+			}
+			'jobs.processor.result' {
+				// get guid from processor.result queue and move to return queue
+				p.logger.debug('Received result for job with guid ${res[1]}')
+				p.return_job(res[1]) or { p.handle_error(err) }
+			}
+			else {
+				p.logger.error('Unknown queue ${res[0]}')
+			}
 		}
-
-		// get guid from processor.result queue and move to return queue
-		guid_result := q_result.pop() or { '' }
-		if guid_result != '' {
-			p.logger.debug('Received result for job: ${guid_result}')
-			p.return_job(guid_result) or { p.handle_error(err) }
-		}
-		time.sleep(100 * time.millisecond)
 	}
 }
 
