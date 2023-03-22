@@ -31,7 +31,10 @@ jobs:
 
       - name: Generate documentation
         run: |
-          v doc -m -f html . -readme -comments -no-timestamp
+          v fmt -w baobab
+          pushd baobab
+          v doc -m -f html . -readme -comments -no-timestamp 
+          popd
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -39,7 +42,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: '_docs'
+          path: 'baobab/_docs'
       
       - name: Deploy to GitHub Pages
         id: deployment

@@ -24,3 +24,4 @@ bin/
 *.log
 
 baobab/_docs
+_docs
