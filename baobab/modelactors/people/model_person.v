@@ -7,6 +7,7 @@ import time
 pub struct Person {
 	modelbase.Base
 pub mut:
+	name string
 	cid string
 	description string    // description of the link to the person as contact
 	start_date  time.Time // if we make link to person into our own book, we can have start/end date
@@ -16,12 +17,12 @@ pub mut:
 	// person_type PersonType
 }
 
-pub fn (mut o Person) wiki() string {
-	// TODO: fill in template
+pub fn (mut person Person) wiki() string {
 	return $tmpl('templates/person.md')
 }
 
 struct PersonDefine {
+	name string
 	cid string
 	contact Contact
 }
@@ -49,6 +50,7 @@ pub fn (mut db PeopleDB) person_new(args_ PersonDefine) !&Person {
 	mut p := Person{
 		cid: cid
 		contact: &args.contact
+		name: args.name
 	}
 	
 	db.persons << p
@@ -58,6 +60,7 @@ pub fn (mut db PeopleDB) person_new(args_ PersonDefine) !&Person {
 // create a new instance of a person, can be changed after instantiation
 pub fn (mut person Person) update(args PersonDefine) !&Person {
 	person.contact = &args.contact
+	person.name = args.name
 	return person
 }
 
@@ -99,10 +102,24 @@ pub fn (mut db PeopleDB) person_find(args_ PersonFind) []&Person {
 	args.name = args.name.to_lower()
 	args.description = args.description.to_lower()
 	mut result := []&Person{}
-	for _, person in db.persons {
-		// TODO: do the find
-		result << &person
+	mut i := 0
+	for {
+		if i == db.persons.len {
+			break
+		}
+		if db.persons[i].name_matches(args.name) || 
+		db.persons[i].contact.description.contains(args.description)
+		{
+			result << &db.persons[i]
+		} 
+		i += 1
 	}
 	return result
 }
 
+pub fn (person Person) name_matches(name string) bool {
+	return 
+	person.name.contains(name) ||
+	person.contact.firstname.contains(name) ||
+	person.contact.lastname.contains(name)
+}
