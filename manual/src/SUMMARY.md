@@ -1,7 +1,7 @@
 ## [**baobab**](README.md)
 
 - [Concepts](concepts/concepts.md)
-  - [Actors](concepts/actors.md)
+  - [Actor](concepts/actor.md)
   - [ActionRunner](concepts/actionrunner.md)
   - [Processor](concepts/processor.md)
 - [Jobs](jobs/jobs.md)

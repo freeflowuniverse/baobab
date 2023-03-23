@@ -21,7 +21,7 @@ pub fn file_parse(path string) !ActionsManager {
 	return actions
 }
 
-// Walks over all files of a dir and returns a list 
+// Walks over all files of a dir and returns a list
 // of actions using a ActionsManager
 pub fn dir_parse(path string) !ActionsManager {
 	mut actions := get()

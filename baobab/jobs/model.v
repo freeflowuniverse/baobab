@@ -19,7 +19,7 @@ pub mut:
 	jobs []ActionJob
 }
 
-// The internal representation of a job. For params see 
+// The internal representation of a job. For params see
 // github/freeflowuniverse/crystallib/params/readme.md.
 pub struct ActionJob {
 pub mut:

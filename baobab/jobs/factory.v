@@ -4,7 +4,6 @@ import freeflowuniverse.crystallib.params { Params }
 import rand
 import time
 
-
 // Arguments for creating a new job
 [params]
 pub struct JobNewArgs {

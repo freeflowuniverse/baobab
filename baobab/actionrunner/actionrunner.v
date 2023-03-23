@@ -93,7 +93,7 @@ fn (mut ar ActionRunner) job_error(mut job ActionJob, errmsg string) ! {
 	q_error.add(job.guid)!
 }
 
-// job was a success so let's return the job. 
+// job was a success so let's return the job.
 fn (mut ar ActionRunner) job_result(mut job ActionJob) ! {
 	ar.client.job_status_set(mut job, .done)!
 

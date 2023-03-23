@@ -8,7 +8,7 @@ import rand
 // The representation of the Processor. It contains a
 // client that is used to get jobs from redis, a logger
 // to log usefull information and an attribute running
-// that can be used to stop a running processor. 
+// that can be used to stop a running processor.
 [noinit]
 pub struct Processor {
 mut:
@@ -26,10 +26,10 @@ pub fn new(redis_address string, logger &log.Logger) !Processor {
 	}
 }
 
-// Runs the processor. It will loop until the attribute 
-// running is set to false. It will listen for incoming 
-// jobs in 4 different queues. Whenever there is a new 
-// job it will distribute it to the right actor. 
+// Runs the processor. It will loop until the attribute
+// running is set to false. It will listen for incoming
+// jobs in 4 different queues. Whenever there is a new
+// job it will distribute it to the right actor.
 // Whenever the actor finishes the job it will return
 // it.
 pub fn (mut p Processor) run() {
@@ -133,7 +133,7 @@ fn (mut p Processor) handle_error(error IError) {
 	}
 }
 
-// Helper function to reset the queues of the processor. 
+// Helper function to reset the queues of the processor.
 pub fn (mut p Processor) reset() ! {
 	p.client.redis.flushall()!
 	p.client.redis.disconnect()

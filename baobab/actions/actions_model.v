@@ -19,7 +19,7 @@ pub mut:
 	params params.Params
 }
 
-// Get the param as string, if it does not exist it will throw 
+// Get the param as string, if it does not exist it will throw
 // an error
 pub fn (mut action Action) param_get(name_ string) !string {
 	return action.params.get(name_)
@@ -30,7 +30,7 @@ pub fn (action Action) str() string {
 	return p
 }
 
-// Returns a list of names, they are normalized (no special 
+// Returns a list of names, they are normalized (no special
 // chars, lowercase, ... )
 pub fn (action Action) names() []string {
 	mut names := []string{}
