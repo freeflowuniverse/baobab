@@ -19,5 +19,3 @@ The actionrunner will put the failed jobs in the queue *jobs.processor.error*. T
 The successful jobs will be put in the queue *jobs.processor.result* by the actionrunner. The processor will pop those jobs, modify to the state accordingly and return it to the queue *jobs.return.<guid_of_jobs>*.
 
 The processor is also in charge of initiating the execution of jobs received from outside the system it is running on. The processor is able to receive jobs via RMB. This introduces one extra depencendy though: the system should be running the [rmb-peer](https://github.com/threefoldtech/rmb-rs/releases). The rmb-peer will put the jobs it receives from outside the system in the queue *msgbus.execute_job*. The processor will handle those jobs the same way as it would coming from the incoming jobs queue.
-
-Now that all components have been introduced let's dive into the meaning of the word job in the next chapter.

@@ -1,9 +1,7 @@
-# actions
 
-are text based representatsions of actions which need to be executed
+Actions are text based representatsions of actions which need to be executed. 
 
-example
-
+Here is an example:
 ```
 !!tflibrary.booksmanager.book_add 
     gitsource:'books'
@@ -11,5 +9,5 @@ example
     name:technology
 ```
 
-the first one is the action, the rest are the params
+the first part (!!tflibrary.booksmanager.book_add) is the action, the rest are the params.
 

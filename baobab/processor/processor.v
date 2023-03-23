@@ -5,16 +5,20 @@ import freeflowuniverse.baobab.jobs
 import log
 import rand
 
+// The representation of the Processor. It contains a
+// client that is used to get jobs from redis, a logger
+// to log usefull information and an attribute running
+// that can be used to stop a running processor. 
 [noinit]
 pub struct Processor {
 mut:
 	client client.Client
-	errors []IError
 	logger &log.Logger
 pub mut:
 	running bool
 }
 
+// Factory method for creating a new processor.
 pub fn new(redis_address string, logger &log.Logger) !Processor {
 	return Processor{
 		client: client.new(redis_address)!
@@ -22,8 +26,12 @@ pub fn new(redis_address string, logger &log.Logger) !Processor {
 	}
 }
 
-// run listens redis queues for incoming jobs, assigns jobs to actors,
-// returns error and result responses from actor to caller of job
+// Runs the processor. It will loop until the attribute 
+// running is set to false. It will listen for incoming 
+// jobs in 4 different queues. Whenever there is a new 
+// job it will distribute it to the right actor. 
+// Whenever the actor finishes the job it will return
+// it.
 pub fn (mut p Processor) run() {
 	p.logger.info('Processor is running')
 	p.running = true
@@ -70,7 +78,7 @@ pub fn (mut p Processor) run() {
 	}
 }
 
-// assign_job places guid to correct actor queue, and to the processor.active queue
+// Places guid to correct actor queue, and to the processor.active queue
 fn (mut p Processor) assign_job(guid string) ! {
 	mut job := p.client.job_get(guid)!
 
@@ -94,7 +102,7 @@ fn (mut p Processor) assign_job(guid string) ! {
 	p.logger.debug('${job}\n')
 }
 
-// return_job returns a job by placing it to the correct redis return queue
+// Returns a job by placing it to the correct redis return queue
 fn (mut p Processor) return_job(guid string) ! {
 	if p.client.redis.hexists('rmb.db', guid)! {
 		p.return_job_rmb(guid)!
@@ -105,7 +113,7 @@ fn (mut p Processor) return_job(guid string) ! {
 	p.logger.debug('Returned job ${guid}')
 }
 
-// handle_error places guid to jobs.return queue with an error
+// Places guid to jobs.return queue with an error
 fn (mut p Processor) handle_error(error IError) {
 	if error is jobs.JobError {
 		mut job := p.client.job_get(error.job_guid) or {
@@ -125,6 +133,7 @@ fn (mut p Processor) handle_error(error IError) {
 	}
 }
 
+// Helper function to reset the queues of the processor. 
 pub fn (mut p Processor) reset() ! {
 	p.client.redis.flushall()!
 	p.client.redis.disconnect()

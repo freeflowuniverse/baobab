@@ -4,7 +4,7 @@ import freeflowuniverse.crystallib.params
 import json
 import time
 
-// actionjob as how its being send & received from outside if json used
+// Actionjob as how its being send & received from outside
 pub struct ActionJobPublic {
 pub mut:
 	guid         string // unique jobid (unique per actor which is unique per twin)
@@ -23,6 +23,7 @@ pub mut:
 	dependencies []string // list of guids we need to wait on
 }
 
+// Converts a job to the public representation of a job
 pub fn (job ActionJob) pub_get() ActionJobPublic {
 	mut statestr := ''
 	match job.state {
@@ -53,13 +54,14 @@ pub fn (job ActionJob) pub_get() ActionJobPublic {
 	return job2
 }
 
+// Encodes a job to json string
 pub fn (job ActionJob) json_dump() string {
 	mut job2 := job.pub_get()
 	job2_data := json.encode(job2)
 	return job2_data
 }
 
-// json data for ActionJobPublic
+// Decodes json string job into an ActionJob
 pub fn json_load(data string) !ActionJob {
 	job := json.decode(ActionJobPublic, data) or {
 		return error('Could not json decode: ${data} .\nError:${err}')

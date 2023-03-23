@@ -5,6 +5,7 @@ import freeflowuniverse.baobab.jobs
 import time
 import rand
 
+// Arguments of schedule_actions
 [params]
 pub struct ScheduleActionsArgs {
 	twinid     u32
@@ -14,7 +15,7 @@ pub struct ScheduleActionsArgs {
 	actions    []actions.Action
 }
 
-// returns a collection of jobs
+// Returns a collection of jobs from a list of actions
 pub fn (mut client Client) schedule_actions(args ScheduleActionsArgs) !jobs.ActionJobs {
 	mut jobsfactory := jobs.ActionJobs{}
 	for a in args.actions {
