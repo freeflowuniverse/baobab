@@ -2,6 +2,7 @@ module people
 
 import freeflowuniverse.baobab.modelbase
 import freeflowuniverse.baobab.modelactors.finance
+import freeflowuniverse.baobab.utils
 import time
 
 [heap]
@@ -87,6 +88,7 @@ pub mut:
 	name        string // get in contact
 	cid         string
 	keyword string
+	amount int = 1
 	// TODO: see which other fields are relevant
 }
 
@@ -105,18 +107,21 @@ pub fn (mut db PeopleDB) person_find(args_ PersonFind) []&Person {
 	args.description = args.description.to_lower()
 	mut result := []&Person{}
 	mut i := 0
-	for {
-		if i == db.persons.len {
-			break
-		}
-		if db.persons[i].name_matches(args.name) || 
-		db.persons[i].contact.description.contains(args.description)
-		{
-			result << &db.persons[i]
-		} 
-		i += 1
+	config := utils.FindConfig{
+		fields: ['cid', 'name']
+		keyword: args.keyword
+		amount: args.amount
+		relevance: 10
 	}
-	return result
+	mut search := Person{
+		cid: args.cid
+		name: args.name
+		description: args.description
+	}
+	mut results := utils.find[Person](db.persons, search, config) or {
+		return []
+	}
+	return results.map(&db.persons[it])
 }
 
 pub fn (person Person) name_matches(name string) bool {
