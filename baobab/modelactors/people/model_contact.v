@@ -1,10 +1,10 @@
 module people
 
-import freeflowuniverse.baobab.modelglobal.country
+// import freeflowuniverse.baobab.modelglobal.country
 import freeflowuniverse.baobab.modelbase
 
 [heap]
-pub struct ContactInfo {
+pub struct Contact {
 	modelbase.Base
 pub mut:
 	firstname   string
