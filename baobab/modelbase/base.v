@@ -15,7 +15,7 @@ pub mut:
 }
 
 [heap]
-struct Remark {
+pub struct Remark {
 pub mut:
 	content string
 	time    time.Time
@@ -42,17 +42,12 @@ fn (mut data Data) remark_add(content string, time string,author string) ?&Remar
 }
 */
 
-// //? What is a remark?
-// // remark_add
-// // ARGS:
-// // author = full name of author
-// fn (mut data Data) remark_add(content string, unix_time i64, author string) !&Remark {
-// 	// TODO: need to implement using time conversion & look for author
-// 	mut person := data.person_get(author)!
-// 	data.remarks << Remark{
-// 		author: person
-// 		time: time.unix(unix_time)
-// 		content: content
-// 	}
-// 	return &Remark{}
-// }
+//? What is a remark?
+// remark_add
+// ARGS:
+// author = full name of author
+pub fn (mut base Base) remark_add(remark Remark) !&Remark {
+	// TODO: need to implement using time conversion & look for author
+	base.remarks << remark
+	return &Remark{}
+}
