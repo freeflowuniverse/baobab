@@ -1,3 +1,4 @@
+# @person.cid
 
-
-//TODO: template to export a person to wiki (serialization)
+@person.contact.firstname
+@person.contact.lastname
