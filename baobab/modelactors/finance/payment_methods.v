@@ -1,6 +1,6 @@
 module finance
 
-import freeflowuniverse.baobab.modelglobal.country
+import freeflowuniverse.baobab.modelactors.country
 
 pub enum BlockchainType {
 	stellar

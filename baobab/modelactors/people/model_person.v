@@ -1,6 +1,7 @@
 module people
 
 import freeflowuniverse.baobab.modelbase
+import freeflowuniverse.baobab.modelactors.finance
 import time
 
 [heap]
@@ -13,7 +14,7 @@ pub mut:
 	start_date  time.Time // if we make link to person into our own book, we can have start/end date
 	end_date    time.Time
 	contact  &Contact // this has the effective information to the person = contact
-	// paymentmethods 	[]finance.PaymentMethod	
+	paymentmethods 	[]finance.PaymentMethod	
 	// person_type PersonType
 }
 
@@ -85,6 +86,7 @@ pub mut:
 	description string
 	name        string // get in contact
 	cid         string
+	keyword string
 	// TODO: see which other fields are relevant
 }
 
@@ -122,4 +124,28 @@ pub fn (person Person) name_matches(name string) bool {
 	person.name.contains(name) ||
 	person.contact.firstname.contains(name) ||
 	person.contact.lastname.contains(name)
+}
+
+[params]
+struct DigitalPaymentAdd {
+	person string
+	name string
+	blockchain string
+	account string
+	description string
+	preferred bool
+}
+
+pub fn (mut db PeopleDB) digital_payment_add(args DigitalPaymentAdd) !finance.PaymentMethod {
+	mut persons := db.person_find(keyword: args.person)
+	if persons.len == 0 {
+		return error('Failed to add digital payment method. Failed to find person.')
+	}
+	return persons[0].digital_payment_add(
+		name: args.name
+		blockchain: args.blockchain
+		account: args.account
+		description: args.description
+		preferred: args.preferred
+	)
 }
