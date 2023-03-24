@@ -3,11 +3,10 @@ module people
 import os
 import freeflowuniverse.crystallib.pathlib
 
-const data_file = os.dir(@FILE) + '/people_test.js'
+const data_file = os.dir(@FILE) + '/testdata/people_test.md'
 
 fn test_datastructure() {
-	mut db := db("aaa")!
-	db.process(path: people.data_file)!
+	mut database := db("aaa")
+	database.process(path: people.data_file)!
 	println(db)
-	panic('test db for people') // TODO: add more items in file e.g. contact, ... play with other order so it still works
 }
