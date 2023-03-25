@@ -89,7 +89,6 @@ pub mut:
 	cid         string
 	keyword string
 	amount int = 1
-	// TODO: see which other fields are relevant
 }
 
 // find persons in DB

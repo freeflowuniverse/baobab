@@ -5,7 +5,7 @@ import freeflowuniverse.baobab.modelbase
 import freeflowuniverse.baobab.modelactors.finance
 import time
 
-// TODO: need to check what to do here
+// TODO2: need to check what to do here
 
 pub fn (mut person Person) digital_payment_add (new_method finance.PaymentDigitalNewArgs) !finance.PaymentMethod {
 	mut preferred := false
@@ -29,7 +29,7 @@ pub fn (mut person Person) digital_payment_add (new_method finance.PaymentDigita
 		'tfchain'      {finance.BlockchainType.tfchain}
 		'ethereum'     {finance.BlockchainType.ethereum}
 		'smartchain'   {finance.BlockchainType.smartchain}
-		//TODO: no panics
+		//TODO2: no panics
 		else {panic(error("Failed to parse inputted blockchain: Please enter either stellar, algorand, tfchain, ethereum or smartchain."))}
 	}
 
@@ -42,7 +42,7 @@ pub fn (mut person Person) digital_payment_add (new_method finance.PaymentDigita
 	}
 
 	person.paymentmethods << new_method_
-	// TODO any possible checks
+	// TODO2 any possible checks
 	return new_method_
 }
 
@@ -73,6 +73,5 @@ pub fn (mut person Person) digital_payment_add (new_method finance.PaymentDigita
 // 	}
 
 // 	person.paymentmethods << new_method_
-// 	// TODO any possible checks
 // 	return new_method_
 // }

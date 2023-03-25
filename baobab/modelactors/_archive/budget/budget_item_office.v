@@ -11,7 +11,7 @@ import freeflowuniverse.crystallib.timetools { time_from_string }
 pub struct BudgetItemOffice {
 	BudgetItemBase
 pub mut:
-	office_rent       &finance.Amount
+	office_rent       f64
 	food              &finance.Amount
 	utilities         &finance.Amount
 	insurance         &finance.Amount
@@ -32,6 +32,7 @@ pub struct OfficeAddArgs {
 	accomodation_rent string
 	office_supplies   string
 }
+
 
 //+1d, (d,h,m,y) or yyyy:mm:dd
 //? how do you add error handling into this?

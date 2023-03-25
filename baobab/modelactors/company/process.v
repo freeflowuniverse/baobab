@@ -1,4 +1,4 @@
-module people
+module company
 
 import freeflowuniverse.crystallib.actionsparser
 
@@ -10,11 +10,11 @@ pub:
 }
 
 // processes text or path for actions
-// the people db will be filled in with all found relevant information
+// the company db will be filled in with all found relevant information
 // params:
 // 	text   string	//text to get the content from
 // 	path   string   // can be dir or file
-pub fn (mut db PeopleDB) process(args ProcessArgs) ! {
+pub fn (mut db CompanyDB) process(args ProcessArgs) ! {
 	println('args: $args.path')
 	actions := actionsparser.new(
 		text: args.text
@@ -32,30 +32,31 @@ pub fn (mut db PeopleDB) process(args ProcessArgs) ! {
 	}
 }
 
-pub fn (mut db PeopleDB) execute(action actionsparser.Action) ! {
+pub fn (mut db CompanyDB) execute(action actionsparser.Action) ! {
 	// ? not in actions as discussed
 	if action.name == 'book.select' {
 		println(action.params)
-		// TODO2: nothing to do needs to be on higher level
+		// TODO: nothing to do needs to be on higher level
 	}
-	if action.name.ends_with('person_delete') {
-		cid := action.params.get('cid')!
-		db.person_delete(cid)!
-	}
-	if action.name.ends_with('person_define') {
-		cid := action.params.get('cid')!
-		name := action.params.get('name')!
-		mut contact := action.params.decode[Contact]()!
-		person := db.person_define(
-			cid: cid
-			contact: contact
-			name: name
-		)!
-	}
-	if action.name.ends_with('circle_define') {
-		mut circle_args := action.params.decode[CircleArgs]()!
-		circle := db.circle_define(circle_args)!
-	}
+	//TODO: execute the actions for company
+	// if action.name.ends_with('person_delete') {
+	// 	cid := action.params.get('cid')!
+	// 	db.person_delete(cid)!
+	// }
+	// if action.name.ends_with('person_define') {
+	// 	cid := action.params.get('cid')!
+	// 	name := action.params.get('name')!
+	// 	mut contact := action.params.decode[Contact]()!
+	// 	person := db.person_define(
+	// 		cid: cid
+	// 		contact: contact
+	// 		name: name
+	// 	)!
+	// }
+	// if action.name.ends_with('circle_define') {
+	// 	mut circle_args := action.params.decode[CircleArgs]()!
+	// 	circle := db.circle_define(circle_args)!
+	// }
 	if action.name.ends_with('person_de') {
 		mut contact := action.params.decode[Contact]()!
 		person := db.person_define(contact: contact)!

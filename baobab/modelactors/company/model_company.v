@@ -5,6 +5,7 @@ module company
 
 // company structure
 pub struct Company {
+	modelbase.Base		
 pub mut:
 	name    string
 	circles []string // link to circles
@@ -12,7 +13,7 @@ pub mut:
 	// budget                &budget.Budget
 }
 
-//? In this case is it best to input full name and search data.people for that name?
+//? In this case is it best to input full name and search data.company for that name?
 
 pub struct CompanyNewArgs {
 pub mut:

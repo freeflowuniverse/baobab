@@ -30,7 +30,7 @@ pub enum Role {
 pub struct CircleMember {
 pub mut:
 	name string
-	person      &Person // TODO: por contact?
+	person      &Person // TODO: make sure is implemented
 	state       PersonState
 	description string
 	role        Role
@@ -45,7 +45,7 @@ struct CircleArgs {
 }
 
 pub fn (mut circle Circle) wiki() string {
-	// TODO: fill in template
+	// TODO2: fill in template
 	return $tmpl('templates/circle.md')
 }
 
@@ -95,7 +95,7 @@ pub mut:
 	cid         string
 	keyword 	string // applies to all
 	amount	int = 1 // number of results wanted
-	// TODO: see which other fields are relevant
+	// TODO2: see which other fields are relevant
 }
 
 // find circles in DB
