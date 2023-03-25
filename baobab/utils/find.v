@@ -46,7 +46,6 @@ pub fn matches[T](target T, search T, args MatchConfig) bool {
 	// println(args)
 	$for field in T.fields {
 		priority := args.fields.index(field.name)
-		println('\nhere: $args.keyword, $args.relevance, $priority, $field.name')
 		// println('pri: $priority\n $field')
 		$if field.typ is string {
 			if args.relevance == priority+1 {
@@ -69,13 +68,12 @@ pub fn matches[T](target T, search T, args MatchConfig) bool {
 				name := search.$(field.name)
 				name2 := target.$(field.name)
 				// name2
-				println('woah: $field.name\nsearch:${name}\ntarget:$name2')
 				if search.$(field.name) != '' {
 				if target.$(field.name).contains((search.$(field.name))) {
 					return true
 				}}
 			} 
-			if args.relevance == (4*priority) {
+			if args.relevance == (4*(priority+1)) {
 				if args.keyword != '' {
 				if target.$(field.name).contains(args.keyword) {
 					return true

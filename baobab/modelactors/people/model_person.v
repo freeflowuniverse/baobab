@@ -42,7 +42,7 @@ pub fn (mut db PeopleDB) person_define(args PersonDefine) !&Person {
 }
 
 // create a new instance of a person, can be changed after instantiation
-pub fn (mut db PeopleDB) person_new(args_ PersonDefine) !&Person {
+fn (mut db PeopleDB) person_new(args_ PersonDefine) !&Person {
 	mut args := args_
 	mut cid := args.cid
 	if args.cid == '' {
@@ -60,7 +60,7 @@ pub fn (mut db PeopleDB) person_new(args_ PersonDefine) !&Person {
 }
 
 // create a new instance of a person, can be changed after instantiation
-pub fn (mut person Person) update(args PersonDefine) !&Person {
+fn (mut person Person) update(args PersonDefine) !&Person {
 	person.contact = &args.contact
 	person.name = args.name
 	return person
@@ -101,7 +101,7 @@ pub fn (mut db PeopleDB) person_find(args_ PersonFind) []&Person {
 	mut args := args_
 	if args.cid.len > 0 {
 		mut r := db.get(args.cid) or { return [] }
-		return [r]
+		return [&(r as Person)]
 	}
 	args.name = args.name.to_lower()
 	args.description = args.description.to_lower()

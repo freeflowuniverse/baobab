@@ -2,18 +2,31 @@
 //now every person added will be added in this book
 !!actor.select aaa.people
 
+!!contact_delete cid:8ed
+
 //delete everything as found in current book
 !!person_delete cid:1gt
 
-!!person_define
+!!contact_define
   //is optional will be filled in automatically, but maybe we want to update
   cid: '1gt' 
   //name as selected in this group, can be used to find someone back
-  name: fatayera
 	firstname: 'Adnan'
 	lastname: 'Fatayerji'
 	description: 'Head of Business Development'
   email: 'adnan@threefold.io,fatayera@threefold.io'
+
+!!person_define
+  //is optional will be filled in automatically, but maybe we want to update
+  cid: '2dm' 
+  //name as selected in this group, can be used to find someone back
+  name: fatayera
+
+!!person_link_contact
+  ccid: '1gt'
+  pcid: '2dm'
+
+!!circle_delete cid:tt0
 
 !!circle_define
   //is optional will be filled in automatically, but maybe we want to update
