@@ -1,7 +1,7 @@
 module people
 
 
-//TODO2: export to wiki
+//NEXT: export to wiki
 
 import freeflowuniverse.crystallib.actionsparser
 import v.reflection

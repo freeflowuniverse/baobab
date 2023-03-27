@@ -81,7 +81,7 @@ fn (mut contact Contact) update(args Contact) !&Contact {
 // delete contact
 pub fn (mut db PeopleDB) contact_delete(cid_ string) ! {
 	cid := cid_.to_lower()
-	// TODO2: delete from list
+	// NEXT: delete from list
 	for i, contact in db.contacts {
 		if contact.cid == cid {
 			db.contacts.delete(i)
@@ -97,7 +97,7 @@ pub fn (mut db PeopleDB) contact_delete(cid_ string) ! {
 // - Email
 pub fn (mut contact Contact) email_add(email Email) {
 	contact.emails << email
-	// TODO2 any possible checks)
+	// NEXT any possible checks)
 }
 
 // Add telephone
@@ -105,7 +105,7 @@ pub fn (mut contact Contact) email_add(email Email) {
 // - Tel
 pub fn (mut contact Contact) tel_add(tel Tel) {
 	contact.tel << tel
-	// TODO2 any possible checks
+	// NEXT any possible checks
 }
 
 // Add address
@@ -113,7 +113,7 @@ pub fn (mut contact Contact) tel_add(tel Tel) {
 // - Address
 pub fn (mut contact Contact) address_add(addr Address) {
 	contact.addresses << addr
-	// TODO2 any possible checks
+	// NEXT any possible checks
 }
 
 struct ContactFind {

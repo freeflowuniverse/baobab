@@ -1,29 +1,25 @@
 module company
 
-// import freeflowuniverse.baobab.modelactors.budget
-// import freeflowuniverse.baobab.modelglobal.country
+import freeflowuniverse.baobab.modelbase
+import freeflowuniverse.crystallib.actionsparser
+import freeflowuniverse.crystallib.params {Params}
+import freeflowuniverse.baobab.modelbase {SmartId}
 
 // company structure
 pub struct Company {
-	modelbase.Base		
+	modelbase.BaseNamed		
 pub mut:
-	name    string
-	circles []string // link to circles
+	circles []SmartId // link to circles
 	// registration_country  &country.Country
 	// budget                &budget.Budget
 }
 
-//? In this case is it best to input full name and search data.company for that name?
 
-pub struct CompanyNewArgs {
-pub mut:
-	name string
-	// circles               map[string]&Circle
-	// registration_country  &country.Country
+fn (mut db CompanyDB) process_company(actions []actionsparser.Action) ! {
+	//TODO: filtersort
+	// cid := action.params.get('cid')!	
+	panic("implement")
+
 }
 
-// pub fn (mut company Company) budget_create () &budget.Budget {
-// 	budget := budget.Budget{}
-// 	company.budget = &budget
-// 	return &budget
-// }
+

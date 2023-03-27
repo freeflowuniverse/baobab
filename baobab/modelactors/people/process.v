@@ -36,7 +36,7 @@ pub fn (mut db PeopleDB) execute(action actionsparser.Action) ! {
 	// ? not in actions as discussed
 	if action.name == 'book.select' {
 		println(action.params)
-		// TODO2: nothing to do needs to be on higher level
+		// NEXT: nothing to do needs to be on higher level
 	}
 	if action.name.ends_with('person_delete') {
 		cid := action.params.get('cid')!
