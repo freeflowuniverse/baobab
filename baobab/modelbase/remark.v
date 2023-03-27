@@ -1,7 +1,7 @@
 module modelbase
 
 import time
-import freeflowuniverse.crystallib.timetools { time_from_string }
+import freeflowuniverse.crystallib.timetools { parse }
 
 [heap]
 pub struct Remark {
@@ -26,8 +26,10 @@ pub mut:
 // 	   time = 
 pub fn (mut base Base) remark_add(remark RemarkArgs) !&Remark {
 	// NEXT: need to implement using time conversion & look for author (with people manager using cid and name)
-	base.remarks << remark
-	mut t:=time_from_string(remark.time)!
+	//QUESTION: why not pass in remark rather than remark args
+	mut t:=parse(remark.time)!
 	cid:= remark.author //NEXT: this can be wrong, if not CID used, we need to find way how to find an author
-	return &Remark{time:t,content:remark.content,authod:cid}
+	new_remark := &Remark{time:t,content:remark.content,author_cid:cid}
+	base.remarks << new_remark
+	return new_remark
 }
