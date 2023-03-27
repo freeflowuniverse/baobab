@@ -1,5 +1,7 @@
 module people
 
+import freeflowuniverse.baobab.utils
+
 // import freeflowuniverse.baobab.modelglobal.country
 import freeflowuniverse.baobab.modelbase
 
@@ -67,8 +69,12 @@ fn (mut db PeopleDB) contact_new(args_ Contact) !&Contact {
 
 // create a new instance of a contact, can be changed after instantiation
 fn (mut contact Contact) update(args Contact) !&Contact {
-	// contact.contact = &args.contact
-	// contact.name = args.name
+	contact.firstname = args.firstname
+	contact.lastname = args.lastname
+	contact.description = args.description
+	contact.emails = args.emails
+	contact.tel = args.tel
+	contact.addresses = args.addresses
 	return contact
 }
 
@@ -84,7 +90,6 @@ pub fn (mut db PeopleDB) contact_delete(cid_ string) ! {
 	}
 
 	return error('cannot find ${cid} for contacts')
-
 }
 
 // Add email address
@@ -112,15 +117,13 @@ pub fn (mut contact Contact) address_add(addr Address) {
 }
 
 struct ContactFind {
-	cid string
-	name string
-	description string
-	keyword string
-	amount int
-	relevance int
+	Contact
+	keyword string // if provided, searches for keyword matches in all fields of contact
+	amount int = 1// amount of contacts desired to be found
+	relevance int // the relevance of the results, default zero, must be direct match between contact fields and search fields 
 }
 
-pub fn (mut db PeopleDB) contact_find(args_ Contact) []&Contact {
+pub fn (mut db PeopleDB) contact_find(args_ ContactFind) []&Contact {
 	// format args
 	mut args := args_
 	args.cid = args.cid.to_lower()
@@ -133,23 +136,18 @@ pub fn (mut db PeopleDB) contact_find(args_ Contact) []&Contact {
 	}
 	
 	mut result := []&Contact{}
-	return result
+	config := utils.FindConfig{
+		fields: ['cid', 'emails', 'tel', 'firstname', 'lastname', 'description', 'addresses'] // priority of field matches
+		keyword: args.keyword
+		relevance: args.relevance
+	}
 
-	// config := utils.FindConfig{
-	// 	fields: ['name']
-	// 	keyword: args.keyword
-	// 	relevance: 0
-	// }
-
-	// mut search := Person{
-	// 	cid: args.cid
-	// 	name: args.name
-	// 	description: args.description
-	// }
-	// mut results := utils.find[Person](db.persons, search, config) or {
-	// 	return []
-	// }
-	// return results.map(&db.persons[it])
+	mut results := utils.find[Contact](db.contacts, args.Contact, config) or {
+		return [] 
+	}
+	return results.map(&db.contacts[it])
 }
 
-// URGENT: implement contact
+pub fn (mut contact Contact) wiki() string {
+	return $tmpl('templates/contact.md')
+}

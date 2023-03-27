@@ -5,102 +5,102 @@ import time
 
 fn test_contact_new() ! {
 	mut database := db('aaa')
-	person := database.contact_new(
+	contact := database.contact_new(
 		cid: 'tst'
 		firstname: 'Test'
-		lastname: 'Person'
-		description: 'Test Person created for testing'
-		emails: [Email{addr:'test@person.test'}]
+		lastname: 'contact'
+		description: 'Test contact created for testing'
+		emails: [Email{addr:'test@contact.test'}]
 	)!
 
-	assert person.cid == 'tst'
-	assert person.firstname == 'Test'
-	assert person.lastname == 'Person'
-	assert person.description == 'Test Person created for testing'
-	assert person.emails[0].addr == 'test@person.test'
+	assert contact.cid == 'tst'
+	assert contact.firstname == 'Test'
+	assert contact.lastname == 'contact'
+	assert contact.description == 'Test contact created for testing'
+	assert contact.emails[0].addr == 'test@contact.test'
 }
 
-// fn test_person_update() ! {
-// 	mut database := db('aaa')
-// 	mut person := database.person_new(
-// 		cid: 'tst'
-// 		contact: Contact {
-// 			firstname: 'Test'
-// 			lastname: 'Person'
-// 			description: 'Test Person created for testing'
-// 			emails: [Email{addr:'test@person.test'}]
-// 		}
-// 	)!
-// 	person.update(
-// 		contact: Contact {
-// 			firstname: 'Updated Test'
-// 			lastname: 'Person'
-// 			description: 'Updated test Person created for testing'
-// 			emails: [Email{addr:'updated@person.test'}]
-// 		}
-// 	)!
-// }
+fn test_contact_update() ! {
+	mut database := db('aaa')
+	mut contact := database.contact_new(
+		cid: 'tst'
+		firstname: 'Test'
+		lastname: 'contact'
+		description: 'Test contact created for testing'
+		emails: [Email{addr:'test@contact.test'}]
+	)!
+	contact.update(
+		firstname: 'Updated Test'
+		lastname: 'contact'
+		description: 'Updated test contact created for testing'
+		emails: [Email{addr:'updated@contact.test'}]
+	)!
 
-// fn test_person_define() ! {
-// 	mut database := db('aaa')
-// 	mut person := database.person_define(
-// 		cid: 'tst'
-// 		contact: Contact {
-// 			firstname: 'Test'
-// 			lastname: 'Person'
-// 			description: 'Test Person created for testing'
-// 			emails: [Email{addr:'test@person.test'}]
-// 		}
-// 	)!
-// }
+	assert contact.cid == 'tst'
+	assert contact.firstname == 'Updated Test'
+	assert contact.lastname == 'contact'
+	assert contact.description == 'Updated test contact created for testing'
+	assert contact.emails[0].addr == 'updated@contact.test'
+	
+}
 
-// fn test_person_find() ! {
+fn test_contact_define() ! {
+	mut database := db('aaa')
+	mut contact := database.contact_define(
+		cid: 'tst'
+		firstname: 'Test'
+		lastname: 'contact'
+		description: 'Test contact created for testing'
+		emails: [Email{addr:'test@contact.test'}]
+	)!
 
-// 	mut database := db('aaa')
-// 	mut person := database.person_define(
-// 		cid: 'tst'
-// 		contact: Contact {
-// 			firstname: 'Test'
-// 			lastname: 'Person'
-// 			description: 'Test Person created for testing'
-// 			emails: [Email{addr:'test@person.test'}]
-// 		}
-// 	)!
+	assert contact.cid == 'tst'
+	assert contact.firstname == 'Test'
+	assert contact.lastname == 'contact'
+	assert contact.description == 'Test contact created for testing'
+	assert contact.emails[0].addr == 'test@contact.test'
+}
 
-// 	mut persons := []&Person{}
-// 	persons = database.person_find(cid: 'tst')
-// 	assert persons[0].cid == 'tst'
-// 	persons = database.person_find(name: 'test')
-// 	persons = database.person_find(description: 'created for test')
-// }
+fn test_contact_find() ! {
+	mut database := db('aaa')
+	mut contact := database.contact_define(
+		cid: 'tst'
+		firstname: 'Test'
+		lastname: 'contact'
+		description: 'Test contact created for testing'
+		emails: [Email{addr:'test@contact.test'}]
+	)!
 
-// fn test_person_delete() ! {
-// 	mut database := db('aaa')
-// 	mut person := database.person_define(
-// 		cid: 'tst'
-// 		contact: Contact {
-// 			firstname: 'Test'
-// 			lastname: 'Person'
-// 			description: 'Test Person created for testing'
-// 			emails: [Email{addr:'test@person.test'}]
-// 		}
-// 	)!
+	mut contacts := []&Contact{}
+	contacts = database.contact_find(cid: 'tst')
+	assert contacts[0].cid == 'tst'
+	contacts = database.contact_find(lastname: 'test')
+	contacts = database.contact_find(description: 'created for test')
+}
 
-// 	database.person_delete('tst')!
-// 	persons := database.person_find(cid: 'tst')
-// 	assert persons.len == 0
-// }
+fn test_contact_delete() ! {
+	mut database := db('aaa')
+	mut contact := database.contact_define(
+		cid: 'tst'
+		firstname: 'Test'
+		lastname: 'contact'
+		description: 'Test contact created for testing'
+		emails: [Email{addr:'test@contact.test'}]
+	)!
 
-// fn test_wiki() {
-// 	mut database := db('aaa')
-// 	mut person := database.person_define(
-// 		cid: 'tst'
-// 		contact: Contact {
-// 			firstname: 'Test'
-// 			lastname: 'Person'
-// 			description: 'Test Person created for testing'
-// 			emails: [Email{addr:'test@person.test'}]
-// 		}
-// 	)!
-// 	person.wiki()
-// }
+	database.contact_delete('tst')!
+	contacts := database.contact_find(cid: 'tst')
+	assert contacts.len == 0
+}
+
+fn test_wiki() {
+	mut database := db('aaa')
+	mut contact := database.contact_define(
+		cid: 'tst'
+		firstname: 'Test'
+		lastname: 'contact'
+		description: 'Test contact created for testing'
+		emails: [Email{addr:'test@contact.test'}]
+	)!
+	contact.wiki()
+}
