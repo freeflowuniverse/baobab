@@ -45,7 +45,7 @@ struct CircleArgs {
 }
 
 pub fn (mut circle Circle) wiki() string {
-	// TODO2: fill in template
+	// NEXT: fill in template
 	return $tmpl('templates/circle.md')
 }
 
@@ -95,7 +95,7 @@ pub mut:
 	cid         string
 	keyword 	string // applies to all
 	amount	int = 1 // number of results wanted
-	// TODO2: see which other fields are relevant
+	// NEXT: see which other fields are relevant
 }
 
 // find circles in DB

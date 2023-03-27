@@ -1,4 +1,4 @@
-module budget
+module company
 
 import freeflowuniverse.baobab.modelbase
 

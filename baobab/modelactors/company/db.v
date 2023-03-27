@@ -1,7 +1,7 @@
 module company
 
 import freeflowuniverse.baobab.utils
-import freeflowuniverse.crystallib.currency 
+import freeflowuniverse.crystallib.currency  
 
 // Data Struct, DB in memory, over time will be cut in pieces and prob moved to more actor paradigm but ok for now
 [heap]
@@ -20,15 +20,16 @@ pub mut:
 }
 
 // creates a new book data structure
-pub fn db(bid string, basecurrency string) CompanyDB {
-	curr:=currency.currency_get(basecurrency)!
-	mut d := CompanyDB
-		filter: ['...'] //TODO: filter required actions
+pub fn db(bid string, basecurrency string) !CompanyDB {
+	mut currencies:=currency.new()!
+	curr:=currencies.currency_get(basecurrency)!
+	mut db := CompanyDB{
+		filter: ['company_delete', 'budget_delete', 'company_define', 'budget_define'] 
 		actor: 'company'
 		bid: bid
 		basecurrency: &curr
 	}
-	return d
+	return db
 }
 
 pub fn (db CompanyDB)cid_new() string {
