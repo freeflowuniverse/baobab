@@ -1,6 +1,7 @@
 module people
 
 import freeflowuniverse.baobab.modelbase
+import freeflowuniverse.baobab.utils
 import time
 
 [heap]
@@ -89,8 +90,9 @@ pub fn (mut circle Circle) update(args CircleArgs) !&Circle {
 
 [params]
 pub struct CircleFind {
+	Circle
 pub mut:
-	description string
+	relevance int
 	name        string // get in contact
 	cid         string
 	keyword 	string // applies to all
@@ -105,40 +107,28 @@ pub mut:
 // name   string
 // keyword string // if keyword provided, it checks until finds a match
 pub fn (mut db PeopleDB) circle_find(args_ CircleFind) []&Circle {
+	// format args
 	mut args := args_
+	args.cid = args.cid.to_lower()
+
+	// find by cid if db.get returns result
 	if args.cid.len > 0 {
-		mut r := db.get_circle(args.cid) or { return [] }
-		return [r]
+		if mut r := db.get(args.cid) {
+			return [&(r as Circle)]
+		}
 	}
-	args.name = args.name.to_lower()
-	args.description = args.description.to_lower()
-	args.keyword = args.keyword.to_lower()
+	
 	mut result := []&Circle{}
-	mut i := 0
-	for {
-		if i == db.circles.len {
-			break
-		}
-		if db.circles[i].name == args.name {
-			result << &db.circles[i]
-			if result.len == args.amount {
-				return result
-			}
-		}
-		if db.circles[i].name == args.keyword {
-			result << &db.circles[i]
-			if result.len == args.amount {
-				return result
-			}
-		// }
-		// db.circles[i].name == args.keyword || 
-		// db.circles[i].description.contains(args.description)
-		// {
-			result << &db.circles[i]
-		} 
-		i += 1
+	config := utils.FindConfig{
+		// fields: ['cid', 'emails', 'tel', 'firstname', 'lastname', 'description', 'addresses'] // priority of field matches
+		keyword: args.keyword
+		relevance: args.relevance
 	}
-	return result
+
+	mut results := utils.find[Circle](db.circles, args.Circle, config) or {
+		return []
+	}
+	return results.map(&db.circles[it])
 }
 
 pub struct CircleLink{
