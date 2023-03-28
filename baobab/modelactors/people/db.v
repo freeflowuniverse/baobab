@@ -61,11 +61,3 @@ pub fn (db PeopleDB) get(cid string) ?&RootObject {
 	}
 	return none
 }
-
-pub fn (db PeopleDB) get_circle(cid string) ?&Circle {
-	circles := db.circles.filter(it.cid == cid)
-	if circles.len == 1 {
-		return &circles[0]
-	}
-	return none
-}
