@@ -4,7 +4,6 @@ module people
 //NEXT: export to wiki
 
 import freeflowuniverse.crystallib.actionsparser
-import v.reflection
 
 [params]
 pub struct Export {

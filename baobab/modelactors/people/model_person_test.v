@@ -1,7 +1,6 @@
 module people
 
 import freeflowuniverse.baobab.modelbase
-import time
 
 fn test_person_new() ! {
 	mut database := db('aaa')
