@@ -17,7 +17,7 @@ fn test_export_generic() {
 	}
 
 	str := export[TestStruct](contact)
-	panic(str)
+	// panic(str)
 }
 
 fn test_export_contact() {

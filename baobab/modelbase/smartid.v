@@ -47,10 +47,13 @@ fn (mut si SmartId) getstr() !string {
 		}
 		return "${si.bid}.${si.cid}"
 	}
-	if si.cid.len<3 || si.cid.len>6{
-		return error("when rid used, a cid is needed and min length is 3, max 6, here ${si.cid}")					
-	}	
-	return si.cid
+	if si.cid.len>0 {
+		if si.cid.len<3 || si.cid.len>6{
+			return error("when rid used, a cid is needed and min length is 3, max 6, here ${si.cid}")					
+		}	
+		return si.cid
+	}
+	return ''
 }
 
 

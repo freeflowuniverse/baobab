@@ -46,6 +46,7 @@ pub fn (db PeopleDB)cid_new() string {
 
 type RootObject = Person | Contact | Circle
 
+//QUESTION: good idea to have multiple getters?
 pub fn (db PeopleDB) get(cid string) ?&RootObject {
 	person := db.persons.filter(it.cid == cid)
 	if person.len == 1 {

@@ -1,6 +1,7 @@
 //select the book, can come from context as has been set before
 //now every person added will be added in this book
-!!actor.select aaa.people
+!!select_book aaa
+!!select_actor people
 
 !!contact_delete cid:8ed
 
@@ -22,9 +23,12 @@
   //name as selected in this group, can be used to find someone back
   name: fatayera
 
+<!-- QUESTION: is  this implementation ok? -->
+<!-- !!person_link_contact ccid: '1gt' pcid: '2dm' -->
+
 !!person_link_contact
-  ccid: '1gt'
-  pcid: '2dm'
+  contact: '1gt'
+  person: '2dm'
 
 !!circle_delete cid:tt0
 
@@ -61,16 +65,15 @@
 	description: 'TF Wallet for TFT' 
 	preferred: false
 
-!!actor.select aaa.test
+!!select_actor test
 
 !!test_action
 	key: value
 
-!!actor.select bbb.people
+!!select_book bbb
 
 !!person_define
   cid: 'eg'
   name: despiegk
 
-!!book.select bbb
 "
