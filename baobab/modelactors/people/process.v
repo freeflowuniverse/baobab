@@ -1,30 +1,25 @@
 module people
 
-import freeflowuniverse.crystallib.actionsparser
+import freeflowuniverse.crystallib.actionsparser { Action, FilterArgs, filtersort }
 
-[params]
-pub struct ProcessArgs {
-pub:
-	text string
-	path string // can be dir or file
-}
+
+// QUESTION: filter in process or outside
+
 
 // processes text or path for actions
 // the people db will be filled in with all found relevant information
 // params:
 // 	text   string	//text to get the content from
 // 	path   string   // can be dir or file
-pub fn (mut db PeopleDB) process(args ProcessArgs) ! {
-	println('args: $args.path')
-	actions := actionsparser.new(
-		text: args.text
-		path: args.path
-		filter: db.filter
-		actor: db.actor
-		book: db.bid
-	)!
+pub fn (mut db PeopleDB) process(actions_ []Action) ! {
 
-	for action in actions.ok {
+	args := FilterArgs {
+		actor: 'people'
+		book: 'aaa'
+	}
+	actions := filtersort(actions_, args)!
+
+	for action in actions {
 		db.execute(action) or {
 			handle_error(err)
 			continue
@@ -45,10 +40,8 @@ pub fn (mut db PeopleDB) execute(action actionsparser.Action) ! {
 	if action.name.ends_with('person_define') {
 		cid := action.params.get('cid')!
 		name := action.params.get('name')!
-		mut contact := action.params.decode[Contact]()!
 		person := db.person_define(
 			cid: cid
-			contact: contact
 			name: name
 		)!
 	}
@@ -56,9 +49,13 @@ pub fn (mut db PeopleDB) execute(action actionsparser.Action) ! {
 		mut circle_args := action.params.decode[CircleArgs]()!
 		circle := db.circle_define(circle_args)!
 	}
-	if action.name.ends_with('person_de') {
+	if action.name.ends_with('contact_define') {
 		mut contact := action.params.decode[Contact]()!
-		person := db.person_define(contact: contact)!
+		person := db.contact_define(contact)!
+	}
+	if action.name.ends_with('person_link_contact') {
+		mut args := action.params.decode[PersonLinkContact]()!
+		person := db.person_link_contact(args)!
 	}
 	if action.name.ends_with('circle_define') {
 		mut circle_args := action.params.decode[CircleArgs]()!
@@ -78,7 +75,7 @@ pub fn (mut db PeopleDB) execute(action actionsparser.Action) ! {
 	// }
 }
 
-//? how to better handle errors
+//QUESTION: how to better handle errors
 pub fn handle_error(err IError) {
 	println(err)
 

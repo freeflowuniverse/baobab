@@ -43,46 +43,7 @@ fn test_circle_define() ! {
 	)!
 }
 
-pub fn test_circle_find() ! {
-	mut database := db('aaa')
-
-	mut circle := database.circle_define(
-		cid: 'tt0'
-		name: 'tftech'
-		description: 'Developing planet first people first tech'
-	)!
-
-	mut args := CircleFind {
-		cid: 'tt0'
-	}
-	
-	mut circles := []&Circle{}
-	circles = database.circle_find(args)
-	assert circles.len == 1	
-	assert circles[0].name == 'tftech'
-	assert circles[0].cid == 'tt0'
-	
-	args = CircleFind {
-		name: 'tftech'
-	}
-	
-	circles = database.circle_find(args)
-	assert circles.len == 1
-	assert circles[0].name == 'tftech'
-	assert circles[0].cid == 'tt0'
-
-	// args = CircleFind {
-	// 	description: 'planet first'
-	// }
-	
-	// circles = database.circle_find(args)
-	// assert circles.len == 1
-	// assert circles[0].name == 'tftech'
-	// assert circles[0].cid == 'tt0'
-
-}
-
-pub fn test_circle_link() ! {
+fn test_circle_link() ! {
 	mut database := db('aaa')
 
 	mut circle := database.circle_define(
@@ -93,10 +54,6 @@ pub fn test_circle_link() ! {
 
 	mut person := database.person_define(
 		cid: 'tsp'
-		contact: Contact {
-			firstname: 'Test'
-			lastname: 'Person'
-		}
 	)!
 
 	mut args := CircleLink {
@@ -115,3 +72,43 @@ fn test_wiki() {
 	mut circle := Circle{}
 	circle.wiki()
 }
+
+//TODO: implement
+// pub fn test_circle_find() ! {
+// 	mut database := db('aaa')
+
+// 	mut circle := database.circle_define(
+// 		cid: 'tt0'
+// 		name: 'tftech'
+// 		description: 'Developing planet first people first tech'
+// 	)!
+
+// 	mut args := CircleFind {
+// 		cid: 'tt0'
+// 	}
+	
+// 	mut circles := []&Circle{}
+// 	circles = database.circle_find(args)
+// 	assert circles.len == 1	
+// 	assert circles[0].name == 'tftech'
+// 	assert circles[0].cid == 'tt0'
+	
+// 	args = CircleFind {
+// 		name: 'tftech'
+// 	}
+	
+// 	circles = database.circle_find(args)
+// 	assert circles.len == 1
+// 	assert circles[0].name == 'tftech'
+// 	assert circles[0].cid == 'tt0'
+
+// 	// args = CircleFind {
+// 	// 	description: 'planet first'
+// 	// }
+	
+// 	// circles = database.circle_find(args)
+// 	// assert circles.len == 1
+// 	// assert circles[0].name == 'tftech'
+// 	// assert circles[0].cid == 'tt0'
+
+// }

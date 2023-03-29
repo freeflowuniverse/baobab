@@ -1,6 +1,5 @@
 module modelbase
 
-import time
 import freeflowuniverse.crystallib.params {Params}
 
 // NEXT: need to discuss how to do this,
@@ -26,7 +25,7 @@ pub mut:
 
 
 
-
+//QUESTION: why not use regular json library
 fn (mut base Base) json_dump() ! {
 	// URGENT: make this generic so all can be used
 }

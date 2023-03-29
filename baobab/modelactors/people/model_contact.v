@@ -3,7 +3,7 @@ module people
 import freeflowuniverse.baobab.utils
 
 // import freeflowuniverse.baobab.modelglobal.country
-import freeflowuniverse.baobab.modelbase
+import freeflowuniverse.baobab.modelbase {cid_name_find}
 
 [heap]
 pub struct Contact {
@@ -46,14 +46,10 @@ pub mut:
 
 // creates new contact if contact defined doesn't exist, else updates contact
 pub fn (mut db PeopleDB) contact_define(args Contact) !&Contact {
-	mut contacts := db.contact_find(cid: args.cid)
-	if contacts.len == 0 {
-		return db.contact_new(args)
-	} else if contacts.len == 1 {
-		return contacts[0].update(args)
-	} else {
-		return error('Multiple contacts with same cid found.\nThis should never happen.')
+	if mut contact := db.contact_cid_name_find(args.cid) {
+		return contact.update(args)
 	}
+	return db.contact_new(args)
 }
 
 // create a new instance of a contact, can be changed after instantiation
@@ -62,7 +58,6 @@ fn (mut db PeopleDB) contact_new(args_ Contact) !&Contact {
 	if args.cid == '' {
 		args.cid = db.cid_new()
 	}
-	
 	db.contacts << args
 	return &db.contacts[db.contacts.len - 1]
 }
@@ -116,38 +111,49 @@ pub fn (mut contact Contact) address_add(addr Address) {
 	// NEXT any possible checks
 }
 
-struct ContactFind {
-	Contact
-	keyword string // if provided, searches for keyword matches in all fields of contact
-	amount int = 1// amount of contacts desired to be found
-	relevance int // the relevance of the results, default zero, must be direct match between contact fields and search fields 
-}
-
-pub fn (mut db PeopleDB) contact_find(args_ ContactFind) []&Contact {
-	// format args
-	mut args := args_
-	args.cid = args.cid.to_lower()
-
-	// find by cid if db.get returns result
-	if args.cid.len > 0 {
-		if mut r := db.get(args.cid) {
-			return [&(r as Contact)]
-		}
-	}
-	
-	mut result := []&Contact{}
-	config := utils.FindConfig{
-		fields: ['cid', 'emails', 'tel', 'firstname', 'lastname', 'description', 'addresses'] // priority of field matches
-		keyword: args.keyword
-		relevance: args.relevance
-	}
-
-	mut results := utils.find[Contact](db.contacts, args.Contact, config) or {
-		return [] 
-	}
-	return results.map(&db.contacts[it])
-}
-
 pub fn (mut contact Contact) wiki() string {
 	return $tmpl('templates/contact.md')
 }
+
+pub fn (db PeopleDB) contact_cid_name_find(cid_name string) ?&Contact {
+	index := cid_name_find(db.contacts, cid_name) or {
+		panic(err)
+	}
+	if index == -1 {
+		return none
+	}
+	return &db.contacts[index]
+} 
+
+//TODO: implement
+// struct ContactFind {
+// 	Contact
+// 	keyword string // if provided, searches for keyword matches in all fields of contact
+// 	amount int = 1// amount of contacts desired to be found
+// 	relevance int // the relevance of the results, default zero, must be direct match between contact fields and search fields 
+// }
+
+// pub fn (mut db PeopleDB) contact_find(args_ ContactFind) []&Contact {
+// 	// format args
+// 	mut args := args_
+// 	args.cid = args.cid.to_lower()
+
+// 	// find by cid if db.get returns result
+// 	if args.cid.len > 0 {
+// 		if mut r := db.get(args.cid) {
+// 			return [&(r as Contact)]
+// 		}
+// 	}
+	
+// 	mut result := []&Contact{}
+// 	config := utils.FindConfig{
+// 		fields: ['cid', 'emails', 'tel', 'firstname', 'lastname', 'description', 'addresses'] // priority of field matches
+// 		keyword: args.keyword
+// 		relevance: args.relevance
+// 	}
+
+// 	mut results := utils.find[Contact](db.contacts, args.Contact, config) or {
+// 		return [] 
+// 	}
+// 	return results.map(&db.contacts[it])
+// }

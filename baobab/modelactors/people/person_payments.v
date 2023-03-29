@@ -1,9 +1,7 @@
 module people
 
 import freeflowuniverse.crystallib.currency
-import freeflowuniverse.baobab.modelbase
 import freeflowuniverse.baobab.modelactors.finance
-import time
 
 // NEXT: need to check what to do here
 

@@ -7,8 +7,13 @@ const data_file = os.dir(@FILE) + '/testdata/people_test.md'
 
 // Todo: more tests
 fn test_process() ! {
+	parser := actionsparser.new(
+		defaultbook: 'aaa'
+		path: data_file
+	)!
+
 	mut database := db('aaa')
-	database.process(path: data_file)!
+	database.process(parser.actions)!
 
 	// // process database manually
 	// mut db_manual := db('aaa')

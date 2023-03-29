@@ -1,7 +1,5 @@
 module modelbase
 
-import time
-
 // TODO: need to discuss how to do this,
 // maybe we need to use functionality from markdown parser,
 // so we know how to go back there and save full file starting from the markdown file.
@@ -22,7 +20,7 @@ pub fn smartid_new(smartid_ string)!SmartId{
 	smartid:=smartid_.to_lower()
 	//URGENT: parse with 1 . or 2 or 3
 	// check is of our type
-	si:=SmartId{cid:"aaa"} //FIXME: temp
+	mut si:=SmartId{cid:"aaa"} //FIXME: temp
 	si.check()! //check if valid
 	return si
 }
@@ -33,7 +31,7 @@ fn (mut si SmartId) check() ! {
 }
 
 
-fn (mut si SmartId) getstr()!{
+fn (mut si SmartId) getstr() !string {
 	if si.rid.len>0{
 		if si.bid.len<3 || si.bid.len>6{
 			return error("when rid used, a bid is needed and min length is 3, max 6, here ${si.bid}")					
@@ -49,10 +47,13 @@ fn (mut si SmartId) getstr()!{
 		}
 		return "${si.bid}.${si.cid}"
 	}
-	if si.cid.len<3 || si.cid.len>6{
-		return error("when rid used, a cid is needed and min length is 3, max 6, here ${si.cid}")					
-	}	
-	return "${si.cid}"
+	if si.cid.len>0 {
+		if si.cid.len<3 || si.cid.len>6{
+			return error("when rid used, a cid is needed and min length is 3, max 6, here ${si.cid}")					
+		}	
+		return si.cid
+	}
+	return ''
 }
 
 
@@ -62,6 +63,6 @@ pub fn (mut si SmartId) str()string{
 
 //make sure smartid is properly formatted, will return if we can fix it
 pub fn smartid_fix(smartid string)!string{
-	si:=smartid_new(smartid)!
+	mut si:=smartid_new(smartid)!
 	return si.str()
 }
