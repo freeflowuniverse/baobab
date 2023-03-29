@@ -1,6 +1,6 @@
 module people
 
-import freeflowuniverse.baobab.modelbase
+import freeflowuniverse.baobab.modelbase {cid_name_find}
 import freeflowuniverse.baobab.utils
 import time
 
@@ -52,14 +52,10 @@ pub fn (mut circle Circle) wiki() string {
 
 // creates new person if person defined doesn't exist, else updates person
 pub fn (mut db PeopleDB) circle_define(args CircleArgs) !&Circle {
-	mut circles := db.circle_find(cid: args.cid)
-	if circles.len == 0 {
-		return db.circle_new(args)
-	} else if circles.len == 1 {
-		return circles[0].update(args)
-	} else {
-		return error('Multiple circles with same cid found.\nThis should never happen.')
+	if mut circle := db.circle_cid_name_find(args.cid) {
+		return circle.update(args)
 	}
+	return db.circle_new(args)
 }
 
 // create a new instance of a person, can be changed after instantiation
@@ -100,36 +96,36 @@ pub mut:
 	// NEXT: see which other fields are relevant
 }
 
-// find circles in DB
-// will look at person level as well as at contact level
-// params:
-// description   string
-// name   string
-// keyword string // if keyword provided, it checks until finds a match
-pub fn (mut db PeopleDB) circle_find(args_ CircleFind) []&Circle {
-	// format args
-	mut args := args_
-	args.cid = args.cid.to_lower()
+// // find circles in DB
+// // will look at person level as well as at contact level
+// // params:
+// // description   string
+// // name   string
+// // keyword string // if keyword provided, it checks until finds a match
+// pub fn (mut db PeopleDB) circle_find(args_ CircleFind) []&Circle {
+// 	// format args
+// 	mut args := args_
+// 	args.cid = args.cid.to_lower()
 
-	// find by cid if db.get returns result
-	if args.cid.len > 0 {
-		if mut r := db.get(args.cid) {
-			return [&(r as Circle)]
-		}
-	}
+// 	// find by cid if db.get returns result
+// 	if args.cid.len > 0 {
+// 		if mut r := db.get(args.cid) {
+// 			return [&(r as Circle)]
+// 		}
+// 	}
 	
-	mut result := []&Circle{}
-	config := utils.FindConfig{
-		// fields: ['cid', 'emails', 'tel', 'firstname', 'lastname', 'description', 'addresses'] // priority of field matches
-		keyword: args.keyword
-		relevance: args.relevance
-	}
+// 	mut result := []&Circle{}
+// 	config := utils.FindConfig{
+// 		// fields: ['cid', 'emails', 'tel', 'firstname', 'lastname', 'description', 'addresses'] // priority of field matches
+// 		keyword: args.keyword
+// 		relevance: args.relevance
+// 	}
 
-	mut results := utils.find[Circle](db.circles, args.Circle, config) or {
-		return []
-	}
-	return results.map(&db.circles[it])
-}
+// 	mut results := utils.find[Circle](db.circles, args.Circle, config) or {
+// 		return []
+// 	}
+// 	return results.map(&db.circles[it])
+// }
 
 pub struct CircleLink{
 mut:
@@ -155,22 +151,12 @@ pub fn (mut db PeopleDB) circle_link(args_ CircleLink) ! {
 	args.role = args.role.to_lower()
 
 	// get circle
-	mut circles := db.circle_find(cid: args.circle)
-	if circles.len == 0 {
-		// maybe provided circle param is not cid but name
-		circles = db.circle_find(name: args.circle)
-	}
-	if circles.len == 0 {
+	mut circle := db.circle_cid_name_find(args.circle) or {
 		return error('Failed to find circle $args.circle')
 	}
 
 	// get person
-	mut persons := db.person_find(cid: args.person)
-	if persons.len == 0 {
-		// maybe provided circle param is not cid but name
-		persons = db.person_find(name: args.person)
-	}
-	if persons.len == 0 {
+	mut person := db.person_cid_name_find(args.person) or {
 		return error('Failed to find person $args.person')
 	}
 
@@ -185,13 +171,13 @@ pub fn (mut db PeopleDB) circle_link(args_ CircleLink) ! {
 	}
 
 	member := CircleMember{
-		person: persons[0]
+		person: person
 		state: .uncertain
 		description: args.description
 		name: args.name
 		role: role
 	}
-	circles[0].members << member
+	circle.members << member
 }
 
 struct CircleComment{
@@ -210,28 +196,28 @@ pub fn (mut db PeopleDB) circle_comment(args_ CircleComment) ! {
 	}
 
 	// get circle
-	mut circles := db.circle_find(cid: args.circle)
-	if circles.len == 0 {
-		// maybe provided circle param is not cid but name
-		circles = db.circle_find(name: args.circle)
-	}
-	if circles.len == 0 {
+	mut circle := db.circle_cid_name_find(args.circle) or {
 		return error('Failed to find circle $args.circle')
 	}
 
 	// get person
-	mut persons := db.person_find(cid: args.person)
-	if persons.len == 0 {
-		// maybe provided circle param is not cid but name
-		persons = db.person_find(name: args.person)
-	}
-	if persons.len == 0 {
+	mut person := db.person_cid_name_find(args.person) or {
 		return error('Failed to find person $args.person')
 	}
 
-	circles[0].remark_add(
-		author: persons[0].cid
+	circle.remark_add(
+		author: person.cid
 		content: args.comment
-		time: time.now()
+		time: time.now().format()
 	)!
 }
+
+pub fn (db PeopleDB) circle_cid_name_find(cid_name string) ?&Circle {
+	index := cid_name_find(db.circles, cid_name) or {
+		panic(err)
+	}
+	if index == -1 {
+		return none
+	}
+	return &db.circles[index]
+} 
