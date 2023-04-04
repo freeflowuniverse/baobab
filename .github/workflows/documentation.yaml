@@ -29,6 +29,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install mdbook dependencies
+        run: bash manual/install.sh
+        
       - name: Generate documentation
         run: |
           bash doc.sh
