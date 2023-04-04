@@ -2,6 +2,7 @@ module jobs
 
 import freeflowuniverse.crystallib.texttools
 
+// Exports a job to human readable string.
 pub fn (job ActionJob) export() !string {
 	mut j2 := job.pub_get()
 	mut out := []string{}

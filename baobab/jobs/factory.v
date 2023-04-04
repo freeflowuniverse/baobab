@@ -4,6 +4,7 @@ import freeflowuniverse.crystallib.params { Params }
 import rand
 import time
 
+// Arguments for creating a new job
 [params]
 pub struct JobNewArgs {
 pub mut:
@@ -14,7 +15,7 @@ pub mut:
 	src_twinid   u32
 }
 
-// creates new actionjob
+// Creates new actionjob
 pub fn new(args JobNewArgs) !ActionJob {
 	mut j := ActionJob{
 		guid: rand.uuid_v4()

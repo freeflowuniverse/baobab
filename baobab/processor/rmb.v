@@ -5,6 +5,8 @@ import encoding.base64
 import json
 import time
 
+// Helper function to convert a RMBErrorCode to
+// a proper error message.
 pub fn error_code_to_message(code RMBErrorCode) string {
 	match code {
 		.failed_decoding_payload_to_job {
@@ -19,6 +21,8 @@ pub fn error_code_to_message(code RMBErrorCode) string {
 	}
 }
 
+// The different error codes that can occur
+// when handeling RMB messages.
 pub enum RMBErrorCode as u8 {
 	failed_decoding_payload_to_job
 	unauthorized
@@ -38,7 +42,7 @@ pub mut:
 	shm string
 }
 
-pub struct RMBResponse {
+struct RMBResponse {
 pub mut:
 	ver int = 1
 	ref string
@@ -48,7 +52,7 @@ pub mut:
 	now u64
 }
 
-pub struct RMBError {
+struct RMBError {
 pub mut:
 	ver int = 1
 	ref string
@@ -62,8 +66,10 @@ pub mut:
 	}
 }
 
-// listens to rmb queue for incoming execute job messages
-// parses message into job saves job and message, returns optional guid
+// Assumes the encoded_msg is an RMB message and assumes the
+// payload of that message contains a job which it will save
+// in redis and return the guid for it. It will return a
+// proper error if any of these steps failed.
 fn (mut p Processor) get_rmb_job(encoded_msg string) ?string {
 	msg := json.decode(RMBMessage, encoded_msg) or {
 		p.logger.error('Failed decoding ${encoded_msg} to RMBMessage: ${err}')
@@ -95,6 +101,7 @@ fn (mut p Processor) get_rmb_job(encoded_msg string) ?string {
 	return job.guid
 }
 
+// Sends back an RMB error to the sender of the message
 fn (mut p Processor) send_rmb_error_message(code RMBErrorCode, msg &RMBMessage) {
 	mut q_return := p.client.redis.queue_get(msg.ret)
 	response := RMBError{
@@ -112,7 +119,7 @@ fn (mut p Processor) send_rmb_error_message(code RMBErrorCode, msg &RMBMessage) 
 	}
 }
 
-// return_job returns a job by placing it to the correct redis return queue
+// Returns a job by placing it to the correct redis return queue
 fn (mut p Processor) return_job_rmb(guid string) ! {
 	job := p.client.job_get(guid)!
 

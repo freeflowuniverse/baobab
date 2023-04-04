@@ -2,7 +2,7 @@ module jobs
 
 import time
 
-// return true if we didn't reach timeout yet
+// Checks if the timeout has not been reached yet.
 pub fn (job &ActionJob) check_timeout_ok() bool {
 	if job.timeout == 0 {
 		return true

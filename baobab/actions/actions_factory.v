@@ -2,31 +2,34 @@ module actions
 
 import os
 
+// Factory method to create an ActionMananger
 pub fn get() ActionsManager {
 	return ActionsManager{}
 }
 
-// parse text to actions struct
+// Parses the text to actions using an ActionsManager
 pub fn text_parse(content string) !ActionsManager {
 	mut actions := get()
 	actions.text_parse(content)!
 	return actions
 }
 
+// Parses the file to actions using an ActionsManager
 pub fn file_parse(path string) !ActionsManager {
 	mut actions := get()
 	actions.file_parse(path)!
 	return actions
 }
 
-// walk over all files of a dir and return list of actions with its parameters
+// Walks over all files of a dir and returns a list
+// of actions using a ActionsManager
 pub fn dir_parse(path string) !ActionsManager {
 	mut actions := get()
 	actions.add(path)!
 	return actions
 }
 
-// path can be a directory or a file
+// Add a path to the ActionsManager to parse later
 pub fn (mut actions ActionsManager) add(path string) ! {
 	// recursive behavior for when dir
 	if os.is_dir(path) {

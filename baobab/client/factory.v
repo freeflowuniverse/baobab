@@ -8,6 +8,10 @@ pub mut:
 	twinid u32
 }
 
+// Factory method to create a client. It takes in
+// the address where the redis server is running.
+// Make sure to put the twinid of the system in
+// the redis key client.mytwin.id.
 pub fn new(redis_address string) !Client {
 	mut redis := redisclient.get(redis_address)!
 	mut client := Client{

@@ -1,29 +1,25 @@
-# Processor
+The processor requires a redis server running at local port 6379. It is the entity that uses a couple of queues to allow messaging of ActionJob's between external clients and internal actors:
+* jobs.actors.$domain_name.$actorname
+* jobs.return.$guid
+* jobs.processor.in
+* jobs.processor.result
+* jobs.processor.error
+* jobs.processor.active
 
-**Processor requires a redis server running at local port 6379**
+## jobs.actors.$domain_name.$actorname
+The processor puts job guids into those queues so that the actors know that there is something to do.
 
-### Redis Queues
+## jobs.return.$guid
+There will be one queue per job, the processor will put jobs that are finished in those queues for the client to notice. 
 
-The processor uses the following queues to allow messaging of ActionJob's between external clients and internal actors.
+## jobs.processor.in
+The client will put jobs into that queue for the processor to handle. The processor will pull it and distribute it to the right actor's queue. 
 
-```golang
-jobs.actors.$domain_name.$actorname //is queue which tells actor there is something for you to do, returns guid
-//processor uses, client polls the return to know RPC is done
-jobs.return.${guid} //a queue per job, to wait for return (if we were asking for an action to be executed)
-//client writes:
-jobs.processor.in //is queue for the job processor (job guid), to basically trigger the processor to make sure job will get executed
-//actor writes (or actionrunner if timeout):
-// ? inquire purpose
-jobs.processor.result // once job executed put guid in this queue, the processor will do the test
-jobs.processor.error // once job executed adn in error put guid in this queue
-//processor writes
-jobs.processor.active // hset keeping a list of the active jobs, is just list of guid's
-```
+## jobs.processor.result
+This queue is used by the processor to know when a job has successfully finished and thus can be returned to the client. 
 
-### Testing
+## jobs.processor.error
+Just as with the *jobs.processor.result* queue the processor knows when to return a job, except that this time the job failed. 
 
-Make sure to have a redis server running at local port 6379 before running tests.
-
-```
-
-```
+## jobs.processor.active
+The processor keeps a list of active jobs in this queue.

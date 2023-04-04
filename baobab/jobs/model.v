@@ -3,6 +3,7 @@ module jobs
 import freeflowuniverse.crystallib.params { Params }
 import time
 
+// The possible states of a job
 pub enum ActionJobState {
 	init
 	tostart
@@ -18,6 +19,8 @@ pub mut:
 	jobs []ActionJob
 }
 
+// The internal representation of a job. For params see
+// github/freeflowuniverse/crystallib/params/readme.md.
 pub struct ActionJob {
 pub mut:
 	guid         string // unique jobid (unique per actor which is unique per twin)
@@ -36,6 +39,7 @@ pub mut:
 	dependencies []string
 }
 
+// An internal struct for representing failed jobs.
 pub struct JobError {
 	Error
 pub mut:
@@ -43,6 +47,7 @@ pub mut:
 	job_guid string
 }
 
+// Returns a human readable job error message.
 pub fn (err JobError) msg() string {
 	return 'Job Error: Job ${err.job_guid} failed with error: ${err.msg}'
 }
