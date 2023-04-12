@@ -20,10 +20,7 @@ pub fn (mut db PeopleDB) process(actions_ []Action) ! {
 	actions := filtersort(actions_, args)!
 
 	for action in actions {
-		db.execute(action) or {
-			handle_error(err)
-			continue
-		}
+		db.execute(action)!
 	}
 }
 
@@ -73,10 +70,4 @@ pub fn (mut db PeopleDB) execute(action actionsparser.Action) ! {
 	// if true {
 	// 	panic('sssssdsdsd')
 	// }
-}
-
-//QUESTION: how to better handle errors
-pub fn handle_error(err IError) {
-	println(err)
-
 }
