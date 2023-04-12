@@ -23,3 +23,8 @@ fn (mut db CompanyDB) process_company(actions []actionsparser.Action) ! {
 }
 
 
+
+fn (mut obj Company) wiki() !string {
+	return "IS WIKI"
+}
+

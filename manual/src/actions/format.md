@@ -18,6 +18,7 @@ Formatting the action as shown below results in the same behavior.
 ### Parameters
 
 Baobab can parse many types of parameters:
+
 - Number: any type of number can be used here
 - Text: any type of text can be used here
 - Time: this represents a time value which can be 24 hour format or am/pm format. These are some valid examples: 21, 22:12, 10PM, 11:20PM, 3AM, 4:32AM

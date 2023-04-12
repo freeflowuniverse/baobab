@@ -1,17 +1,16 @@
 module company
 
 import freeflowuniverse.baobab.modelbase
-import freeflowuniverse.crystallib.timetools { time_from_string }
-import freeflowuniverse.crystallib.params { Tags ParamsFilter}
-import freeflowuniverse.crystallib.actionsparser
-import freeflowuniverse.crystallib.params {Params}
-import time
+// import freeflowuniverse.crystallib.timetools { time_from_string }
+// import freeflowuniverse.crystallib.params { Tags ParamsFilter}
+// import freeflowuniverse.crystallib.actionsparser
+// import freeflowuniverse.crystallib.params {Params}
+// import time
 
-// budget_item
 
 [heap]
 pub struct CostItem {
-	modelbase.Base			
+	modelbase.BaseNamed			
 pub mut:
 	start          time.Time
 	stop           time.Time

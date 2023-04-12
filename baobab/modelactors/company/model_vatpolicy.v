@@ -4,7 +4,7 @@ import freeflowuniverse.baobab.modelbase
 
 [heap]
 pub struct VatPolicy {
-	modelbase.Base	
+	modelbase.BaseNamed	
 pub mut:
 	cid            string 
 	name           string

@@ -1,14 +1,21 @@
 module modelbase
 
 import time
-import freeflowuniverse.crystallib.timetools { parse }
+import freeflowuniverse.crystallib.timetools
+import freeflowuniverse.crystallib.texttools
+
 
 [heap]
+pub struct Remarks {
+pub mut:
+	remarks 	[]Remark
+}
+
 pub struct Remark {
 pub mut:
 	content 	string
 	time    	time.Time
-	author_cid 	string  
+	author 		SmartId
 }
 
 [params]
@@ -24,12 +31,31 @@ pub mut:
 // ARGS:
 //     author = name (person name) or cid of author
 // 	   time = 
-pub fn (mut base Base) remark_add(remark RemarkArgs) !&Remark {
+pub fn (mut remarks Remarks) add(remark RemarkArgs) ! {
 	// NEXT: need to implement using time conversion & look for author (with people manager using cid and name)
-	//QUESTION: why not pass in remark rather than remark args
-	mut t:=parse(remark.time)!
-	cid:= remark.author //NEXT: this can be wrong, if not CID used, we need to find way how to find an author
-	new_remark := &Remark{time:t,content:remark.content,author_cid:cid}
-	base.remarks << new_remark
-	return new_remark
+	//QUESTION: why not pass in remark rather than remark args	
+	mut t:=timetools.parse(remark.time)!
+	sid:= smartid_new(remark.author)!
+	new_remark := Remark{time:t,content:remark.content,author:sid}
+	remarks.remarks << new_remark
+}
+
+pub fn ( remarks Remarks) wiki() !string {
+	mut out:=""
+	for remark in remarks.remarks{
+		a:=remark.author.getstr()!
+		out+="!!remark.add cid:@cid time:'${remark.time}' author:$a\n"
+		if remark.content.contains("\n"){
+			//multiline
+			out+= "    content:'\n"
+			out+= texttools.indent(remark.content,"    ")
+			if ! remark.content.ends_with("\n"){
+				out+="\n"
+			}
+			out+="    '\n"
+		}else{
+			out+= "    content:${remark.content}'\n"
+		}
+	}
+	return out
 }

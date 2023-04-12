@@ -1,3 +1,4 @@
+```yaml
 //select the book, can come from context as has been set before
 //now every person added will be added in this book
 !!select_book aaa
@@ -23,12 +24,10 @@
   //name as selected in this group, can be used to find someone back
   name: fatayera
 
-<!-- QUESTION: is  this implementation ok? -->
-<!-- !!person_link_contact ccid: '1gt' pcid: '2dm' -->
 
 !!person_link_contact
   contact: '1gt'
-  person: '2dm'
+  person: 'fatayera'
 
 !!circle_delete cid:tt0
 
@@ -76,4 +75,4 @@
   cid: 'eg'
   name: despiegk
 
-"
+```

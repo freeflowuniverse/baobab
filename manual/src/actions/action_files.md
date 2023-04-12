@@ -5,7 +5,9 @@ Actions should be added in a markdown file by the user. Below you can find an ex
 ```js
 //select the book, can come from context as has been set before
 //now every person added will be added in this book
-!!book.select name:e6
+!!select_domain protocol_me
+!!select_book aaa
+!!select_actor people
 
 //delete everything as found in current book
 !!people.person_delete cid:1g

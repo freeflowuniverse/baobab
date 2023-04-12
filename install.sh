@@ -5,4 +5,4 @@ DIR_OF_THIS_SCRIPT="$( dirname "$SOURCE" )"
 ABS_DIR_OF_SCRIPT="$( realpath $DIR_OF_THIS_SCRIPT )"
 echo $ABS_DIR_OF_SCRIPT
 mkdir -p ~/.vmodules/freeflowuniverse
-ln -s $ABS_DIR_OF_SCRIPT/baobab/ ~/.vmodules/freeflowuniverse/baobab
+ln -s $ABS_DIR_OF_SCRIPT/baobab ~/.vmodules/freeflowuniverse/baobab

@@ -1,6 +1,7 @@
 ## [**baobab**](README.md)
 
 - [Concepts](concepts/concepts.md)
+  - [SmartId](concepts/smartid.md)
   - [Actor](concepts/actor.md)
   - [ActionRunner](concepts/actionrunner.md)
   - [Processor](concepts/processor.md)

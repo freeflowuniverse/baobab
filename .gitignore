@@ -26,3 +26,5 @@ bin/
 baobab/_docs
 _docs
 docs
+
+*.dSYM
