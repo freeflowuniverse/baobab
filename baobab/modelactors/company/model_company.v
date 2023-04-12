@@ -9,9 +9,10 @@ import freeflowuniverse.baobab.modelbase {SmartId}
 pub struct Company {
 	modelbase.BaseNamed		
 pub mut:
+	name string
 	circles []SmartId // link to circles
+	budgets []SmartId
 	// registration_country  &country.Country
-	// budget                &budget.Budget
 }
 
 

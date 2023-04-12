@@ -37,7 +37,7 @@ pub fn db(bid string, basecurrency string) !CompanyDB {
 
 // the company db will be filled in with all found relevant information
 pub fn (mut db CompanyDB) process(actions actionsparser.Actions) ! {
-	db.process_cost(actions)!
+	// db.process_cost(actions)!
 	db.process_company(actions)!
 }
 
