@@ -1,7 +1,7 @@
 module client
 
 import freeflowuniverse.crystallib.redisclient
-import freeflowuniverse.crystallib.actionsparser
+import freeflowuniverse.baobab.actions
 import os
 
 const samples_dir = os.dir(@FILE) + '/../../examples/actionsdir'
@@ -23,11 +23,9 @@ fn testsuite_end() {
 fn test_get_jobs() {
 	mut cl := new('localhost:6379')!
 
-	mut parser := actionsparser.new(
-		path: client.samples_dir
-	)!
-	assert parser.actions.len == 11
+	mut actionsmgr := actions.dir_parse(client.samples_dir)!
+	assert actionsmgr.actions.len == 11
 
-	mut j := cl.schedule_actions(actions: parser.actions)!
-	assert j.jobs.last().action == 'mdbook_develop'
+	mut j := cl.schedule_actions(actions: actionsmgr.actions)!
+	assert j.jobs.last().action == 'threefold.books.mdbook_develop'
 }
