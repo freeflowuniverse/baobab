@@ -24,3 +24,5 @@ bin/
 *.log
 
 baobab/_docs
+
+*.dSYM/
