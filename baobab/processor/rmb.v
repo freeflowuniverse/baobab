@@ -28,6 +28,7 @@ pub fn error_code_to_message(code RMBErrorCode) string {
 // when handeling RMB messages.
 pub enum RMBErrorCode as u8 {
 	failed_decoding_payload_to_job
+	empty_source_twin_id
 	unauthorized
 	internal_error
 }
