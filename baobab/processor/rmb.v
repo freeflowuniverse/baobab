@@ -12,6 +12,9 @@ pub fn error_code_to_message(code RMBErrorCode) string {
 		.failed_decoding_payload_to_job {
 			return 'Failed to decode the received payload to job. It should contain the base64 encoded representation of a json job.'
 		}
+		.failed_decoding_source_twin {
+			return 'Faild to decode the source twin id from the message.'
+		}
 		.unauthorized {
 			return 'Unauthorized to execute the job. Make sure that the source and desition twin ids of the rmb message match the ones from the job.'
 		}
@@ -81,7 +84,13 @@ fn (mut p Processor) get_rmb_job(encoded_msg string) ?string {
 		p.send_rmb_error_message(.failed_decoding_payload_to_job, msg)
 		return none
 	}
-	if job.src_twinid != msg.src.u32() {
+	twin_source := msg.src.split(':')
+	if twin_source.len == 0 {
+		p.logger.error('Failed decoding source twin from job ${decoded_job}')
+		p.send_rmb_error_message(.failed_decoding_source_twin, msg)
+		return none
+	}
+	if job.src_twinid != twin_source[0].u32() {
 		p.logger.error('Job is either not meant for us or the sender is not who they claim to be: ${encoded_msg}')
 		p.send_rmb_error_message(.unauthorized, msg)
 		return none
