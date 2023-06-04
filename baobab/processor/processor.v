@@ -2,7 +2,6 @@ module processor
 
 import freeflowuniverse.baobab.client
 import freeflowuniverse.baobab.jobs
-
 import log
 import rand
 
@@ -42,7 +41,7 @@ pub fn (mut p Processor) run() {
 		rand.shuffle[string](mut queues) or { p.logger.error('Failed to shuffle queues') }
 		res := p.client.redis.brpop(queues, 1) or {
 			if '${err}' != 'timeout on brpop' {
-				p.logger.error('Failed to brpop queues')
+				p.logger.error('Failed to brpop queues: ${err}')
 			}
 			continue
 		}

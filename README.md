@@ -1,12 +1,6 @@
 # baobab
 
-
-- [manual](https://freeflowuniverse.github.io/baobab)
-- [developer documentation](https://freeflowuniverse.github.io/baobab/v)
-
-## Intro
-
-It's always a good practice to make your software do one thing only and do it well. It usually results in less complex code that is easier to maintain. So instead of having one application that is able to do 5 totally different things it is better to develop 5 different applications. If an application needs the help of another it can always ask. This introduction is a basic decription of the [actor model principles](https://www.oreilly.com/library/view/scala-reactive-programming/9781787288645/8253d31d-ed61-46c3-8c69-9d49d8d8ab07.xhtml). The baobab repository was created to facilitate applying the actor model principles to your codebase. 
+It's always a good practice to make your software do one thing only and do it well. It usually results in less complex code that is easier to maintain. So instead of having one application that is able to do 5 totally different things it is better to develop 5 different applications. If an application needs the help of another it can always ask. This introduction is a basic decription of the [actor model principles](https://www.oreilly.com/library/view/scala-reactive-programming/9781787288645/8253d31d-ed61-46c3-8c69-9d49d8d8ab07.xhtml). The baobab repository was created to facilitate applying the actor model principles to your codebase.
 
 ## Documentation
 If you want to know more about baobab make sure to through the documentation under [manual](manual/src/SUMMARY.md).

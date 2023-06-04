@@ -22,7 +22,7 @@ pub fn (mut client Client) job_new_schedule(args JobNewArgs) !ActionJob {
 // job to finish.
 pub fn (mut client Client) job_new_wait(args JobNewArgs) !ActionJob {
 	mut job := client.job_new(args)!
-	return client.job_schedule_wait(mut job, 0)! //? should this be the job timeout or a custom timeout
+	return client.job_schedule_wait(mut job, args.timeout)! //? should this be the job timeout or a custom timeout
 }
 
 // Schedules the job to be executed

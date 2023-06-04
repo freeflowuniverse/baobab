@@ -1,7 +1,5 @@
 ## another one
 
-<!-- Question: !!threefold.books.add name:absolute
-how do we make the old domain idea work with books
--->
+!!threefold.books.add name:absolute
 
-!!aaa.books.add name:absolute
+
