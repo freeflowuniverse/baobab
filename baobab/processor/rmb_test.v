@@ -19,7 +19,7 @@ struct RMBTestCase {
 // reset redis on test begin and run servers
 fn testsuite_begin() {
 	os.execute('redis-server --daemonize yes &')
-	mut redis := redisclient.core_get()
+	mut redis := redisclient.core_get()!
 	redis.flushall()!
 	redis.disconnect()
 }
@@ -68,7 +68,7 @@ fn test_get_rmb_job() ! {
 
 fn test_return_job_rmb() {
 	mut p := new('localhost:6379', get_logger('test_return_job_rmb'))!
-	mut redis := redisclient.core_get()
+	mut redis := redisclient.core_get()!
 	test_cases := generate_test_cases()!
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
 

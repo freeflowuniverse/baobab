@@ -7,7 +7,7 @@ import freeflowuniverse.baobab.jobs
 import freeflowuniverse.crystallib.redisclient
 
 fn testsuite_begin() {
-	mut redis := redisclient.core_get()
+	mut redis := redisclient.core_get()!
 	redis.flushall()!
 	redis.disconnect()
 }
@@ -29,7 +29,7 @@ fn test_run() {
 }
 
 fn mock_processor(action string, add_to_db bool) ! {
-	mut redis := redisclient.core_get()
+	mut redis := redisclient.core_get()!
 	job := jobs.new(twinid: 0, action: action)!
 
 	// add job to jobs.db

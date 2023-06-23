@@ -8,14 +8,14 @@ const samples_dir = os.dir(@FILE) + '/../../examples/actionsdir'
 
 // reset redis on test begin and run servers
 fn testsuite_begin() {
-	mut redis := redisclient.core_get()
+	mut redis := redisclient.core_get()!
 	redis.flushall()!
 	redis.disconnect()
 }
 
 // reset redis on test end
 fn testsuite_end() {
-	mut redis := redisclient.core_get()
+	mut redis := redisclient.core_get()!
 	redis.flushall()!
 	redis.disconnect()
 }

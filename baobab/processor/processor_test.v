@@ -15,7 +15,7 @@ struct TestCase {
 
 // reset redis on test begin and run servers
 fn testsuite_begin() {
-	mut redis := redisclient.core_get()
+	mut redis := redisclient.core_get()!
 	redis.flushall()!
 	redis.disconnect()
 }
@@ -33,7 +33,7 @@ fn get_logger(output_file string) &log.Log {
 
 // creates mock test jobs with hardcoded expected outcomes
 fn generate_test_cases() ![]TestCase {
-	mut redis := redisclient.core_get()
+	mut redis := redisclient.core_get()!
 	mut test_cases := []TestCase{}
 
 	// job for git actor in crystallib
@@ -78,7 +78,7 @@ fn generate_test_cases() ![]TestCase {
 
 // tests if the processor places jobs in correct jobs.domain.actor queue
 fn test_assign_job() {
-	mut redis := redisclient.core_get()
+	mut redis := redisclient.core_get()!
 	mut p := new('localhost:6379', get_logger('test_assign_job'))!
 	test_cases := generate_test_cases()!
 
@@ -92,7 +92,7 @@ fn test_assign_job() {
 
 // tests if the processor places jobs in correct jobs.return queue
 fn test_return_job() {
-	mut redis := redisclient.core_get()
+	mut redis := redisclient.core_get()!
 	mut p := new('localhost:6379', get_logger('test_return_job'))!
 	test_cases := generate_test_cases()!
 	mut q_result := p.client.redis.queue_get('jobs.processor.result')
@@ -119,7 +119,7 @@ fn test_reset() ! {
 
 // tests if processor assigns jobs to actors and returns results/errors
 fn test_run() {
-	mut redis := redisclient.core_get()
+	mut redis := redisclient.core_get()!
 	mut p := new('localhost:6379', get_logger('test_run'))!
 	test_cases := generate_test_cases()!
 	spawn (&p).run() // run processor concurrently
