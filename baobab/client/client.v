@@ -84,10 +84,10 @@ pub fn (mut client Client) job_check_ready(guid string) !bool {
 // (can be error or ok). If it finishes the job will be
 // returned. If the timeout exceeds an error will be thrown.
 // Setting the timout 0, means we will wait for 1h.
-pub fn (mut client Client) job_wait(guid string, timeout_ int) !ActionJob {
+pub fn (mut client Client) job_wait(guid string, timeout_ f64) !ActionJob {
 	mut timeout := timeout_
 	if timeout == 0 {
-		timeout = 3600
+		timeout = 3600.0
 	}
 	key := 'jobs.return.${guid}'
 	client.redis.brpop([key], timeout)! // will block and wait
@@ -96,7 +96,7 @@ pub fn (mut client Client) job_wait(guid string, timeout_ int) !ActionJob {
 
 // Schedules the job to be executed and wait for it to
 // finish.
-pub fn (mut client Client) job_schedule_wait(mut job ActionJob, timeout int) !ActionJob {
+pub fn (mut client Client) job_schedule_wait(mut job ActionJob, timeout f64) !ActionJob {
 	client.job_schedule(mut job)!
 	return client.job_wait(job.guid, timeout)!
 }

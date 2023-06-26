@@ -13,7 +13,7 @@ pub mut:
 	args         Params
 	actionsource string
 	src_twinid   u32
-	timeout      int
+	timeout      f64
 }
 
 // Creates new actionjob
