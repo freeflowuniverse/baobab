@@ -5,6 +5,10 @@ import freeflowuniverse.baobab.client { Client }
 import freeflowuniverse.baobab.jobs { ActionJob }
 import rand
 
+const (
+	default_waiting_actors = 1.0
+)
+
 // A struct representing an ActionRunner. It contains
 // a list of actors that it manages and a client that it
 // uses to create jobs in redis and to submit the to the
@@ -15,6 +19,7 @@ pub mut:
 	actors  []&actor.IActor
 	client  &Client
 	running bool
+	timeout_waiting_actors f64 = default_waiting_actors
 }
 
 // This is the factory function for actionrunner
@@ -36,7 +41,7 @@ pub fn (mut ar ActionRunner) run() {
 	for ar.running {
 		rand.shuffle[string](mut queues_actors) or { eprintln('Failed to shuffle actor queues') }
 		// pull jobs for our actors: wait till one of the actors has a job
-		res := ar.client.redis.brpop(queues_actors, 1) or {
+		res := ar.client.redis.brpop(queues_actors, ar.timeout_waiting_actors) or {
 			if '${err}' != 'timeout on brpop' {
 				eprintln('Unexpected error: ${err}')
 			}

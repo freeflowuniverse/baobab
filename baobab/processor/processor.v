@@ -5,6 +5,10 @@ import freeflowuniverse.baobab.jobs
 import log
 import rand
 
+const (
+	default_timeout_waiting_queues = 1.0
+)
+
 // The representation of the Processor. It contains a
 // client that is used to get jobs from redis, a logger
 // to log usefull information and an attribute running
@@ -16,6 +20,7 @@ mut:
 	logger &log.Logger
 pub mut:
 	running bool
+	timeout_waiting_queues f64 = default_timeout_waiting_queues
 }
 
 // Factory method for creating a new processor.
@@ -39,7 +44,7 @@ pub fn (mut p Processor) run() {
 		'jobs.processor.result']
 	for p.running {
 		rand.shuffle[string](mut queues) or { p.logger.error('Failed to shuffle queues') }
-		res := p.client.redis.brpop(queues, 1) or {
+		res := p.client.redis.brpop(queues, p.timeout_waiting_queues) or {
 			if '${err}' != 'timeout on brpop' {
 				p.logger.error('Failed to brpop queues: ${err}')
 			}
